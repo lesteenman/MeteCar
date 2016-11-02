@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-class MissionsPage extends Component {
+export default class MissionsPage extends Component {
 	render() {
 		return (
 			<div>

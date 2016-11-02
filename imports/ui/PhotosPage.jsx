@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-class PhotosPage extends Component {
+export default class PhotosPage extends Component {
 	render() {
 		return (
 			<div>

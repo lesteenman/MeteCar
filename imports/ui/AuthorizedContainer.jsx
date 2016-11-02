@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { Accounts } from 'meteor/accounts-base';
 import { browserHistory } from 'react-router';
+import LoginPage from './LoginPage';
 
-class UserPage extends Component {
+export class UserPage extends Component {
 	render() {
 		if (this.props.userId) {
 			let props = {
@@ -24,7 +25,7 @@ class UserPage extends Component {
 	}
 }
 
-class AdminPage extends Component {
+export class AdminPage extends Component {
 	render() {
 		if (this.props.user.isAdmin) {
 			let props = {
@@ -46,7 +47,7 @@ class AdminPage extends Component {
 	}
 }
 
-class UnauthorizedPage extends Component {
+export class UnauthorizedPage extends Component {
 	render() {
 		if (this.props.userId) {
 			browserHistory.push('/');
