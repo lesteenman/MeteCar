@@ -1,10 +1,7 @@
 import React, { Component } from 'react';
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 import '../less/app';
 import '../less/transitions';
-
-import { createContainer } from '../helpers/createContainer.jsx';
 
 export default class App extends Component {
 	// Keep track of window width
@@ -30,12 +27,6 @@ export default class App extends Component {
 	}
 
 	render() {
-		// clone route components with keys so that they can
-		// have transitions
-		const clonedChildren = this.props.children && React.cloneElement(this.props.children, {
-			key: location.pathname
-		});
-
 		var constraintClass = this.state.windowWidth > 480 ? 'constraint-limit' : 'constraint-shrink';
 		var verticalContainerClass = 'verticalContainer' + (this.state.windowWidth <= 480 ? ' fullwidth' : '');
 		var appContainerClass = 'appContainer' + (this.state.windowWidth <= 480 ? 'fullHeight' : '');
@@ -45,12 +36,7 @@ export default class App extends Component {
 				<div className='horizontalContainer'><div className={constraintClass} />
 				<div className={verticalContainerClass}><div className={constraintClass} />
 					<div className={appContainerClass}>
-						<ReactCSSTransitionGroup
-							transitionName="page"
-							transitionEnterTimeout={200}
-							transitionLeaveTimeout={200}>
-							{clonedChildren}
-						</ReactCSSTransitionGroup>
+						{this.props.children}
 					</div>
 				<div className={constraintClass} /></div>
 				<div className={constraintClass} /></div>

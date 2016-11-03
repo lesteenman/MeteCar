@@ -1,7 +1,10 @@
 import { Meteor } from 'meteor/meteor';
+import { browserHistory } from 'react-router';
 
 import React, { Component } from 'react';
 import { Link } from 'react-router';
+
+import '../less/form.scss';
 
 import { ActionButton, ExtraButton, InputLine } from './UiComponents.jsx';
 
@@ -13,17 +16,22 @@ export default class LoginPage extends Component {
 	}
 
 	_login() {
-		var teamname = this.refs.teamname.value();
+		var email = this.refs.email.value();
 		var password = this.refs.password.value();
-		Meteor.loginWithPassword(teamname, password, (error) => {
-			console.log('Error:', error);
+
+		Meteor.loginWithPassword(email, password, function(error) {
+			if (error) {
+				console.log('Error', error);
+			} else {
+				browserHistory.push('/');
+			}
 		});
 	}
 
 	render() {
 		var teamError, passwordError, globalError;
-		return (<div style={{position: 'absolute', bottom: 0, left: 0, right: 0}}>
-			<InputLine ref='teamname' onEnter={this.login} label='Team name' error={teamError}/>
+		return (<div className='form-container' style={{position: 'absolute', bottom: 0, left: 0, right: 0}}>
+			<InputLine ref='email' onEnter={this.login} label='Email' error={teamError}/>
 			<InputLine ref='password' type='password' onEnter={this.login} label='Password' error={passwordError}/>
 			<div style={{color: 'red'}}>{globalError}</div>
 			<ActionButton text='Sign In' handler={this.login} />

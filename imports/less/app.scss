@@ -1,0 +1,60 @@
+@import './colors.scss';
+
+.app {
+	background-color: $containingPageColor;
+	margin: 0;
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+}
+
+.horizontalContainer {
+	display: flex;
+	flex-direction: row;
+	height: 100%;
+}
+
+.verticalContainer {
+	display: flex;
+	flex-direction: column;
+	flex-grow: 0;
+	flex-shrink: 1;
+	flex-basis: 400px;
+}
+
+.verticalContainer.fullWidth {
+	display: flex;
+	flex-direction: column;
+	flex-grow: 1;
+	flex-shrink: 1;
+}
+
+.appContainer {
+	position: relative;
+	flex-grow: 0;
+	flex-shrink: 1;
+	flex-basis: 700px;
+	border: 1px solid #555;
+	background-color: $backgroundColor;
+	color: white;
+	box-shadow: rgba(0,0,0,0.4) 2px 6px 8px;
+}
+
+.appContainer.fullHeight {
+	flex-grow: 1;
+	flex-shrink: 1;
+	border: none;
+	background-color: $backgroundColor;
+	color: white;
+	box-shadow: none;
+}
+
+.constraint-limit {
+	flex: 1 1 auto;
+}
+
+.constraint-shrink {
+	flex: 0 1 0;
+}

@@ -1,10 +1,11 @@
 import React from 'react';
-import { Router, Route, browserHistory } from 'react-router';
+import { Router, Route, Redirect, browserHistory } from 'react-router';
 
-import AppContainer from '../containers/AppContainer.jsx';
-import { UserPage, UnauthenticatedPage, AdminPage } from '../ui/AuthorizedContainer.jsx';
+import App from '../ui/App.jsx';
+import { AdminPageContainer } from '../containers/AdminPageContainer.jsx';
 
-import EntryPage from '../ui/EntryPage.jsx';
+import TabsContainer from '../containers/TabsContainer.jsx';
+
 import LoginPage from '../ui/LoginPage.jsx';
 import SignupPage from '../ui/SignupPage.jsx';
 import DashboardPage from '../ui/DashboardPage.jsx';
@@ -13,22 +14,40 @@ import MissionsPage from '../ui/MissionsPage.jsx';
 import PhotosPage from '../ui/PhotosPage.jsx';
 import AdminDashboardPage from '../ui/AdminDashboardPage.jsx';
 
+const requireAuth = (nextState, replace) => {
+	if (!Meteor.loggingIn() && !Meteor.userId()) {
+		console.log('Move to login page');
+		replace({
+			pathname: '/login'
+		});
+	}
+};
+
+const requireNoAuth = (nextState, replace) => {
+	if (!Meteor.loggingIn() && !Meteor.userId()) {
+		console.log('Would move to dashboard');
+		// replace({
+		// 	pathname: '/dashboard'
+		// });
+	}
+};
+
 export default renderRoutes = function() {
 	return (
 		<Router history={browserHistory}>
-			<Route component={AppContainer}>
-				<Route path="/" component={EntryPage} />
-				<Route component={UnauthenticatedPage}>
-					<Route path="/login" component={LoginPage} />
-					<Route path="/signup" component={SignupPage} />
+			<Route component={App}>
+				<Redirect from="/" to="/dashboard" />
+
+				<Route path="/login" component={LoginPage} onEnter={requireNoAuth} />
+				<Route path="/signup" component={SignupPage} onEnter={requireNoAuth} />
+
+				<Route component={TabsContainer}>
+					<Route path="/dashboard" component={DashboardPage} onEnter={requireAuth} />
+					<Route path="/map" component={MapPage} onEnter={requireAuth} />
+					<Route path="/missions" component={MissionsPage} onEnter={requireAuth} />
+					<Route path="/photos" component={PhotosPage} onEnter={requireAuth} />
 				</Route>
-				<Route component={UserPage}>
-					<Route path="/dashboard" component={DashboardPage} />
-					<Route path="/map" component={MapPage} />
-					<Route path="/missions" component={MissionsPage} />
-					<Route path="/photos" component={PhotosPage} />
-				</Route>
-				<Route component={AdminPage}>
+				<Route component={AdminPageContainer}>
 					<Route path="/admin" component={AdminDashboardPage} />
 				</Route>
 			</Route>
