@@ -5,7 +5,12 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 
 // import '../imports/startup/accounts-config.js';
 import renderRoutes from '../imports/routes/Routes.jsx';
+
 import '../imports/api/Accounts.jsx';
+import '../imports/api/Location.jsx';
+
+// Start location tracking
+import '../imports/startup/geoLocation.jsx';
 
 Meteor.startup(() => {
 	injectTapEventPlugin();

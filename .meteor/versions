@@ -28,6 +28,7 @@ ejson@1.0.13
 email@1.1.18
 es5-shim@4.6.15
 fastclick@1.0.13
+force-ssl@1.0.13
 fourseven:scss@3.10.0
 froatsnook:valid-email@1.0.0
 geojson-utils@1.0.10
@@ -73,6 +74,7 @@ spacebars@1.0.13
 spacebars-compiler@1.0.13
 srp@1.0.10
 standard-minifier-js@1.2.1
+tarang:ssl@1.0.1
 templating@1.2.15
 templating-compiler@1.2.15
 templating-runtime@1.2.15

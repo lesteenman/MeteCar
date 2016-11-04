@@ -26,3 +26,5 @@ seba:minifiers-autoprefixer
 accounts-password
 check
 froatsnook:valid-email
+tarang:ssl
+force-ssl
