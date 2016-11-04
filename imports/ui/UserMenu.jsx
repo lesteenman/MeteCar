@@ -44,6 +44,15 @@ class UserMenu extends Component {
 	}
 
 	render() {
+		let teamOptions;
+		if (this.props.team) {
+			teamOptions = (
+				<Span>
+					<MenuItem>Manage Team</MenuItem>
+					<Divider />
+				</Span>
+			);
+		}
 		return (
 			<MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>
 				<Drawer
@@ -52,8 +61,7 @@ class UserMenu extends Component {
 					open={this.state.open}
 					onRequestChange={(open) => this.setOpen(open)}
 				>
-					<MenuItem>Manage Team</MenuItem>
-					<Divider />
+					{teamOptions}
 					<MenuItem onTouchTap={this.logout}>Logout</MenuItem>
 				</Drawer>
 			</MuiThemeProvider>
@@ -63,6 +71,7 @@ class UserMenu extends Component {
 
 export default createContainer(({ registerToggleMenu }) => {
 	return {
-		registerToggleMenu
+		registerToggleMenu,
+		// TODO: Subscribe for team, only show team entry if user has team
 	};
 }, UserMenu);

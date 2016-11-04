@@ -15,7 +15,7 @@ const WideButton = (props) => {
 	return (<button
 		className={`${props.buttonType} button`}
 		onClick={props.handler}
-	>{props.text}</button>)
+	>{props.children}</button>)
 }
 
 /* Button Types */
@@ -23,7 +23,6 @@ const ActionButton = (props) => <WideButton buttonType='action' {...props} />
 const ExtraButton = (props) => <WideButton buttonType='extra' {...props} />
 
 WideButton.propTypes = {
-	text: React.PropTypes.string.isRequired,
 	buttonType: React.PropTypes.string.isRequired
 };
 

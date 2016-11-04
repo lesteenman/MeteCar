@@ -1,19 +1,22 @@
 import { Meteor } from 'meteor/meteor';
 
 import '../imports/api/Accounts.jsx';
+import '../imports/api/Teams.jsx';
 import '../imports/api/Location.jsx';
 
+import httpProxy from 'http-proxy';
+import fs from 'fs';
+
 Meteor.startup(() => {
-	// try {
-	// 	SSLProxy({
-	// 		port: 8020,
-	// 		ssl: {
-	// 			key: Assets.getText('ssl/key.pem'),
-	// 			cert: Assets.getText('ssl/cert.pem')
-	// 		}
-	// 	});
-	// } catch (err) {
-	// 	console.error('Server startup error: ', err);
-	// 	exit();
-	// }
+	httpProxy.createServer({
+		ws: true,
+		target: {
+			host: 'localhost',
+			port: 8019
+		},
+		ssl: {
+			key: Assets.getText('key.pem'),
+			cert: Assets.getText('cert.pem')
+		}
+	}).listen(8025);
 });

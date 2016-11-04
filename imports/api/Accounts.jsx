@@ -1,24 +1,21 @@
-import { Meteor } from 'meteor/meteor';
-
-import { Match } from 'meteor/check';
-import { IsValidEmail } from 'meteor/froatsnook:valid-email';
+import { validEmail } from 'meteor/froatsnook:valid-email';
 
 Meteor.methods({
-	'accounts.signup'({email, teamname, description, password1, password2}) {
-		console.log('email', email, 'teamname', teamname, 'description', description, 'p1', password1, 'p2', password2);
-		if (!IsValidEmail(email)) throw new Meteor.Error('email', 'Not a valid email');
-		if (!Match.test(teamname, String)) throw new Meteor.Error('teamname', 'Not a valid teamname');
-		if (teamname.length < 2) throw new Meteor.Error('teamname', 'Teamname too short');
+	'accounts.signup'({email, password1, password2}) {
+		console.log('email', email);
+		// TODO: Test and re-enable later
+		// if (!Match.test(email, validEmail)) throw new Meteor.Error('email', 'Not a valid email');
 		if (password1.length < 8) throw new Meteor.Error('password1', 'Password too short');
 		if (password1 !== password2) throw new Meteor.Error('password2', 'Password not equal');
 		let password = password1;
 
+		console.log('Creating User:', email, password); // TODO: Clearly remove this
+
 		Accounts.createUser({
 			email: email,
-			username: teamname,
 			password: password,
 			profile: {
-				description: description
+				team: false
 			}
 		});
 	},

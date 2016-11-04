@@ -2,35 +2,26 @@ import React from 'react';
 import { Router, Route, Redirect, browserHistory } from 'react-router';
 
 import App from '../ui/App.jsx';
-import { AdminPageContainer } from '../containers/AdminPageContainer.jsx';
+
+import AdminPageContainer from '../containers/AdminPageContainer.jsx';
+import UnauthenticatedContainer from '../containers/UnauthenticatedContainer.jsx';
+import UnteamedUserContainer from '../containers/UnteamedUserContainer.jsx';
+import TeamedUserContainer from '../containers/TeamedUserContainer.jsx';
 
 import TabsContainer from '../containers/TabsContainer.jsx';
 
-import LoginPage from '../ui/LoginPage.jsx';
-import SignupPage from '../ui/SignupPage.jsx';
-import DashboardPage from '../ui/DashboardPage.jsx';
-import MapPage from '../ui/MapPage.jsx';
-import MissionsPage from '../ui/MissionsPage.jsx';
-import PhotosPage from '../ui/PhotosPage.jsx';
-import AdminDashboardPage from '../ui/AdminDashboardPage.jsx';
+import LoginPage from '../pages/LoginPage.jsx';
+import SignupPage from '../pages/SignupPage.jsx';
 
-const requireAuth = (nextState, replace) => {
-	if (!Meteor.loggingIn() && !Meteor.userId()) {
-		console.log('Move to login page');
-		replace({
-			pathname: '/login'
-		});
-	}
-};
+import DashboardPage from '../pages/DashboardPage.jsx';
+import MapPage from '../pages/MapPage.jsx';
+import MissionsPage from '../pages/MissionsPage.jsx';
+import PhotosPage from '../pages/PhotosPage.jsx';
 
-const requireNoAuth = (nextState, replace) => {
-	if (!Meteor.loggingIn() && !Meteor.userId()) {
-		console.log('Would move to dashboard');
-		// replace({
-		// 	pathname: '/dashboard'
-		// });
-	}
-};
+import CreateTeamPage from '../pages/CreateTeamPage.jsx';
+import PickTeamPage from '../pages/PickTeamPage.jsx';
+
+import AdminDashboardPage from '../pages/AdminDashboardPage.jsx';
 
 export default renderRoutes = function() {
 	return (
@@ -38,15 +29,25 @@ export default renderRoutes = function() {
 			<Route component={App}>
 				<Redirect from="/" to="/dashboard" />
 
-				<Route path="/login" component={LoginPage} onEnter={requireNoAuth} />
-				<Route path="/signup" component={SignupPage} onEnter={requireNoAuth} />
-
-				<Route component={TabsContainer}>
-					<Route path="/dashboard" component={DashboardPage} onEnter={requireAuth} />
-					<Route path="/map" component={MapPage} onEnter={requireAuth} />
-					<Route path="/missions" component={MissionsPage} onEnter={requireAuth} />
-					<Route path="/photos" component={PhotosPage} onEnter={requireAuth} />
+				<Route component={UnauthenticatedContainer}>
+					<Route path="/login" component={LoginPage} />
+					<Route path="/signup" component={SignupPage} />
 				</Route>
+
+				<Route component={UnteamedUserContainer}>
+					<Route path="/createTeam" component={CreateTeamPage} />
+					<Route path="/pickTeam" component={PickTeamPage} />
+				</Route>
+
+				<Route component={TeamedUserContainer}>
+					<Route component={TabsContainer}>
+						<Route path="/dashboard" component={DashboardPage} />
+						<Route path="/map" component={MapPage} />
+						<Route path="/missions" component={MissionsPage} />
+						<Route path="/photos" component={PhotosPage} />
+					</Route>
+				</Route>
+
 				<Route component={AdminPageContainer}>
 					<Route path="/admin" component={AdminDashboardPage} />
 				</Route>
