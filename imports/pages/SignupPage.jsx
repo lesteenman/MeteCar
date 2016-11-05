@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router';
+import Helmet from 'react-helmet';
+
 import { Accounts } from 'meteor/accounts-base';
 
 import { ActionButton, ExtraButton, InputLine } from '../ui/UiComponents.jsx';
@@ -17,13 +19,10 @@ export default class SignupPage extends Component {
 	}
 
 	_signup() {
-		var account = {
-			email: this.refs.email.value(),
-			password1: this.refs.password1.value(),
-			password2: this.refs.password2.value()
-		};
-		var me = this;
-		Meteor.call('accounts.signup', account, function(error) {
+		let email = this.refs.email.value(),
+			password1 = this.refs.password1.value(),
+			password2 = this.refs.password2.value();
+		Meteor.call('accounts.signup', email, password1, password2, (error, result) => {
 			if (error) {
 				console.log('Error', error);
 				let errorState = {};
@@ -32,7 +31,10 @@ export default class SignupPage extends Component {
 				} else {
 					errorState['error'] = error.reason;
 				}
-				me.setState({'error': errorState});
+				this.setState({'error': errorState});
+			} else {
+				console.log('Account Created', result);
+				Meteor.loginWithPassword(email, password1);
 			}
 		});
 	}
@@ -41,6 +43,7 @@ export default class SignupPage extends Component {
 		let {error, email: emailError, password1: password1Error, password2: password2Error} = this.state.error;
 		return (
 			<div className='form-container'>
+				<Helmet title="Signup" />
 				<InputLine ref='email' onEnter={this.signup} label='Your Email' error={emailError}/>
 				<InputLine ref='password1' type='password' onEnter={this.signup} label='Password' error={password1Error}/>
 				<InputLine ref='password2' type='password' onEnter={this.signup} label='Repeat Password' error={password2Error}/>

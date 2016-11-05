@@ -9,7 +9,8 @@ class UnteamedUser extends Component {
 	componentWillMount() {
 		Tracker.autorun(() => {
 			let user = Meteor.user();
-			if (user && user.profile.team) {
+			// console.log('User:', user);
+			if (user && user.team) {
 				browserHistory.push('/dashboard');
 			}
 		});
@@ -29,9 +30,7 @@ class UnteamedUser extends Component {
 
 export default UnteamedUserContainer = createContainer(() => {
 	let user = Meteor.user();
-	let team;
-	if (user) team = user.profile.team;
 	return {
-		team: team
+		team: user ? user.team : false
 	};
 }, UnteamedUser);

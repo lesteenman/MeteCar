@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Helmet from 'react-helmet';
 
 import '../less/app';
 import '../less/transitions';
@@ -33,6 +34,7 @@ export default class App extends Component {
 
 		return (
 			<div className='app'>
+				<Helmet title='Autospeurtocht 2017' />
 				<div className='horizontalContainer'><div className={constraintClass} />
 				<div className={verticalContainerClass}><div className={constraintClass} />
 					<div className={appContainerClass}>

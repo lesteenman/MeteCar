@@ -13,14 +13,16 @@ class TeamedUser extends Component {
 			let user = Meteor.user();
 			if (!user) {
 				browserHistory.push('/login');
-			} else if (!user.profile.team) {
+			} else if (!user.team) {
 				browserHistory.push('/pickTeam');
 			}
 		});
 	}
 
 	render() {
+		console.log('Rendering Container', this.props.team);
 		if (!Meteor.loggingIn() && this.props.team) {
+			console.log('Rendering children', this.props.team);
 			return (
 				<div>
 					{this.props.children}
@@ -34,7 +36,7 @@ class TeamedUser extends Component {
 export default TeamedUserContainer = createContainer(() => {
 	let user = Meteor.user();
 	let team;
-	if (user) team = user.profile.team;
+	if (user) team = user.team;
 	console.log('Creating Container', user, team);
 	return {
 		team: team

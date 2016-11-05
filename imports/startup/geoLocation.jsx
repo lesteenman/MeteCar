@@ -14,9 +14,12 @@ function deviceIdentifier() {
 	return id;
 }
 
+var lastTime = false;
+
 if (Meteor.isClient) {
 	Tracker.autorun(() => {
-		if (Meteor.loggingIn() || !Meteor.user()) return;
+		if (Meteor.loggingIn() || !Meteor.user() || !Meteor.user().team) return;
+
 		navigator.geolocation.watchPosition(function(loc) {
 			let id = deviceIdentifier(),
 				lat = loc.coords.latitude,
@@ -24,11 +27,14 @@ if (Meteor.isClient) {
 				acc = loc.coords.accuracy,
 				time = loc.timestamp;
 
-			Meteor.call('location.update', id, lat, long, acc, time, function(err) {
-				if (err) {
-					console.log('Server err:', err);
-				}
-			});
+			if (time != lastTime) {
+				lastTime = time;
+				Meteor.call('location.update', id, lat, long, acc, time, function(err) {
+					if (err) {
+						console.log('Server err:', err);
+					}
+				});
+			}
 		}, function(error) {
 			// TODO: Handle
 			console.log('Location Error:', error);

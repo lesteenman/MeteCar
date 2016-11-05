@@ -1,4 +1,7 @@
 import React, { Component } from 'react';
+import Helmet from 'react-helmet';
+
+import { createContainer } from 'meteor/react-meteor-data';
 
 import { browserHistory } from 'react-router';
 
@@ -6,7 +9,7 @@ import { InputLine, ActionButton, ExtraButton } from '../ui/UiComponents.jsx';
 import '../less/form.scss';
 import '../api/Teams.jsx';
 
-export default class CreateTeamPage extends Component {
+class CreateTeamPage extends Component {
 	constructor(props) {
 		super(props);
 
@@ -16,7 +19,7 @@ export default class CreateTeamPage extends Component {
 
 	cancel() {
 		console.log('Should go back');
-		browserHistory.back();
+		browserHistory.goBack();
 	}
 
 	_submit() {
@@ -42,7 +45,7 @@ export default class CreateTeamPage extends Component {
 		let {name: nameError, description: descriptionError, error: error} = this.state.error;
 		return (
 			<div className='form-container'>
-				<h1>Create a team</h1>
+				<Helmet title="Create team" />
 
 				<InputLine ref='name' label='Team name' error={nameError} />
 				<InputLine ref='description' label='Team description' multiLine={true} error={descriptionError} />
@@ -57,8 +60,7 @@ export default class CreateTeamPage extends Component {
 	}
 }
 
-// export default createContainer(() => {
-// 	return {
-
-// 	};
-// }, CreateTeamPage);
+export default createContainer(() => {
+	Meteor.subscribe('Meteor.teams');
+	return {};
+}, CreateTeamPage);

@@ -8,7 +8,8 @@ import UnauthenticatedContainer from '../containers/UnauthenticatedContainer.jsx
 import UnteamedUserContainer from '../containers/UnteamedUserContainer.jsx';
 import TeamedUserContainer from '../containers/TeamedUserContainer.jsx';
 
-import TabsContainer from '../containers/TabsContainer.jsx';
+import PageWithTabsContainer from '../containers/PageWithTabsContainer.jsx';
+import PageWithMenuContainer from '../containers/PageWithMenuContainer.jsx';
 
 import LoginPage from '../pages/LoginPage.jsx';
 import SignupPage from '../pages/SignupPage.jsx';
@@ -34,17 +35,19 @@ export default renderRoutes = function() {
 					<Route path="/signup" component={SignupPage} />
 				</Route>
 
-				<Route component={UnteamedUserContainer}>
-					<Route path="/createTeam" component={CreateTeamPage} />
-					<Route path="/pickTeam" component={PickTeamPage} />
-				</Route>
+				<Route component={PageWithMenuContainer}>
+					<Route component={UnteamedUserContainer}>
+						<Route path="/createTeam" component={CreateTeamPage} />
+						<Route path="/pickTeam" component={PickTeamPage} />
+					</Route>
 
-				<Route component={TeamedUserContainer}>
-					<Route component={TabsContainer}>
-						<Route path="/dashboard" component={DashboardPage} />
-						<Route path="/map" component={MapPage} />
-						<Route path="/missions" component={MissionsPage} />
-						<Route path="/photos" component={PhotosPage} />
+					<Route component={TeamedUserContainer}>
+						<Route component={PageWithTabsContainer}>
+							<Route path="/dashboard" component={DashboardPage} />
+							<Route path="/map" component={MapPage} />
+							<Route path="/missions" component={MissionsPage} />
+							<Route path="/photos" component={PhotosPage} />
+						</Route>
 					</Route>
 				</Route>
 

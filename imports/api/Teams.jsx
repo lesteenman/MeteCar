@@ -1,6 +1,8 @@
 import { Match } from 'meteor/check';
 import { Mongo } from 'meteor/mongo';
 
+export const Team = new Mongo.Collection('teams');
+
 Meteor.methods({
 	'teams.create'(name, description, photo) {
 		let user = Meteor.user();
@@ -11,7 +13,6 @@ Meteor.methods({
 		if (name.length < 2) throw new Meteor.Error('name', 'Too short');
 
 		let existing = Team.find({name: name}).count();
-		console.log('Existing:', existing);
 		if (existing) throw new Meteor.Error('name', 'Already in use');
 
 		Team.insert({
@@ -20,21 +21,26 @@ Meteor.methods({
 			captain: Meteor.userId()
 		});
 
-		let profile = Meteor.user().profile;
-		profile.team = name;
-
-		Meteor.users.update(Meteor.userId(), {$set: {profile: profile}});
+		Meteor.users.update(Meteor.userId(), {$set: {team: name}});
 	},
-	'teams.pick'({team}) {
+	'teams.pick'(team) {
 		// TODO: Let a captain confirm first (add to an array in the teams object?)
 		let user = Meteor.user();
-		user.profile.team = team;
-		Meteor.users.update(Meteor.userId(), {$set: {profile: user.profile}});
+
+		Meteor.users.update(Meteor.userId(), {$set: {team: team}});
 	},
 	'teams.confirm'() {
 
 	}
 });
 
-export const Team = new Mongo.Collection('teams');
-
+if (Meteor.isServer) {
+	Meteor.publish('Meteor.teams', function() {
+		return Team.find({}, {
+			fields: {
+				name: true,
+				description: true
+			}	
+		});
+	});
+}
