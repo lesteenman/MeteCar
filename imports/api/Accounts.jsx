@@ -35,7 +35,8 @@ if (Meteor.isServer) {
 		const options = {
 			fields: {
 				email: true,
-				team: true
+				team: true,
+				sessions: true,
 			}
 		};
 

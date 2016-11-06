@@ -5,8 +5,9 @@ import { distance } from '../helpers/location.js';
 
 Locations = new Mongo.Collection('locations');
 
+// TODO use astronomy with an index on time
+
 Meteor.methods({
-	// TODO: Limit the amount of inserted entries? Only if new is > 10m away or something
 	'location.update'(sessionId, lat, long, acc, time) {
 		let user = Meteor.user();
 		if (!user || !user.team) throw new Meteor.Error(403);
@@ -15,7 +16,7 @@ Meteor.methods({
 			let sessions = user.sessions;
 			if (!sessions) sessions = [];
 			sessions.push(sessionId);
-			Meteor.users.update({_id: Meteor.userId()}, {$set: {"sessions": sessions}});
+			Meteor.users.update({_id: this.userId()}, {$set: {"sessions": sessions}});
 		}
 
 		let last = Locations.findOne({sessionId}, {sort: {time: -1, limit: 1}, fields: {lat: true, long: true}});

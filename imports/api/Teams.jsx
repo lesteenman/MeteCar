@@ -1,6 +1,9 @@
 import { Match } from 'meteor/check';
 import { Mongo } from 'meteor/mongo';
 
+import { Missions } from './Missions.jsx';
+import { Submissions } from './Submissions.jsx';
+
 export const Teams = new Mongo.Collection('teams');
 
 Meteor.methods({
@@ -15,19 +18,26 @@ Meteor.methods({
 		let existing = Teams.find({name: name}).count();
 		if (existing) throw new Meteor.Error('name', 'Already in use');
 
-		let id = Teams.insert({
+		let teamId = Teams.insert({
 			name: name,
 			description: description,
-			captain: Meteor.userId()
+			captain: this.userId()
 		});
 
-		Meteor.users.update(Meteor.userId(), {$set: {team: id}});
+		Meteor.users.update(this.userId(), {$set: {team: teamId}});
+
+		let firstMission = Missions.find({order: 1});
+		let firstSubmission = new Submission({
+			mission: firstMission._id,
+			team: teamId,
+		});
+		firstSubmission.save();
 	},
 	'teams.pick'(team) {
 		// TODO: Let a captain confirm first (add to an array in the teams object?)
 		let user = Meteor.user();
 
-		Meteor.users.update(Meteor.userId(), {$set: {team: team}});
+		Meteor.users.update(this.userId(), {$set: {team: team}});
 	},
 	'teams.confirm'() {
 

@@ -18,6 +18,8 @@ export const Mission = Class.create({
 		title: String,
 		description: String,
 		type: MissionType,
+		order: Number,
+		optional: Boolean,
 		lat: {
 			type: Number,
 			optional: true
@@ -30,7 +32,16 @@ export const Mission = Class.create({
 			type: String,
 			optional: true
 		},
-	}
+		// trigger: {
+			
+		// },
+	},
+	indexes: {
+		priority: {
+			fields: { order: 1 },
+			options: { unique: true },
+		}
+	},
 });
 
 if (Meteor.isServer) {
@@ -46,9 +57,13 @@ if (Meteor.isServer) {
 }
 
 export function createTestMissions() {
+	console.log('Attempting to create test missions');
+
 	let mission1 = new Mission({
 		title: 'And so it begins!',
 		description: 'We all have to start somewhere!',
+		order: 1,
+		optional: false,
 		type: 'location',
 		lat: 52.206140,
 		long: 6.879748,
@@ -57,6 +72,8 @@ export function createTestMissions() {
 	let mission2 = new Mission({
 		title: 'Get to work!',
 		description: 'Yall should get some work done bitches',
+		order: 2,
+		optional: false,
 		type: 'location',
 		lat: 52.219923,
 		long: 6.891697,
@@ -65,12 +82,16 @@ export function createTestMissions() {
 	let mission3 = new Mission({
 		title: 'Selfie time!',
 		description: 'Take a beaaautiful pictare',
+		order: 3,
+		optional: false,
 		type: 'photo',
 	});
 
 	let mission4 = new Mission({
 		title: 'Selfie time!',
 		description: 'Was the picture beautiful?',
+		order: 4,
+		optional: false,
 		type: 'puzzle',
 		answer: 'hell yes',
 	});

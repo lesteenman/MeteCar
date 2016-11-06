@@ -1,15 +1,50 @@
+import { Class, Enum } from 'meteor/jagi:astronomy';
 
-// Schema:
-// - missionId
-// - teamId
-// - state (open, sent, approved)
-// - data
+export const Submissions = new Mongo.Collection('submissions');
 
-// Methods:
-// - submissions.send
-// - submissions.admin.approve
-// - submissions.admin.deny
+const SubmissionState = Enum.create({
+	name: 'SubmissionState',
+	identifiers: {
+		OPEN: 'open',
+		SENT: 'sent',
+		APPROVED: 'approved',
+	}
+});
 
-// Publish
-// - submissions.team
-// - submissions.admin.all
+export const Submission = Class.create({
+	name: 'Submission',
+	collection: Submissions,
+	fields: {
+		mission: String,
+		state: {
+			type: SubmissionState,
+			default: 'open',
+		},
+		data: {
+			type: String,
+			optional: true,
+		},
+		team: String,
+	},
+	meteorMethods: {
+		submit(data) {
+			console.log('Team submits', this, data);
+		},
+		'admin.approve': function() {
+			console.log('Admin Approves mission', this);
+		},
+		// 'admin.deny': function() {
+
+		// },
+	}
+});
+
+if (Meteor.isServer) {
+	Meteor.publish('submissions.team', function() {
+		let team = Meteor.user().team;
+		return Submissions.find({team: team});
+	});
+	// Meteor.publish('submissions.admin.all', function() {
+
+	// });
+}
