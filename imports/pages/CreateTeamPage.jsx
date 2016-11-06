@@ -18,7 +18,6 @@ class CreateTeamPage extends Component {
 	}
 
 	cancel() {
-		console.log('Should go back');
 		browserHistory.goBack();
 	}
 

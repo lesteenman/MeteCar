@@ -8,21 +8,22 @@ import { browserHistory } from 'react-router'
 class TeamedUser extends Component {
 	componentWillMount() {
 		Tracker.autorun(() => {
-			if (Meteor.loggingIn()) return;
+			let userTeamHandle = Meteor.subscribe('Meteor.users.team');
+			if (Meteor.loggingIn() || !userTeamHandle.ready()) return;
 
 			let user = Meteor.user();
 			if (!user) {
+				console.log('User not authenticated; Redirect to login');
 				browserHistory.push('/login');
 			} else if (!user.team) {
-				browserHistory.push('/pickTeam');
+				console.log('User has no team; Redirect to team-pick');
+				browserHistory.push('/team-pick');
 			}
 		});
 	}
 
 	render() {
-		console.log('Rendering Container', this.props.team);
-		if (!Meteor.loggingIn() && this.props.team) {
-			console.log('Rendering children', this.props.team);
+		if (!this.props.loading && this.props.team) {
 			return (
 				<div>
 					{this.props.children}
@@ -33,12 +34,21 @@ class TeamedUser extends Component {
 	}
 }
 
-export default TeamedUserContainer = createContainer(() => {
-	let user = Meteor.user();
-	let team;
-	if (user) team = user.team;
-	console.log('Creating Container', user, team);
+TeamedUser.propTypes = {
+	children: React.PropTypes.object,
+	team: React.PropTypes.string,
+	loading: React.PropTypes.bool
+};
+
+export default TeamedUserContainer = createContainer((props) => {
+	let userTeamHandle = Meteor.subscribe('Meteor.users.team');
+	let team = Meteor.user() ? Meteor.user().team : undefined;
+	let loggingIn = Meteor.loggingIn();
+	let userTeamReady = userTeamHandle.ready();
+
 	return {
-		team: team
-	};
+		children: props.children,
+		team: team,
+		loading: loggingIn || !userTeamReady
+	}; 
 }, TeamedUser);

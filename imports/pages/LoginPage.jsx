@@ -1,5 +1,4 @@
 import { Meteor } from 'meteor/meteor';
-import { browserHistory } from 'react-router';
 import Helmet from 'react-helmet';
 
 import React, { Component } from 'react';

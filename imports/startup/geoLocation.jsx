@@ -31,13 +31,13 @@ if (Meteor.isClient) {
 				lastTime = time;
 				Meteor.call('location.update', id, lat, long, acc, time, function(err) {
 					if (err) {
-						console.log('Server err:', err);
+						console.error('Server err:', err);
 					}
 				});
 			}
 		}, function(error) {
 			// TODO: Handle
-			console.log('Location Error:', error);
+			console.error('Location Error:', error);
 		}, {
 			enableHighAccuracy: true,
 			timeout: 10000,

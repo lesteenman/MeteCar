@@ -8,16 +8,23 @@ import { browserHistory } from 'react-router'
 class UnteamedUser extends Component {
 	componentWillMount() {
 		Tracker.autorun(() => {
+			let userTeamHandle = Meteor.subscribe('Meteor.users.team');
+			if (Meteor.loggingIn() || !userTeamHandle.ready()) return;
+
 			let user = Meteor.user();
-			// console.log('User:', user);
-			if (user && user.team) {
+
+			if (!user) {
+				console.log('User not authenticated; Redirect to login');
+				browserHistory.push('/login');
+			} else if (user.team) {
+				console.log('User has a team; Redirect to dashboard');
 				browserHistory.push('/dashboard');
 			}
 		});
 	}
 
 	render() {
-		if (!Meteor.loggingIn() && !this.props.team) {
+		if (!this.props.loading && !this.props.team) {
 			return (
 				<div>
 					{this.props.children}
@@ -28,9 +35,23 @@ class UnteamedUser extends Component {
 	}
 }
 
-export default UnteamedUserContainer = createContainer(() => {
-	let user = Meteor.user();
+UnteamedUser.propTypes = {
+	children: React.PropTypes.object,
+	team: React.PropTypes.string,
+	loading: React.PropTypes.bool
+};
+
+export default UnteamedUserContainer = createContainer((props) => {
+	console.log('Props:', props);
+
+	let userTeamHandle = Meteor.subscribe('Meteor.users.team');
+	let team = Meteor.user() ? Meteor.user().team : undefined;
+	let loggingIn = Meteor.loggingIn();
+	let userTeamReady = userTeamHandle.ready();
+
 	return {
-		team: user ? user.team : false
+		children: props.children,
+		team: team,
+		loading: loggingIn || !userTeamReady
 	};
 }, UnteamedUser);

@@ -15,13 +15,13 @@ Meteor.methods({
 		let existing = Team.find({name: name}).count();
 		if (existing) throw new Meteor.Error('name', 'Already in use');
 
-		Team.insert({
+		let id = Team.insert({
 			name: name,
 			description: description,
 			captain: Meteor.userId()
 		});
 
-		Meteor.users.update(Meteor.userId(), {$set: {team: name}});
+		Meteor.users.update(Meteor.userId(), {$set: {team: id}});
 	},
 	'teams.pick'(team) {
 		// TODO: Let a captain confirm first (add to an array in the teams object?)
@@ -38,6 +38,7 @@ if (Meteor.isServer) {
 	Meteor.publish('Meteor.teams', function() {
 		return Team.find({}, {
 			fields: {
+				_id: true,
 				name: true,
 				description: true
 			}	

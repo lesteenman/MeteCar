@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { browserHistory } from 'react-router';
+import { browserHistory, Link } from 'react-router';
 
 import { createContainer } from 'meteor/react-meteor-data';
 
@@ -45,12 +45,14 @@ class UserMenu extends Component {
 
 	render() {
 		let teamOptions;
-		if (this.props.team) {
+		if (!this.props.loading && this.props.team) {
 			teamOptions = (
-				<Span>
-					<MenuItem>Manage Team</MenuItem>
+				<span>
+					<Link to='/team-manage'>
+						<MenuItem onTouchTap={this.toggle}>Manage Team</MenuItem>
+					</Link>
 					<Divider />
-				</Span>
+				</span>
 			);
 		}
 		return (
@@ -70,8 +72,14 @@ class UserMenu extends Component {
 }
 
 export default createContainer(({ registerToggleMenu }) => {
+	let userTeamHandle = Meteor.subscribe('Meteor.users.team');
+	let team = Meteor.user() ? Meteor.user().team : undefined;
+	let loggingIn = Meteor.loggingIn();
+	let userTeamReady = userTeamHandle.ready();
+
 	return {
 		registerToggleMenu,
-		// TODO: Subscribe for team, only show team entry if user has team
+		team: team,
+		loading: loggingIn || !userTeamReady
 	};
 }, UserMenu);

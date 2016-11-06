@@ -15,8 +15,6 @@ Meteor.methods({
 			Meteor.users.update({_id: Meteor.userId()}, {$set: {"sessions": sessions}});
 		}
 
-		console.log('Location set for session', id, lat, long, acc, time);
-
 		LocationLog.insert({
 			id, lat, long, acc, time
 		});
@@ -28,9 +26,9 @@ Meteor.methods({
 });
 
 function fakerCheck(clientId) {
-	console.log('No, no faker check yet, no...');
+	console.log('Faker check unimplemented');
 }
 
 function checkObjective(teamId, lat, long, acc) {
-	console.log('No objective for you');
+	console.log('Objective check unimplemented');
 }

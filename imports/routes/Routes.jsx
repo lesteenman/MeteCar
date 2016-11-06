@@ -19,6 +19,7 @@ import MapPage from '../pages/MapPage.jsx';
 import MissionsPage from '../pages/MissionsPage.jsx';
 import PhotosPage from '../pages/PhotosPage.jsx';
 
+import ManageTeamPage from '../pages/ManageTeamPage.jsx';
 import CreateTeamPage from '../pages/CreateTeamPage.jsx';
 import PickTeamPage from '../pages/PickTeamPage.jsx';
 
@@ -37,11 +38,12 @@ export default renderRoutes = function() {
 
 				<Route component={PageWithMenuContainer}>
 					<Route component={UnteamedUserContainer}>
-						<Route path="/createTeam" component={CreateTeamPage} />
-						<Route path="/pickTeam" component={PickTeamPage} />
+						<Route path="/team-create" component={CreateTeamPage} />
+						<Route path="/team-pick" component={PickTeamPage} />
 					</Route>
 
 					<Route component={TeamedUserContainer}>
+						<Route path="/team-manage" component={ManageTeamPage} />
 						<Route component={PageWithTabsContainer}>
 							<Route path="/dashboard" component={DashboardPage} />
 							<Route path="/map" component={MapPage} />

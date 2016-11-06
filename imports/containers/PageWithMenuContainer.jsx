@@ -49,7 +49,9 @@ export default class PageWithMenuContainer extends Component {
 						onLeftIconButtonTouchTap={this.toggleMenu}
 					/>
 				</MuiThemeProvider>
-				{this.props.children}
+				<div style={{position: 'absolute', top: '64px', bottom: '0px', width: '100%'}}>
+					{this.props.children}
+				</div>
 			</div>
 		);
 

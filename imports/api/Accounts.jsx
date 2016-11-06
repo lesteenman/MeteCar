@@ -4,7 +4,6 @@ var isEmailValid = function(address) {
 
 Meteor.methods({
 	'accounts.signup'(email, password1, password2) {
-		console.log('email', email);
 		// TODO: Test and re-enable later
 		if (!isEmailValid(email)) throw new Meteor.Error('email', 'Not a valid email');
 		if (password1.length < 8) throw new Meteor.Error('password1', 'Password too short');
