@@ -1,7 +1,7 @@
 import { Match } from 'meteor/check';
 import { Mongo } from 'meteor/mongo';
 
-export const Team = new Mongo.Collection('teams');
+export const Teams = new Mongo.Collection('teams');
 
 Meteor.methods({
 	'teams.create'(name, description, photo) {
@@ -12,10 +12,10 @@ Meteor.methods({
 		if (!Match.test(name, String)) throw new Meteor.Error('name', 'Not a valid teamname');
 		if (name.length < 2) throw new Meteor.Error('name', 'Too short');
 
-		let existing = Team.find({name: name}).count();
+		let existing = Teams.find({name: name}).count();
 		if (existing) throw new Meteor.Error('name', 'Already in use');
 
-		let id = Team.insert({
+		let id = Teams.insert({
 			name: name,
 			description: description,
 			captain: Meteor.userId()
@@ -35,8 +35,8 @@ Meteor.methods({
 });
 
 if (Meteor.isServer) {
-	Meteor.publish('Meteor.teams', function() {
-		return Team.find({}, {
+	Meteor.publish('teams.all', function() {
+		return Teams.find({}, {
 			fields: {
 				_id: true,
 				name: true,

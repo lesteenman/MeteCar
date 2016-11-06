@@ -44,7 +44,7 @@ class CreateTeamPage extends Component {
 }
 
 export default createContainer(() => {
-	let teamHandle = Meteor.subscribe('Meteor.teams');
+	let teamHandle = Meteor.subscribe('teams.all');
 	let team = Team.find({_id: Meteor.user().team});
 	return {
 		loading: !teamHandle.ready(),

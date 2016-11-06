@@ -8,7 +8,7 @@ import { browserHistory } from 'react-router'
 class UnteamedUser extends Component {
 	componentWillMount() {
 		Tracker.autorun(() => {
-			let userTeamHandle = Meteor.subscribe('Meteor.users.team');
+			let userTeamHandle = Meteor.subscribe('users.all');
 			if (Meteor.loggingIn() || !userTeamHandle.ready()) return;
 
 			let user = Meteor.user();
@@ -44,7 +44,7 @@ UnteamedUser.propTypes = {
 export default UnteamedUserContainer = createContainer((props) => {
 	console.log('Props:', props);
 
-	let userTeamHandle = Meteor.subscribe('Meteor.users.team');
+	let userTeamHandle = Meteor.subscribe('users.all');
 	let team = Meteor.user() ? Meteor.user().team : undefined;
 	let loggingIn = Meteor.loggingIn();
 	let userTeamReady = userTeamHandle.ready();

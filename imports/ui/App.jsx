@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 import Helmet from 'react-helmet';
 
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
+
 import '../less/app';
 import '../less/transitions';
 
@@ -33,16 +37,18 @@ export default class App extends Component {
 		var appContainerClass = 'appContainer' + (this.state.windowWidth <= 480 ? 'fullHeight' : '');
 
 		return (
-			<div className='app'>
-				<Helmet title='Autospeurtocht 2017' />
-				<div className='horizontalContainer'><div className={constraintClass} />
-				<div className={verticalContainerClass}><div className={constraintClass} />
-					<div className={appContainerClass}>
-						{this.props.children}
-					</div>
-				<div className={constraintClass} /></div>
-				<div className={constraintClass} /></div>
-			</div>
+			<MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>
+				<div className='app'>
+					<Helmet title='Autospeurtocht 2017' />
+					<div className='horizontalContainer'><div className={constraintClass} />
+					<div className={verticalContainerClass}><div className={constraintClass} />
+						<div className={appContainerClass}>
+							{this.props.children}
+						</div>
+					<div className={constraintClass} /></div>
+					<div className={constraintClass} /></div>
+				</div>
+			</MuiThemeProvider>
 		);
 	}
 };

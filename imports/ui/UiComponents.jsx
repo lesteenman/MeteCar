@@ -3,10 +3,6 @@ import React from 'react';
 import { Link } from 'react-router';
 import TextField from 'material-ui/TextField';
 
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
-
 /**
  * Contains general, small UI elements.
  */
@@ -46,18 +42,16 @@ class InputLine extends React.Component {
 		}
 
 		return (
-			<MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>
-				<TextField
-					errorText={this.props.error}
-					floatingLabelText={this.props.label}
-					fullWidth={true}
-					multiLine={this.props.multiLine}
-					onChange={this.props.onChange}
-					onKeyDown={onKeyDown}
-					ref='input'
-					type={this.props.type}
-				></TextField>
-			</MuiThemeProvider>
+			<TextField
+				errorText={this.props.error}
+				floatingLabelText={this.props.label}
+				fullWidth={true}
+				multiLine={this.props.multiLine}
+				onChange={this.props.onChange}
+				onKeyDown={onKeyDown}
+				ref='input'
+				type={this.props.type}
+			></TextField>
 		);
 	}
 }

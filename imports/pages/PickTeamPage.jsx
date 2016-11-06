@@ -50,6 +50,7 @@ class PickTeamPage extends Component {
 				'pick-team-card': true,
 				'picked': this.state.picked === team._id
 			});
+			console.log('Team:', team.description);
 
 			teams.push(
 				<MuiThemeProvider key={team.name} muiTheme={getMuiTheme(darkBaseTheme)}>
@@ -85,7 +86,7 @@ class PickTeamPage extends Component {
 }
 
 export default createContainer(() => {
-	Meteor.subscribe('Meteor.teams');
+	Meteor.subscribe('teams.all');
 	return {
 		teams: Team.find().fetch()
 	}

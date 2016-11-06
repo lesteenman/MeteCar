@@ -28,15 +28,10 @@ Meteor.users.deny({
 });
 
 if (Meteor.isServer) {
-	Meteor.publish('Meteor.users.team', function() {
-		// new SimpleSchema({
-		// 	team: { type: [String] }
-		// }).validate({ userIds });
+	// users.admin.all
+	// just users.all?
 
-		// const selector = {
-		// 	_id: { $in: userIds }
-		// };
-
+	Meteor.publish('users.all', function() {
 		const options = {
 			fields: {
 				email: true,

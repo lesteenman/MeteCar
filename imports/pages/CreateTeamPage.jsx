@@ -60,6 +60,6 @@ class CreateTeamPage extends Component {
 }
 
 export default createContainer(() => {
-	Meteor.subscribe('Meteor.teams');
+	Meteor.subscribe('teams.all');
 	return {};
 }, CreateTeamPage);
