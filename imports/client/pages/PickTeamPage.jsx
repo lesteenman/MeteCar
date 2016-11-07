@@ -11,7 +11,7 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme';
 
 import { Card, CardHeader, CardText } from 'material-ui/Card';
 
-import { Teams } from '../api/Teams.jsx';
+import { Teams } from '../../api/Teams.jsx';
 import { ActionButton, ExtraButton } from '../ui/UiComponents.jsx';
 import '../less/form.scss';
 import '../less/team-picker.scss';

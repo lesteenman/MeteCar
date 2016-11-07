@@ -24,6 +24,8 @@ Meteor.startup(() => {
 		}
 	}).listen(8025);
 
+	console.log('Secure port running at: https://locatlhost:8025');
+
 	insertAdminAccount();
 	insertTestData();
 });

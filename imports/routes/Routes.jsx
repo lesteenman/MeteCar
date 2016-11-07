@@ -1,29 +1,29 @@
 import React from 'react';
 import { Router, Route, Redirect, browserHistory } from 'react-router';
 
-import App from '../ui/App.jsx';
+import App from '../client/ui/App.jsx';
 
-import AdminPageContainer from '../containers/AdminPageContainer.jsx';
-import UnauthenticatedContainer from '../containers/UnauthenticatedContainer.jsx';
-import UnteamedUserContainer from '../containers/UnteamedUserContainer.jsx';
-import TeamedUserContainer from '../containers/TeamedUserContainer.jsx';
+import AdminPageContainer from '../client/containers/AdminPageContainer.jsx';
+import UnauthenticatedContainer from '../client/containers/UnauthenticatedContainer.jsx';
+import UnteamedUserContainer from '../client/containers/UnteamedUserContainer.jsx';
+import TeamedUserContainer from '../client/containers/TeamedUserContainer.jsx';
 
-import PageWithTabsContainer from '../containers/PageWithTabsContainer.jsx';
-import PageWithMenuContainer from '../containers/PageWithMenuContainer.jsx';
+import PageWithTabsContainer from '../client/containers/PageWithTabsContainer.jsx';
+import PageWithMenuContainer from '../client/containers/PageWithMenuContainer.jsx';
 
-import LoginPage from '../pages/LoginPage.jsx';
-import SignupPage from '../pages/SignupPage.jsx';
+import LoginPage from '../client/pages/LoginPage.jsx';
+import SignupPage from '../client/pages/SignupPage.jsx';
 
-import DashboardPage from '../pages/DashboardPage.jsx';
-import MapPage from '../pages/MapPage.jsx';
-import MissionsPage from '../pages/MissionsPage.jsx';
-import PhotosPage from '../pages/PhotosPage.jsx';
+import DashboardPage from '../client/pages/DashboardPage.jsx';
+import MapPage from '../client/pages/MapPage.jsx';
+import MissionsPage from '../client/pages/MissionsPage.jsx';
+import PhotosPage from '../client/pages/PhotosPage.jsx';
 
-import ManageTeamPage from '../pages/ManageTeamPage.jsx';
-import CreateTeamPage from '../pages/CreateTeamPage.jsx';
-import PickTeamPage from '../pages/PickTeamPage.jsx';
+import ManageTeamPage from '../client/pages/ManageTeamPage.jsx';
+import CreateTeamPage from '../client/pages/CreateTeamPage.jsx';
+import PickTeamPage from '../client/pages/PickTeamPage.jsx';
 
-import AdminDashboardPage from '../pages/AdminDashboardPage.jsx';
+import AdminDashboardPage from '../client/pages/AdminDashboardPage.jsx';
 
 export default renderRoutes = function() {
 	return (

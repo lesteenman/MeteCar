@@ -6,8 +6,9 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme';
 
 import { Link } from 'react-router';
 import {BottomNavigation, BottomNavigationItem} from 'material-ui/BottomNavigation';
-import { TabBar, TabBarButton } from '../ui/UiComponents.jsx';
 import FontIcon from 'material-ui/FontIcon';
+
+import { TabBar, TabBarButton } from './UiComponents.jsx';
 
 const homeIcon = <FontIcon className="material-icons">home</FontIcon>;
 const mapIcon = <FontIcon className="material-icons">location_on</FontIcon>;

@@ -3,7 +3,7 @@ import { Teams } from './Teams.jsx';
 
 import { distance } from '../helpers/location.js';
 
-export default const Locations = new Mongo.Collection('locations');
+export default Locations = new Mongo.Collection('locations');
 
 // TODO use astronomy with an index on time
 

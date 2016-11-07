@@ -5,7 +5,7 @@ import { createContainer } from 'meteor/react-meteor-data';
 
 import { browserHistory } from 'react-router';
 
-import { Team } from '../api/Teams.jsx';
+import { Team } from '../../api/Teams.jsx';
 
 import { InputLine, ActionButton, ExtraButton } from '../ui/UiComponents.jsx';
 import '../less/form.scss';

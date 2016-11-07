@@ -5,8 +5,8 @@ import { createContainer } from 'meteor/react-meteor-data';
 import Subheader from 'material-ui/Subheader';
 import { List, ListItem } from 'material-ui/List';
 
-import { Missions } from '../api/Missions.jsx';
-import { Submissions, SubmissionState } from '../api/Submissions.jsx';
+import { Missions } from '../../api/Missions.jsx';
+import { Submissions, SubmissionState } from '../../api/Submissions.jsx';
 
 class MissionsPage extends Component {
 	render() {

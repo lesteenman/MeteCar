@@ -7,7 +7,7 @@ import { browserHistory } from 'react-router';
 
 import { InputLine, ActionButton, ExtraButton } from '../ui/UiComponents.jsx';
 import '../less/form.scss';
-import '../api/Teams.jsx';
+import '../../api/Teams.jsx';
 
 class CreateTeamPage extends Component {
 	constructor(props) {
