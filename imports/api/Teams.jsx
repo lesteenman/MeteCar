@@ -3,7 +3,7 @@ import { Mongo } from 'meteor/mongo';
 import { Class, Enum } from 'meteor/jagi:astronomy';
 
 import { Missions } from './Missions.jsx';
-import { Submissions } from './Submissions.jsx';
+import { Submission, Submissions } from './Submissions.jsx';
 
 export const Teams = new Mongo.Collection('teams');
 
@@ -20,8 +20,14 @@ export const Team = Class.create({
 				type: 'string'
 			}]
 		},
-		description: String,
-		captain: Number,
+		description: {
+			type: String,
+			validators: [{
+				type: 'minLength',
+				param: 1
+			}],
+		},
+		captain: String,
 	}
 });
 
@@ -41,14 +47,23 @@ Meteor.methods({
 		});
 		team.save();
 
-		Meteor.users.update(Meteor.userId(), {$set: {team: teamId}});
+		Meteor.users.update(Meteor.userId(), {$set: {team: team._id}});
 
-		let firstMission = Missions.find({order: 1});
-		let firstSubmission = new Submission({
-			mission: firstMission._id,
-			team: teamId,
-		});
-		firstSubmission.save();
+		if (Meteor.isServer) {
+			let firstMission = Missions.findOne({order: 1});
+			let firstSubmission = new Submission({
+				mission: firstMission._id,
+				team: team._id,
+			});
+			firstSubmission.save(function(error, id) {
+				if (error ) {
+					console.error(error);
+					// Roll back
+					team.remove();
+					Meteor.users.update(Meteor.userId(), {$set: {team: null}});
+				}
+			});
+		}
 	},
 	'teams.pick'(team) {
 		// TODO: Let a captain confirm first (add to an array in the teams object?)

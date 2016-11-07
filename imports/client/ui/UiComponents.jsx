@@ -26,11 +26,12 @@ class InputLine extends React.Component {
 	constructor(props, context) {
 		super(props, context);
 
+		this.state = {value: ''};
 		this.value = this._value.bind(this);
 	}
 
 	_value() {
-		return this.refs.input.input.value;
+		return this.textField.getValue();
 	}
 
 	render() {
@@ -49,7 +50,7 @@ class InputLine extends React.Component {
 				multiLine={this.props.multiLine}
 				onChange={this.props.onChange}
 				onKeyDown={onKeyDown}
-				ref='input'
+				ref={(input) => this.textField = input}
 				type={this.props.type}
 			></TextField>
 		);

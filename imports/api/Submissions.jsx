@@ -18,7 +18,8 @@ export const Submission = Class.create({
 		mission: String,
 		state: {
 			type: SubmissionState,
-			default: SubmissionState.open,
+			default: 'open',
+			optional: true,
 		},
 		data: {
 			type: String,
@@ -41,7 +42,7 @@ export const Submission = Class.create({
 
 if (Meteor.isServer) {
 	Meteor.publish('submissions.team', function() {
-		let user = Meteor.users.find({_id: this.userId});
+		let user = Meteor.users.findOne({_id: this.userId});
 		let team = user.team;
 		return Submissions.find({team: team});
 	});

@@ -12,11 +12,11 @@ class MissionsPage extends Component {
 	render() {
 		if (!this.props.ready) return (<div></div>);
 
-		let unavailable = [];
-		console.log('Unavailable: ', this.props.unavailable);
-		for (let i = 0; i < this.props.unavailable.length; i++) {
-			let mission = this.props.unavailable[i];
-			unavailable.push(
+		let all = [];
+		console.log('All: ', this.props.all);
+		for (let i = 0; i < this.props.all.length; i++) {
+			let mission = this.props.all[i];
+			all.push(
 				<ListItem
 					primaryText={mission.title}
 					secondaryText={mission.description}
@@ -50,8 +50,8 @@ class MissionsPage extends Component {
 					{complete}
 				</List>
 				<List style={{margin: '30px 0'}}>
-					{this.props.unavailable.length > 0 && <Subheader inset={true}>Unavailable</Subheader>}
-					{unavailable}
+					{this.props.all.length > 0 && <Subheader inset={true}>All</Subheader>}
+					{all}
 				</List>
 			</div>
 		);
@@ -74,18 +74,18 @@ export default createContainer(() => {
 		state: SubmissionState.APPROVED,
 	}).fetch();
 
-	let unavailable = Missions.find({
-	}).fetch();
+	let all = Missions.find({}).fetch();
+
 	let available = Missions.find({
-		_id: {$in: availableSubmissions}
+		_id: {$in: _.pluck(availableSubmissions, 'mission')}
 	}).fetch();
 	let complete = Missions.find({
-		_id: {$in: completeSubmissions}
+		_id: {$in: _.pluck(completeSubmissions, 'mission')}
 	}).fetch();
 
 	return {
 		ready: missionsHandle.ready() && submissionsHandle.ready(),
-		unavailable: unavailable, // TODO: Filter based on submission status
+		all: all,
 		available: available,
 		complete: complete,
 	}

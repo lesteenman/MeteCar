@@ -42,8 +42,6 @@ UnteamedUser.propTypes = {
 };
 
 export default UnteamedUserContainer = createContainer((props) => {
-	console.log('Props:', props);
-
 	let userTeamHandle = Meteor.subscribe('users.all');
 	let team = Meteor.user() ? Meteor.user().team : undefined;
 	let loggingIn = Meteor.loggingIn();
