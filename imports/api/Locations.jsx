@@ -3,7 +3,7 @@ import { Teams } from './Teams.jsx';
 
 import { distance } from '../helpers/location.js';
 
-Locations = new Mongo.Collection('locations');
+export default const Locations = new Mongo.Collection('locations');
 
 // TODO use astronomy with an index on time
 
@@ -16,7 +16,7 @@ Meteor.methods({
 			let sessions = user.sessions;
 			if (!sessions) sessions = [];
 			sessions.push(sessionId);
-			Meteor.users.update({_id: this.userId()}, {$set: {"sessions": sessions}});
+			Meteor.users.update({_id: Meteor.userId()}, {$set: {"sessions": sessions}});
 		}
 
 		let last = Locations.findOne({sessionId}, {sort: {time: -1, limit: 1}, fields: {lat: true, long: true}});
@@ -31,14 +31,14 @@ Meteor.methods({
 		Locations.insert({
 			sessionId, lat, long, acc, time
 		});
-		if (Math.random() > 0.9) fakerCheck(id);
+		if (Math.random() > 0.9) fakerCheck(sessionId);
 
 		team = Teams.findOne({name: user.team});
 		// checkObjective(team, lat, long, acc);
 	}
 });
 
-function fakerCheck(clientId) {
+function fakerCheck(sessionId) {
 	console.log('Faker check unimplemented');
 }
 
@@ -55,7 +55,10 @@ if (Meteor.isServer) {
 
 	Meteor.publish('location.team', function(){
 		let team = Meteor.users.find({_id: this.userid}, {team: true}).team;
-		if (!team) return {};
+		if (!team) {
+			this.ready();
+			return;
+		}
 
 		let sessions = [];
 		let users = Meteor.users.find({team: team});

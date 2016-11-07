@@ -7,7 +7,7 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 import renderRoutes from '../imports/routes/Routes.jsx';
 
 import '../imports/api/Accounts.jsx';
-import '../imports/api/Location.jsx';
+import '../imports/api/Locations.jsx';
 
 import '../imports/startup/clientSubscriptions.jsx';
 

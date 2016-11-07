@@ -13,32 +13,45 @@ class MissionsPage extends Component {
 		if (!this.props.ready) return (<div></div>);
 
 		let unavailable = [];
-		console.log('Unavailable: ', unavailable);
+		console.log('Unavailable: ', this.props.unavailable);
 		for (let i = 0; i < this.props.unavailable.length; i++) {
 			let mission = this.props.unavailable[i];
 			unavailable.push(
 				<ListItem
 					primaryText={mission.title}
 					secondaryText={mission.description}
+					key={mission._id}
 				/>
 			);
 		}
 
 		let available = [];
+		console.log('Available: ', this.props.available);
+		for (let i = 0; i < this.props.available.length; i++) {
+			let mission = this.props.available[i];
+			available.push(
+				<ListItem
+					primaryText={mission.title}
+					secondaryText={mission.description}
+					key={mission._id}
+				/>
+			);
+		}
+
 		let complete = [];
 		return (
 			<div>
 				<Helmet title='Missions' />
-				<List style={{margin: '10px 0'}}>
-					{this.props.unavailable.length > 0 && <Subheader inset={true}>Unavailable</Subheader>}
-					{unavailable}
-				</List>
 				<List style={{margin: '10px 0'}}>
 					{available}
 				</List>
 				<List style={{margin: '10px 0'}}>
 					{this.props.complete.length > 0 && <Subheader inset={true}>Completed</Subheader>}
 					{complete}
+				</List>
+				<List style={{margin: '30px 0'}}>
+					{this.props.unavailable.length > 0 && <Subheader inset={true}>Unavailable</Subheader>}
+					{unavailable}
 				</List>
 			</div>
 		);

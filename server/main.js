@@ -4,7 +4,7 @@ import { Missions, createTestMissions } from '../imports/api/Missions.jsx';
 
 import '../imports/api/Accounts.jsx';
 import '../imports/api/Teams.jsx';
-import '../imports/api/Location.jsx';
+import '../imports/api/Locations.jsx';
 
 // TODO: Create admin, missions, etc. on boot
 

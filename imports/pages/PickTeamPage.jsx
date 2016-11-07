@@ -11,7 +11,7 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme';
 
 import { Card, CardHeader, CardText } from 'material-ui/Card';
 
-import { Team } from '../api/Teams.jsx';
+import { Teams } from '../api/Teams.jsx';
 import { ActionButton, ExtraButton } from '../ui/UiComponents.jsx';
 import '../less/form.scss';
 import '../less/team-picker.scss';
@@ -42,6 +42,7 @@ class PickTeamPage extends Component {
 	}
 
 	render() {
+		if (!this.props.ready) return (<div></div>);
 		let teams = [];
 
 		for (let i = 0; i < this.props.teams.length; i++) {
@@ -50,7 +51,7 @@ class PickTeamPage extends Component {
 				'pick-team-card': true,
 				'picked': this.state.picked === team._id
 			});
-			console.log('Team:', team.description);
+			console.log('Team:', team);
 
 			teams.push(
 				<MuiThemeProvider key={team.name} muiTheme={getMuiTheme(darkBaseTheme)}>
@@ -86,8 +87,9 @@ class PickTeamPage extends Component {
 }
 
 export default createContainer(() => {
-	Meteor.subscribe('teams.all');
+	let teamHandle = Meteor.subscribe('teams.all');
 	return {
-		teams: Team.find().fetch()
+		teams: Teams.find().fetch(),
+		ready: teamHandle.ready(),
 	}
 }, PickTeamPage);

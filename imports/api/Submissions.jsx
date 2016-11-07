@@ -2,7 +2,7 @@ import { Class, Enum } from 'meteor/jagi:astronomy';
 
 export const Submissions = new Mongo.Collection('submissions');
 
-const SubmissionState = Enum.create({
+export const SubmissionState = Enum.create({
 	name: 'SubmissionState',
 	identifiers: {
 		OPEN: 'open',
@@ -18,7 +18,7 @@ export const Submission = Class.create({
 		mission: String,
 		state: {
 			type: SubmissionState,
-			default: 'open',
+			default: SubmissionState.open,
 		},
 		data: {
 			type: String,
@@ -41,7 +41,8 @@ export const Submission = Class.create({
 
 if (Meteor.isServer) {
 	Meteor.publish('submissions.team', function() {
-		let team = Meteor.user().team;
+		let user = Meteor.users.find({_id: this.userId});
+		let team = user.team;
 		return Submissions.find({team: team});
 	});
 	// Meteor.publish('submissions.admin.all', function() {
