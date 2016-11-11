@@ -19,10 +19,11 @@ export default class SignupPage extends Component {
 	}
 
 	_signup() {
-		let email = this.refs.email.value(),
+		let username = this.refs.username.value(),
+			email = this.refs.email.value(),
 			password1 = this.refs.password1.value(),
 			password2 = this.refs.password2.value();
-		Meteor.call('accounts.signup', email, password1, password2, (error, result) => {
+		Meteor.call('accounts.signup', username, email, password1, password2, (error, result) => {
 			if (error) {
 				console.log('Error', error);
 				let errorState = {};
@@ -40,10 +41,11 @@ export default class SignupPage extends Component {
 	}
 
 	render() {
-		let {error, email: emailError, password1: password1Error, password2: password2Error} = this.state.error;
+		let {error, username: usernameError, email: emailError, password1: password1Error, password2: password2Error} = this.state.error;
 		return (
 			<div className='form-container'>
 				<Helmet title="Signup" />
+				<InputLine ref='username' onEnter={this.signup} label='Username' error={usernameError}/>
 				<InputLine ref='email' onEnter={this.signup} label='Your Email' error={emailError}/>
 				<InputLine ref='password1' type='password' onEnter={this.signup} label='Password' error={password1Error}/>
 				<InputLine ref='password2' type='password' onEnter={this.signup} label='Repeat Password' error={password2Error}/>

@@ -5,6 +5,7 @@ import { Missions, createTestMissions } from '../imports/api/Missions.jsx';
 import '../imports/api/Accounts.jsx';
 import '../imports/api/Teams.jsx';
 import '../imports/api/Locations.jsx';
+import './notifications.js';
 
 // TODO: Create admin, missions, etc. on boot
 
@@ -24,7 +25,7 @@ Meteor.startup(() => {
 		}
 	}).listen(8025);
 
-	console.log('Secure port running at: https://locatlhost:8025');
+	console.log('Secure port running at: https://localhost:8025');
 
 	insertAdminAccount();
 	insertTestData();

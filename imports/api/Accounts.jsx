@@ -1,9 +1,34 @@
+import { Class } from 'meteor/jagi:astronomy';
+
 var isEmailValid = function(address) {
 	return /^[A-Z0-9'.1234z_%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(address);
 };
 
+const Address = Class.create({
+	name: 'Address',
+	fields: {
+		address: {
+			type: String,
+			validators: [{
+				type: 'email',
+			}],
+		},
+		verified: Boolean,
+	},
+});
+
+const User = Class.create({
+	name: 'Users',
+	collection: Meteor.users,
+	fields: {
+		username: String,
+		emails: [Address],
+		password: String,
+	}
+});
+
 Meteor.methods({
-	'accounts.signup'(email, password1, password2) {
+	'accounts.signup'(username, email, password1, password2) {
 		// TODO: Test and re-enable later
 		if (!isEmailValid(email)) throw new Meteor.Error('email', 'Not a valid email');
 		if (password1.length < 8) throw new Meteor.Error('password1', 'Password too short');
@@ -12,13 +37,15 @@ Meteor.methods({
 
 		console.log('Creating User:', email, password); // TODO: Clearly remove this
 
-		let user = Accounts.createUser({
+		let user = new User({
+			username: username,
 			email: email,
 			password: password,
 			profile: {
 				team: false
 			}
 		});
+		user.save();
 		return user;
 	},
 });
@@ -34,6 +61,7 @@ if (Meteor.isServer) {
 	Meteor.publish('users.all', function() {
 		const options = {
 			fields: {
+				username: true,
 				email: true,
 				team: true,
 				sessions: true,

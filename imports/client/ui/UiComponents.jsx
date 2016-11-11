@@ -52,6 +52,7 @@ class InputLine extends React.Component {
 				onKeyDown={onKeyDown}
 				ref={(input) => this.textField = input}
 				type={this.props.type}
+				defaultValue={this.props.value}
 			></TextField>
 		);
 	}
@@ -62,6 +63,7 @@ InputLine.propTypes = {
 	onChange: React.PropTypes.func,
 	onEnter: React.PropTypes.func,
 	multiLine: React.PropTypes.bool,
+	value: React.PropTypes.string,
 }
 InputLine.defaultProps = {
 	type: 'text',
@@ -82,6 +84,7 @@ const TabBarButton = (props) => {
 	</Link>
 	);
 }
+
 
 
 export { ActionButton, ExtraButton, InputLine, TabBar, TabBarButton };

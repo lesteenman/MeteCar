@@ -15,6 +15,7 @@ class UserMenu extends Component {
 	constructor(props, context) {
 		super(props, context);
 		this.setOpen = this._setOpen.bind(this);
+		this.toggle = this._toggle.bind(this);
 		this.logout = this._logout.bind(this);
 
 		this.state = {
@@ -44,6 +45,8 @@ class UserMenu extends Component {
 	}
 
 	render() {
+		if (!this.props.ready) return (<div></div>);
+
 		let teamOptions;
 		if (!this.props.loading && this.props.team) {
 			teamOptions = (
@@ -72,14 +75,11 @@ class UserMenu extends Component {
 }
 
 export default createContainer(({ registerToggleMenu }) => {
-	let userTeamHandle = Meteor.subscribe('Meteor.users.team');
 	let team = Meteor.user() ? Meteor.user().team : undefined;
-	let loggingIn = Meteor.loggingIn();
-	let userTeamReady = userTeamHandle.ready();
 
 	return {
 		registerToggleMenu,
 		team: team,
-		loading: loggingIn || !userTeamReady
+		ready: !Meteor.loggingIn(),
 	};
 }, UserMenu);

@@ -18,7 +18,8 @@ export const Team = Class.create({
 				param: 3
 			},{
 				type: 'string'
-			}]
+			}],
+			secured: false,
 		},
 		description: {
 			type: String,
@@ -26,9 +27,36 @@ export const Team = Class.create({
 				type: 'minLength',
 				param: 1
 			}],
+			secured: false,
 		},
 		captain: String,
-	}
+	},
+	meteorMethods: {
+		pickMember(member) {
+
+		},
+		kickMember(member) {
+
+		},
+	},
+	events: {
+		beforeUpdate(e) {
+			let doc = e.currentTarget;
+			if (Meteor.userId() != doc.captain) return false;
+
+			let allowed = ['name', 'description'];
+			let modified = doc.getModified();
+			for (let f = 0; f < modified.length; f++) {
+				let field = modified[f];
+					if (allowed.indexOf(field) < 0) {
+						console.log('Field not allowed', field, allowed.indexOf(field));
+						return false;
+					}
+			}
+
+			return true;
+		},
+	},
 });
 
 Meteor.methods({
@@ -65,15 +93,21 @@ Meteor.methods({
 			});
 		}
 	},
+	'teams.update'(name, description, photo) {
+		
+	},
 	'teams.pick'(team) {
 		// TODO: Let a captain confirm first (add to an array in the teams object?)
 		let user = Meteor.user();
 
 		Meteor.users.update(Meteor.userId(), {$set: {team: team}});
 	},
-	'teams.confirm'() {
+	'teams.member.confirm'(userId) {
 
-	}
+	},
+	'teams.member.remove'(userId) {
+
+	},
 });
 
 if (Meteor.isServer) {
@@ -82,8 +116,13 @@ if (Meteor.isServer) {
 			fields: {
 				_id: true,
 				name: true,
-				description: true
+				description: true,
+				captain: true,
 			}	
 		});
+	});
+
+	Teams.allow({
+		update: function(userId, doc, fieldNames, modifier) {},
 	});
 }

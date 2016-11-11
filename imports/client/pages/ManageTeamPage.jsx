@@ -8,6 +8,7 @@ import { browserHistory } from 'react-router';
 import { Team } from '../../api/Teams.jsx';
 
 import { InputLine, ActionButton, ExtraButton } from '../ui/UiComponents.jsx';
+import ImageUpload from '../ui/ImageUpload.jsx';
 import '../less/form.scss';
 
 class CreateTeamPage extends Component {
@@ -19,12 +20,30 @@ class CreateTeamPage extends Component {
 	}
 
 	_submit(id) {
-		console.log('Update Team', id, this.refs.name.value(), this.refs.description.value());
+		let team = Team.findOne({_id: id});
+		team.name = this.refs.name.value();
+		team.description = this.refs.description.value();
+		team.save();
 	}
 
 	render() {
-		if (this.props.loading) return (<div></div>);
+		if (!this.props.ready) return (<div></div>);
+
 		let { nameError, descriptionError, error} = this.state.error;
+
+		let captainSection;
+		if (this.props.team.captain) {
+			if (this.props.team.captain == Meteor.userId()) {
+				captainSection = (
+					<div>Manage Users</div>
+				);
+			} else {
+				let captain = this.props.captain.username;
+				captainSection = (
+					<div>Team captain is {}. He/she can add and remove users from your team.</div>
+				);
+			}
+		}
 
 		return (
 			<div className='form-container'>
@@ -36,6 +55,8 @@ class CreateTeamPage extends Component {
 					{error}
 				</div>
 
+				{captainSection}
+
 				<ActionButton handler={this.submit.bind(this, this.props.team._id)}>Save</ActionButton>
 				<ExtraButton handler={browserHistory.goBack}>Cancel</ExtraButton>
 			</div>
@@ -45,9 +66,10 @@ class CreateTeamPage extends Component {
 
 export default createContainer(() => {
 	let teamHandle = Meteor.subscribe('teams.all');
-	let team = Team.find({_id: Meteor.user().team});
+	let team = Team.findOne({_id: Meteor.user().team});
 	return {
-		loading: !teamHandle.ready(),
-		team: team
+		ready: teamHandle.ready(),
+		team: team,
+		captain: team ? Meteor.users.findOne({_id: team.captain}) : undefined,
 	};
 }, CreateTeamPage);
