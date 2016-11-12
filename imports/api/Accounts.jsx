@@ -4,28 +4,31 @@ var isEmailValid = function(address) {
 	return /^[A-Z0-9'.1234z_%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(address);
 };
 
-const Address = Class.create({
-	name: 'Address',
-	fields: {
-		address: {
-			type: String,
-			validators: [{
-				type: 'email',
-			}],
-		},
-		verified: Boolean,
-	},
-});
+// const Address = Class.create({
+// 	name: 'Address',
+// 	fields: {
+// 		address: {
+// 			type: String,
+// 			validators: [{
+// 				type: 'email',
+// 			}],
+// 		},
+// 		verified: Boolean,
+// 	},
+// });
 
-const User = Class.create({
-	name: 'Users',
-	collection: Meteor.users,
-	fields: {
-		username: String,
-		emails: [Address],
-		password: String,
-	}
-});
+// const User = Class.create({
+// 	name: 'Users',
+// 	collection: Meteor.users,
+// 	fields: {
+// 		username: String,
+// 		emails: {
+// 			type: [Address],
+// 			optional: true,
+// 		},
+// 		password: String,
+// 	}
+// });
 
 Meteor.methods({
 	'accounts.signup'(username, email, password1, password2) {
@@ -37,7 +40,7 @@ Meteor.methods({
 
 		console.log('Creating User:', email, password); // TODO: Clearly remove this
 
-		let user = new User({
+		let user = Accounts.createUser({
 			username: username,
 			email: email,
 			password: password,
@@ -45,7 +48,6 @@ Meteor.methods({
 				team: false
 			}
 		});
-		user.save();
 		return user;
 	},
 });

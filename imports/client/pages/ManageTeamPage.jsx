@@ -6,6 +6,7 @@ import { createContainer } from 'meteor/react-meteor-data';
 import { browserHistory } from 'react-router';
 
 import { Team } from '../../api/Teams.jsx';
+import TeamAvatars from '../../api/TeamAvatars.jsx';
 
 import { InputLine, ActionButton, ExtraButton } from '../ui/UiComponents.jsx';
 import ImageUpload from '../ui/ImageUpload.jsx';
@@ -23,12 +24,20 @@ class CreateTeamPage extends Component {
 		let team = Team.findOne({_id: id});
 		team.name = this.refs.name.value();
 		team.description = this.refs.description.value();
-		team.save();
+		this.refs.avatar.upload(function(result) {
+			if (result) {
+				console.log('Result:', result);
+				if (result !== true) {
+					team.avatar = result;
+				}
+				team.save();
+			} else {
+				console.error('Uploading Failed');
+			}
+		});
 	}
 
 	render() {
-		if (!this.props.ready) return (<div></div>);
-
 		let { nameError, descriptionError, error} = this.state.error;
 
 		let captainSection;
@@ -45,17 +54,30 @@ class CreateTeamPage extends Component {
 			}
 		}
 
+		let avatar, avatarUrl;
+		if (avatar = TeamAvatars.findOne(this.props.team.avatar)) {
+			avatarUrl = avatar.link();
+		}
+		console.log("Avatar: ", avatarUrl);
+
 		return (
 			<div className='form-container'>
 				<Helmet title="Manage team" />
 
 				<InputLine ref='name' label='Team name' value={this.props.team.name} error={nameError} />
 				<InputLine ref='description' label='Team description' value={this.props.team.description} multiLine={true} error={descriptionError} />
+
+				<ImageUpload
+					ref='avatar'
+					collection={TeamAvatars}
+					file={avatarUrl}
+				/>
+
+				{captainSection}
+
 				<div style={{color: 'red'}}>
 					{error}
 				</div>
-
-				{captainSection}
 
 				<ActionButton handler={this.submit.bind(this, this.props.team._id)}>Save</ActionButton>
 				<ExtraButton handler={browserHistory.goBack}>Cancel</ExtraButton>
@@ -65,10 +87,8 @@ class CreateTeamPage extends Component {
 }
 
 export default createContainer(() => {
-	let teamHandle = Meteor.subscribe('teams.all');
 	let team = Team.findOne({_id: Meteor.user().team});
 	return {
-		ready: teamHandle.ready(),
 		team: team,
 		captain: team ? Meteor.users.findOne({_id: team.captain}) : undefined,
 	};

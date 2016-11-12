@@ -7,12 +7,14 @@ import { browserHistory } from 'react-router'
 
 class Unauthenticated extends Component {
 	componentWillMount() {
-		Tracker.autorun(() => {
-			if (Meteor.user()) {
-				console.log('User is authenticated; Redirect to dashboard');
-				browserHistory.push('/dashboard');
-			}
-		});
+		setTimeout(function() {
+			Tracker.autorun(() => {
+				if (Meteor.user()) {
+					console.log('User is authenticated; Redirect to dashboard');
+					browserHistory.push('/dashboard');
+				}
+			});
+		}, 0);
 	}
 
 	render() {

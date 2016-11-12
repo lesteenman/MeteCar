@@ -7,20 +7,22 @@ import { browserHistory } from 'react-router'
 
 class UnteamedUser extends Component {
 	componentWillMount() {
-		Tracker.autorun(() => {
-			let userTeamHandle = Meteor.subscribe('users.all');
-			if (Meteor.loggingIn() || !userTeamHandle.ready()) return;
+		setTimeout(function() {
+			Tracker.autorun(function() {
+				let userTeamHandle = Meteor.subscribe('users.all');
+				if (Meteor.loggingIn() || !userTeamHandle.ready()) return;
 
-			let user = Meteor.user();
+				let user = Meteor.user();
 
-			if (!user) {
-				console.log('User not authenticated; Redirect to login');
-				browserHistory.push('/login');
-			} else if (user.team) {
-				console.log('User has a team; Redirect to dashboard');
-				browserHistory.push('/dashboard');
-			}
-		});
+				if (!user) {
+					console.log('User not authenticated; Redirect to login');
+					browserHistory.push('/login');
+				} else if (user.team) {
+					console.log('User has a team; Redirect to dashboard');
+					browserHistory.push('/dashboard');
+				}
+			});
+		}, 0);
 	}
 
 	render() {

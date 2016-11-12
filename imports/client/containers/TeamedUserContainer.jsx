@@ -7,30 +7,35 @@ import { browserHistory } from 'react-router'
 
 class TeamedUser extends Component {
 	componentWillMount() {
-		Tracker.autorun(() => {
-			let userTeamHandle = Meteor.subscribe('users.all');
-			if (Meteor.loggingIn() || !userTeamHandle.ready()) return;
+		setTimeout(function() {
+			Tracker.autorun(function() {
+				let userTeamHandle = Meteor.subscribe('users.all');
+				let teamHandle = Meteor.subscribe('teams.all');
 
-			let user = Meteor.user();
-			if (!user) {
-				console.log('User not authenticated; Redirect to login');
-				browserHistory.push('/login');
-			} else if (!user.team) {
-				console.log('User has no team; Redirect to team-pick');
-				browserHistory.push('/team-pick');
-			}
-		});
+				console.log('AutoRun', Meteor.loggingIn(), userTeamHandle.ready(), teamHandle.ready());
+
+				if (Meteor.loggingIn() || !userTeamHandle.ready() || !teamHandle.ready()) return;
+
+				let user = Meteor.user();
+				if (!user) {
+					console.log('User not authenticated; Redirect to login');
+					browserHistory.push('/login');
+				} else if (!user.team) {
+					console.log('User has no team; Redirect to team-pick');
+					browserHistory.push('/team-pick');
+				}
+			});
+		}, 0);
 	}
 
 	render() {
-		if (!this.props.loading && this.props.team) {
-			return (
-				<div>
-					{this.props.children}
-				</div>
-			);
-		}
-		return (<div />);
+		if (!this.props.ready || !this.props.team) return (<div></div>);
+
+		return (
+			<div>
+				{this.props.children}
+			</div>
+		);
 	}
 }
 
@@ -42,13 +47,14 @@ TeamedUser.propTypes = {
 
 export default TeamedUserContainer = createContainer((props) => {
 	let userTeamHandle = Meteor.subscribe('users.all');
+	let teamHandle = Meteor.subscribe('teams.all');
 	let team = Meteor.user() ? Meteor.user().team : undefined;
-	let loggingIn = Meteor.loggingIn();
-	let userTeamReady = userTeamHandle.ready();
+
+	console.log('Props', Meteor.loggingIn(), userTeamHandle.ready(), teamHandle.ready());
 
 	return {
 		children: props.children,
 		team: team,
-		loading: loggingIn || !userTeamReady
+		ready: !Meteor.loggingIn() && userTeamHandle.ready() && teamHandle.ready(),
 	}; 
 }, TeamedUser);

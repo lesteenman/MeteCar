@@ -2,10 +2,12 @@ import React, { Component } from 'react';
 import Helmet from 'react-helmet';
 
 import { createContainer } from 'meteor/react-meteor-data';
+import TeamAvatars from '../../api/TeamAvatars.jsx';
 
 import { browserHistory } from 'react-router';
 
 import { InputLine, ActionButton, ExtraButton } from '../ui/UiComponents.jsx';
+import ImageUpload from '../ui/ImageUpload.jsx';
 import '../less/form.scss';
 import '../../api/Teams.jsx';
 
@@ -48,6 +50,12 @@ class CreateTeamPage extends Component {
 
 				<InputLine ref='name' label='Team name' error={nameError} />
 				<InputLine ref='description' label='Team description' multiLine={true} error={descriptionError} />
+
+				<ImageUpload
+					ref='avatar'
+					collection={TeamAvatars}
+				/>
+
 				<div style={{color: 'red'}}>
 					{error}
 				</div>

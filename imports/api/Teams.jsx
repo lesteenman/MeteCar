@@ -10,6 +10,7 @@ export const Teams = new Mongo.Collection('teams');
 export const Team = Class.create({
 	name: 'Team',
 	collection: Teams,
+	secured: false,
 	fields: {
 		name: {
 			type: String,
@@ -19,7 +20,6 @@ export const Team = Class.create({
 			},{
 				type: 'string'
 			}],
-			secured: false,
 		},
 		description: {
 			type: String,
@@ -27,7 +27,10 @@ export const Team = Class.create({
 				type: 'minLength',
 				param: 1
 			}],
-			secured: false,
+		},
+		avatar: {
+			type: String,
+			optional: true,
 		},
 		captain: String,
 	},
@@ -42,9 +45,12 @@ export const Team = Class.create({
 	events: {
 		beforeUpdate(e) {
 			let doc = e.currentTarget;
-			if (Meteor.userId() != doc.captain) return false;
+			if (Meteor.userId() != doc.captain) {
+				console.log('someone other than the team captain is trying to update the team');
+				return false;
+			}
 
-			let allowed = ['name', 'description'];
+			let allowed = ['name', 'description', 'avatar'];
 			let modified = doc.getModified();
 			for (let f = 0; f < modified.length; f++) {
 				let field = modified[f];
@@ -54,6 +60,7 @@ export const Team = Class.create({
 					}
 			}
 
+			console.log('Updating:', modified);
 			return true;
 		},
 	},
@@ -118,6 +125,7 @@ if (Meteor.isServer) {
 				name: true,
 				description: true,
 				captain: true,
+				avatar: true,
 			}	
 		});
 	});

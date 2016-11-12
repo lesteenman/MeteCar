@@ -8,6 +8,7 @@ import renderRoutes from '../imports/routes/Routes.jsx';
 
 import '../imports/api/Accounts.jsx';
 import '../imports/api/Locations.jsx';
+import '../imports/api/TeamAvatars.jsx';
 
 import '../imports/startup/clientSubscriptions.jsx';
 

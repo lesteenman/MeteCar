@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import Helmet from 'react-helmet';
 
+import { createContainer } from 'meteor/react-meteor-data';
+
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
@@ -8,7 +10,7 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import '../less/app';
 import '../less/transitions';
 
-export default class App extends Component {
+class App extends Component {
 	// Keep track of window width
 	constructor(props, context) {
 		super(props, context);
@@ -32,6 +34,8 @@ export default class App extends Component {
 	}
 
 	render() {
+		if (!this.props.ready) return (<div></div>);
+
 		var constraintClass = this.state.windowWidth > 480 ? 'constraint-limit' : 'constraint-shrink';
 		var verticalContainerClass = 'verticalContainer' + (this.state.windowWidth <= 480 ? ' fullwidth' : '');
 		var appContainerClass = 'appContainer' + (this.state.windowWidth <= 480 ? 'fullHeight' : '');
@@ -52,3 +56,12 @@ export default class App extends Component {
 		);
 	}
 };
+
+export default createContainer(() => {
+	let teamHandle = Meteor.subscribe('teams.all');
+	let avatarsHandle = Meteor.subscribe('avatars.all');
+
+	return {
+		ready: teamHandle.ready() && avatarsHandle.ready(),
+	}
+}, App);
