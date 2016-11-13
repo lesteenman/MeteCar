@@ -14,7 +14,7 @@ class MissionPage extends Component {
 		return (
 			<div>
 				<Helmet
-					title='Mission title...'
+					title={this.props.mission.title}
 				/>
 
 				<p>missie beschrijving</p>
