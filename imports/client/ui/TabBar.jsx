@@ -32,26 +32,27 @@ export default class MainTabBar extends Component {
 						onActive={this.onPage.bind(this, 'dashboard')}
 						value="dashboard"
 						label="Home"
-						icon={homeIcon}
+						/*icon={homeIcon}*/
 					/>
 					<Tab
 						onActive={this.onPage.bind(this, 'map')}
 						value="map"
 						label="Map"
-						icon={mapIcon}
+						/*icon={mapIcon}*/
 					/>
 					<Tab
 						onActive={this.onPage.bind(this, 'photos')}
 						value="photos"
 						label="Photos"
-						icon={photosIcon}
+						/*icon={photosIcon}*/
 					/>
 					<Tab
 						onActive={this.onPage.bind(this, 'missions')}
 						value="missions"
 						label="Missions"
-						icon={missionsIcon}
+						/*icon={missionsIcon}*/
 					/>
+					/* <Tab label="Admin" /> */
 				</Tabs>
 			</div>
 		);
