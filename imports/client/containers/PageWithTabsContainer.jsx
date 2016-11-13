@@ -8,12 +8,15 @@ import '../less/styles.scss';
 
 export default class PageWithTabsContainer extends Component {
 	render() {
+		let active = this.props.location.pathname.slice(1);
+		console.log('Active page:', active);
+
 		return (
 			<div className='dashboard'>
+				<TabBar page={active}/>
 				<div className='dashboard-container'>
 					{this.props.children}
 				</div>
-				<TabBar />
 			</div>
 		);
 	}
