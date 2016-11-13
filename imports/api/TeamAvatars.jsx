@@ -5,11 +5,8 @@ const TeamAvatars = new FilesCollection({
 	allowClientCode: false,
 	collectionName: 'avatars',
 	downloadRoute: '/img/avatars',
-	// storagePath: function() {
-	// 	console.log('Root: ', Meteor.rootPath);
-	// 	return Meteor.absolutePath + '/../public/avatars/';
-	// },
-	// public: true,
+	storagePath: Meteor.absolutePath + '/../public/avatars/',
+	public: true,
 	onBeforeUpload: function(file) {
 		if (file.size <= 1024*1024*5 && /png|jpg|jpeg/i.test(file.extension)) {
 			return true;
