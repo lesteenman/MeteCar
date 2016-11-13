@@ -26,7 +26,6 @@ class CreateTeamPage extends Component {
 		team.description = this.refs.description.value();
 		this.refs.avatar.upload(function(result) {
 			if (result) {
-				console.log('Result:', result);
 				if (result !== true) {
 					team.avatar = result;
 				}
@@ -43,13 +42,24 @@ class CreateTeamPage extends Component {
 		let captainSection;
 		if (this.props.team.captain) {
 			if (this.props.team.captain == Meteor.userId()) {
+				let members = [];
+				this.props.members.forEach(function(member) {
+					members.push(
+						<li key={member._id}>{member.username}</li>
+					);
+				});
 				captainSection = (
-					<div>Manage Users</div>
+					<div>
+						<p>Manage Team Members</p>
+						<ul>
+							{members}
+						</ul>
+					</div>
 				);
 			} else {
 				let captain = this.props.captain.username;
 				captainSection = (
-					<div>Team captain is {}. He/she can add and remove users from your team.</div>
+					<p>Team captain is <i>{captain}</i>. He/she can add and remove users from your team.</p>
 				);
 			}
 		}
@@ -58,7 +68,6 @@ class CreateTeamPage extends Component {
 		if (avatar = TeamAvatars.findOne(this.props.team.avatar)) {
 			avatarUrl = avatar.link();
 		}
-		console.log("Avatar: ", avatarUrl);
 
 		return (
 			<div className='form-container'>
@@ -91,5 +100,6 @@ export default createContainer(() => {
 	return {
 		team: team,
 		captain: team ? Meteor.users.findOne({_id: team.captain}) : undefined,
+		members: Meteor.users.find({team: team._id}).fetch(),
 	};
 }, CreateTeamPage);

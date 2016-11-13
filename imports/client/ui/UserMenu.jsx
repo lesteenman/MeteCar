@@ -3,10 +3,7 @@ import { browserHistory, Link } from 'react-router';
 
 import { createContainer } from 'meteor/react-meteor-data';
 
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
-
+import { Teams } from '../../api/Teams.jsx';
 import Drawer from 'material-ui/Drawer';
 import MenuItem from 'material-ui/MenuItem';
 import Divider from 'material-ui/Divider';
@@ -45,10 +42,8 @@ class UserMenu extends Component {
 	}
 
 	render() {
-		if (!this.props.ready) return (<div></div>);
-
 		let teamOptions;
-		if (!this.props.loading && this.props.team) {
+		if (!this.props.loading && this.props.team && this.props.team.captain == Meteor.userId()) {
 			teamOptions = (
 				<span>
 					<Link to='/team-manage'>
@@ -59,27 +54,25 @@ class UserMenu extends Component {
 			);
 		}
 		return (
-			<MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>
-				<Drawer
-					docked={false}
-					width={200}
-					open={this.state.open}
-					onRequestChange={(open) => this.setOpen(open)}
-				>
-					{teamOptions}
-					<MenuItem onTouchTap={this.logout}>Logout</MenuItem>
-				</Drawer>
-			</MuiThemeProvider>
+			<Drawer
+				docked={false}
+				width={200}
+				open={this.state.open}
+				onRequestChange={(open) => this.setOpen(open)}
+			>
+				{teamOptions}
+				<MenuItem onTouchTap={this.logout}>Logout</MenuItem>
+			</Drawer>
 		);
 	}
 }
 
 export default createContainer(({ registerToggleMenu }) => {
-	let team = Meteor.user() ? Meteor.user().team : undefined;
+	let teamId = Meteor.user() ? Meteor.user().team : undefined;
+	let team = Teams.findOne(teamId);
 
 	return {
 		registerToggleMenu,
 		team: team,
-		ready: !Meteor.loggingIn(),
 	};
 }, UserMenu);

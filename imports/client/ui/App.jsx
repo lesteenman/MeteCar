@@ -70,6 +70,6 @@ export default createContainer(() => {
 	let avatarsHandle = Meteor.subscribe('avatars.all');
 
 	return {
-		ready: teamHandle.ready() && avatarsHandle.ready(),
+		ready: teamHandle.ready() && avatarsHandle.ready() && !Meteor.loggingIn(),
 	}
 }, App);

@@ -1,7 +1,7 @@
 import { FilesCollection } from 'meteor/ostrio:files';
 
 const TeamAvatars = new FilesCollection({
-	debug: true,
+	// debug: true,
 	allowClientCode: false,
 	collectionName: 'avatars',
 	downloadRoute: '/img/avatars',
