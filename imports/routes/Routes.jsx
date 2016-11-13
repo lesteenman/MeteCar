@@ -10,6 +10,7 @@ import TeamedUserContainer from '../client/containers/TeamedUserContainer.jsx';
 
 import PageWithTabsContainer from '../client/containers/PageWithTabsContainer.jsx';
 import PageWithMenuContainer from '../client/containers/PageWithMenuContainer.jsx';
+import PageWithBackButtonContainer from '../client/containers/PageWithBackButtonContainer.jsx';
 
 import LoginPage from '../client/pages/LoginPage.jsx';
 import SignupPage from '../client/pages/SignupPage.jsx';
@@ -37,6 +38,12 @@ export default renderRoutes = function() {
 					<Route path="/signup" component={SignupPage} />
 				</Route>
 
+				<Route component={PageWithBackButtonContainer}>
+					<Route component={TeamedUserContainer}>
+						<Route path="/missions/:id" component={MissionPage} />
+					</Route>
+				</Route>
+
 				<Route component={PageWithMenuContainer}>
 					<Route component={UnteamedUserContainer}>
 						<Route path="/team-create" component={CreateTeamPage} />
@@ -49,7 +56,6 @@ export default renderRoutes = function() {
 							<Route path="/dashboard" component={DashboardPage} />
 							<Route path="/map" component={MapPage} />
 							<Route path="/missions" component={MissionsPage} />
-							<Route path="/mission/:id" component={MissionPage} />
 							<Route path="/photos" component={PhotosPage} />
 						</Route>
 					</Route>
