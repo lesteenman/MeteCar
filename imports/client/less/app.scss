@@ -10,13 +10,13 @@
 	bottom: 0;
 }
 
-.horizontalContainer {
+.horizontal-container {
 	display: flex;
 	flex-direction: row;
 	height: 100%;
 }
 
-.verticalContainer {
+.vertical-container {
 	display: flex;
 	flex-direction: column;
 	flex-grow: 0;
@@ -24,14 +24,15 @@
 	flex-basis: 400px;
 }
 
-.verticalContainer.fullWidth {
+.vertical-container.full-width {
 	display: flex;
 	flex-direction: column;
 	flex-grow: 1;
 	flex-shrink: 1;
+	flex-basis: 100%;
 }
 
-.appContainer {
+.app-container {
 	position: relative;
 	flex-grow: 0;
 	flex-shrink: 1;
@@ -44,7 +45,7 @@
 	overflow-y: auto;
 }
 
-.appContainer.fullHeight {
+.app-container.full-height {
 	flex-grow: 1;
 	flex-shrink: 1;
 	border: none;

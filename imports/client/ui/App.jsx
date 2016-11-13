@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import Helmet from 'react-helmet';
 
+import classNames from 'classnames';
+
 import { createContainer } from 'meteor/react-meteor-data';
 
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
@@ -37,14 +39,20 @@ class App extends Component {
 		if (!this.props.ready) return (<div></div>);
 
 		var constraintClass = this.state.windowWidth > 480 ? 'constraint-limit' : 'constraint-shrink';
-		var verticalContainerClass = 'verticalContainer' + (this.state.windowWidth <= 480 ? ' fullwidth' : '');
-		var appContainerClass = 'appContainer' + (this.state.windowWidth <= 480 ? ' fullHeight' : '');
+		let verticalContainerClass = classNames({
+			'vertical-container': true,
+			'full-width': this.state.windowWidth <= 480,
+		});
+		let appContainerClass = classNames({
+			'app-container': true,
+			'full-height': this.state.windowWidth <= 480,
+		});
 
 		return (
 			<MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>
 				<div className='app'>
 					<Helmet title='Autospeurtocht 2017' />
-					<div className='horizontalContainer'><div className={constraintClass} />
+					<div className='horizontal-container'><div className={constraintClass} />
 					<div className={verticalContainerClass}><div className={constraintClass} />
 						<div className={appContainerClass}>
 							{this.props.children}
