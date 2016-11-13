@@ -5,13 +5,10 @@ import classNames from 'classnames';
 
 import { createContainer } from 'meteor/react-meteor-data';
 
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
-
 import { Card, CardHeader, CardText } from 'material-ui/Card';
 
 import { Teams } from '../../api/Teams.jsx';
+import TeamAvatars from '../../api/TeamAvatars.jsx';
 import { ActionButton, ExtraButton } from '../ui/UiComponents.jsx';
 import '../less/form.scss';
 import '../less/team-picker.scss';
@@ -47,24 +44,38 @@ class PickTeamPage extends Component {
 
 		for (let i = 0; i < this.props.teams.length; i++) {
 			let team = this.props.teams[i];
+			let picked = this.state.picked === team._id;
 			let cardClass = classNames({
 				'pick-team-card': true,
-				'picked': this.state.picked === team._id
+				'picked': picked
 			});
 			console.log('Team:', team);
+			let avatar, avatarUrl;
+			if (avatar = TeamAvatars.findOne(team.avatar)) {
+				avatarUrl = avatar.link();
+			}
+
+			let subtitle = picked ? '' : team.description;
 
 			teams.push(
-				<MuiThemeProvider key={team.name} muiTheme={getMuiTheme(darkBaseTheme)}>
-					<Card
-						onTouchTap={this.pick.bind(this, team._id)}
-						style={{backgroundColor: ''}}
-						className={cardClass}>
-						<CardHeader title={team.name} />
-						<CardText>
-							{team.description}
-						</CardText>
-					</Card>
-				</MuiThemeProvider>
+				<Card
+					key={team.name}
+					onTouchTap={this.pick.bind(this, team._id)}
+					style={{backgroundColor: '', textAlign: 'left'}}
+					className={cardClass}
+					expanded={picked}
+				>
+					<CardHeader
+						title={team.name}
+						avatar={avatarUrl}
+						subtitle={subtitle}
+					/>
+					<CardText
+						expandable={true}
+					>
+						{team.description}
+					</CardText>
+				</Card>
 			);
 		}
 

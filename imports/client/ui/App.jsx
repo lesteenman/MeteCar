@@ -38,7 +38,7 @@ class App extends Component {
 
 		var constraintClass = this.state.windowWidth > 480 ? 'constraint-limit' : 'constraint-shrink';
 		var verticalContainerClass = 'verticalContainer' + (this.state.windowWidth <= 480 ? ' fullwidth' : '');
-		var appContainerClass = 'appContainer' + (this.state.windowWidth <= 480 ? 'fullHeight' : '');
+		var appContainerClass = 'appContainer' + (this.state.windowWidth <= 480 ? ' fullHeight' : '');
 
 		return (
 			<MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>

@@ -37,7 +37,7 @@ export default class LoginPage extends Component {
 		return (
 			<div className='form-container' style={{position: 'absolute', bottom: 0, left: 0, right: 0}}>
 				<Helmet title="Login" />
-				<InputLine ref='email' onEnter={this.login} label='Username/Email' error={teamError}/>
+				<InputLine ref='email' type='email' onEnter={this.login} label='Username/Email' error={teamError}/>
 				<InputLine ref='password' type='password' onEnter={this.login} label='Password' error={passwordError}/>
 				<div style={{color: 'red'}}>{error}</div>
 				<ActionButton handler={this.login}>Sign In</ActionButton>

@@ -45,8 +45,8 @@ export default class SignupPage extends Component {
 		return (
 			<div className='form-container'>
 				<Helmet title="Signup" />
-				<InputLine ref='username' onEnter={this.signup} label='Username' error={usernameError}/>
-				<InputLine ref='email' onEnter={this.signup} label='Your Email' error={emailError}/>
+				<InputLine ref='username' capitalize={false} onEnter={this.signup} label='Username' error={usernameError}/>
+				<InputLine ref='email' type='email' onEnter={this.signup} label='Your Email' error={emailError}/>
 				<InputLine ref='password1' type='password' onEnter={this.signup} label='Password' error={password1Error}/>
 				<InputLine ref='password2' type='password' onEnter={this.signup} label='Repeat Password' error={password2Error}/>
 				<div style={{color: 'red'}}>

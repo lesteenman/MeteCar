@@ -48,6 +48,7 @@ class InputLine extends React.Component {
 				floatingLabelText={this.props.label}
 				fullWidth={true}
 				multiLine={this.props.multiLine}
+				autoCapitalize={this.props.capitalize}
 				onChange={this.props.onChange}
 				onKeyDown={onKeyDown}
 				ref={(input) => this.textField = input}
@@ -59,6 +60,7 @@ class InputLine extends React.Component {
 }
 InputLine.propTypes = {
 	label: React.PropTypes.string.isRequired,
+	capitalize: React.PropTypes.bool,
 	error: React.PropTypes.string,
 	onChange: React.PropTypes.func,
 	onEnter: React.PropTypes.func,
@@ -67,6 +69,7 @@ InputLine.propTypes = {
 }
 InputLine.defaultProps = {
 	type: 'text',
+	capitalize: true,
 }
 
 
