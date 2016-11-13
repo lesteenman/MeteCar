@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Helmet from 'react-helmet';
+import { Link } from 'react-router';
 import { createContainer } from 'meteor/react-meteor-data';
 
 import Subheader from 'material-ui/Subheader';
@@ -16,12 +17,17 @@ class MissionsPage extends Component {
 		console.log('All: ', this.props.all);
 		for (let i = 0; i < this.props.all.length; i++) {
 			let mission = this.props.all[i];
+			let page = '/mission/' + mission._id;
 			all.push(
-				<ListItem
-					primaryText={mission.title}
-					secondaryText={mission.description}
+				<Link
+					to={page}
 					key={mission._id}
-				/>
+				>
+					<ListItem
+						primaryText={mission.title}
+						secondaryText={mission.description}
+					/>
+				</Link>
 			);
 		}
 
@@ -29,12 +35,18 @@ class MissionsPage extends Component {
 		console.log('Available: ', this.props.available);
 		for (let i = 0; i < this.props.available.length; i++) {
 			let mission = this.props.available[i];
+			let page = '/mission/' + mission._id;
 			available.push(
-				<ListItem
-					primaryText={mission.title}
-					secondaryText={mission.description}
+				<Link
+					to={page}
 					key={mission._id}
-				/>
+				>
+					<ListItem
+						primaryText={mission.title}
+						secondaryText={mission.description}
+						key={mission._id}
+					/>
+				</Link>
 			);
 		}
 

@@ -17,6 +17,7 @@ import SignupPage from '../client/pages/SignupPage.jsx';
 import DashboardPage from '../client/pages/DashboardPage.jsx';
 import MapPage from '../client/pages/MapPage.jsx';
 import MissionsPage from '../client/pages/MissionsPage.jsx';
+import MissionPage from '../client/pages/MissionPage.jsx';
 import PhotosPage from '../client/pages/PhotosPage.jsx';
 
 import ManageTeamPage from '../client/pages/ManageTeamPage.jsx';
@@ -48,6 +49,7 @@ export default renderRoutes = function() {
 							<Route path="/dashboard" component={DashboardPage} />
 							<Route path="/map" component={MapPage} />
 							<Route path="/missions" component={MissionsPage} />
+							<Route path="/mission/:id" component={MissionPage} />
 							<Route path="/photos" component={PhotosPage} />
 						</Route>
 					</Route>
