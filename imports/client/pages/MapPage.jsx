@@ -7,20 +7,37 @@ import Map, { Marker } from '../ui/google-map';
 import mapStyle from '../ui/google-map/style.json';
 
 import Locations from '../../api/Locations.jsx';
+import { distance, containingViewport, calculateZoomLevel } from '../../helpers/location.js';
 
 class MapPage extends Component {
 	render() {
 		if (!this.props.ready) return (<div></div>);
 
+		let vp = containingViewport(this.props.currentLocations);
+
+		let lat = vp.lat2 - (vp.lat2 - vp.lat1) / 2;
+		let lng = vp.lng2 - (vp.lng2 - vp.lng1) / 2;
+
 		// TODO: Calculate so all points are in view
 		let initialCenter = {
-			lat: 52.220637,
-			lng: 6.897822
+			lat: lat,
+			lng: lng,
 		};
-		let initialZoom = 14;
+
+		// Make an educated guess about the zoom level required to fit all points
+
+		let vpw = distance(vp.lat1, vp.lng1, vp.lat1, vp.lng2);
+		let vph = distance(vp.lat1, vp.lng1, vp.lat2, vp.lng1);
+
+		let horizontalZoom = calculateZoomLevel(400, vpw);
+		let verticalZoom = calculateZoomLevel(500, vph);
+
+		let initialZoom = Math.min(17, Math.max(horizontalZoom, verticalZoom));
+
+		console.log('Using zoom:', initialZoom);
+		console.log('Would want to use zoom', horizontalZoom, verticalZoom);
 
 		let markers = [];
-		console.log('Locations:', this.props.currentLocations);
 		for (let i = 0; i < this.props.currentLocations.length; i++) {
 			let currentLocation = this.props.currentLocations[i];
 			console.log('Create Marker:', currentLocation, {lat: currentLocation.lat, lng: currentLocation.lng});

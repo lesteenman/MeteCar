@@ -109,7 +109,7 @@ export class Map extends React.Component {
 				styles: this.props.styles,
 				disbleDefaultUI: true,
 				mapTypeControl: false,
-				zoomControl: false,
+				// zoomControl: false,
 			});
 
 			this.map = new maps.Map(node, mapConfig);

@@ -16,6 +16,39 @@ function deg2rad(deg) {
 	return deg * (Math.PI/180)
 }
 
-function containingViewport(locations) {
+export function containingViewport(locations) {
+	let latMin, latMax, lngMin, lngMax;
 
+	console.log('Locations:', locations);
+
+	locations.forEach(function(l) {
+		if (latMin === undefined || l.lat < latMin) latMin = l.lat;
+		if (latMax === undefined || l.lat > latMax) latMax = l.lat;
+		if (lngMin === undefined || l.lng < lngMin) lngMin = l.lng;
+		if (lngMax === undefined || l.lng > lngMax) lngMax = l.lng;
+	});
+
+	let vp = {
+		lat1: latMin,
+		lat2: latMax,
+		lng1: lngMin,
+		lng2: lngMax,
+	}
+	console.log('Viewport: ', vp);
+	return vp;
 }
+
+// Calculates zoomlevel required to fit a certain range on a certain screen width
+export function calculateZoomLevel(screenWidth, range) {
+	let equatorLength = 40075004; // in meters
+	let widthInPixels = screenWidth;
+	let metersPerPixel = equatorLength / 256;
+	let zoomLevel = 1;
+	while ((metersPerPixel * widthInPixels) > range) {
+		metersPerPixel /= 2;
+		zoomLevel++;
+	}
+	console.log("zoom level = ", zoomLevel);
+	return zoomLevel;
+}
+
