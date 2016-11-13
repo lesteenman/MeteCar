@@ -11,6 +11,7 @@ import Locations from '../../api/Locations.jsx';
 class MapPage extends Component {
 	render() {
 		if (!this.props.ready) return (<div></div>);
+
 		// TODO: Calculate so all points are in view
 		let initialCenter = {
 			lat: 52.220637,
