@@ -7,9 +7,6 @@ export default class DashboardPage extends Component {
 			<div>
 				<Helmet title='Dashboard' />
 				Hier gaat een awesome dashboard komen!
-				<div style={{color: 'red'}}>
-					Oh yeah
-				</div>
 			</div>
 		);
 	}
