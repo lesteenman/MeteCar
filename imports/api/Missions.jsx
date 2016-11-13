@@ -24,7 +24,7 @@ export const Mission = Class.create({
 			type: Number,
 			optional: true
 		},
-		long: {
+		lng: {
 			type: Number,
 			optional: true
 		},
@@ -66,7 +66,7 @@ export function createTestMissions() {
 		optional: false,
 		type: 'location',
 		lat: 52.206140,
-		long: 6.879748,
+		lng: 6.879748,
 	});
 
 	let mission2 = new Mission({
@@ -76,7 +76,7 @@ export function createTestMissions() {
 		optional: false,
 		type: 'location',
 		lat: 52.219923,
-		long: 6.891697,
+		lng: 6.891697,
 	});
 
 	let mission3 = new Mission({

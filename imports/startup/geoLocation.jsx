@@ -23,13 +23,13 @@ if (Meteor.isClient) {
 		navigator.geolocation.watchPosition(function(loc) {
 			let id = deviceIdentifier(),
 				lat = loc.coords.latitude,
-				long = loc.coords.longitude,
+				lng = loc.coords.longitude,
 				acc = loc.coords.accuracy,
 				time = loc.timestamp;
 
 			if (time != lastTime) {
 				lastTime = time;
-				Meteor.call('location.update', id, lat, long, acc, time, function(err) {
+				Meteor.call('location.update', id, lat, lng, acc, time, function(err) {
 					if (err) {
 						console.error('Server err:', err);
 					}

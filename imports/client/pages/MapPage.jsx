@@ -19,20 +19,20 @@ class MapPage extends Component {
 		let initialZoom = 14;
 
 		let markers = [];
-		// console.log('Locations:', this.props.currentLocations);
-		// for (let i = 0; i < this.props.currentLocations.length; i++) {
-		// 	let currentLocation = this.props.currentLocations[i];
-		// 	console.log('Create Marker:', currentLocation);
-		// 	continue;
-		// 	markers.push(
-		// 		<Marker
-		// 			key={currentLocation.time}
-		// 			name={currentLocation.sessionId}
-		// 			position={{lat: currentLocation.lat, long: currentLocation.long}}
-		// 		/>
-		// 	);
+		console.log('Locations:', this.props.currentLocations);
+		for (let i = 0; i < this.props.currentLocations.length; i++) {
+			let currentLocation = this.props.currentLocations[i];
+			console.log('Create Marker:', currentLocation, {lat: currentLocation.lat, lng: currentLocation.lng});
+			markers.push(
+				<Marker
+					key={currentLocation.time}
+					name={currentLocation.sessionId}
+					position={{lat: currentLocation.lat, lng: currentLocation.lng}}
+				/>
+			);
 			
-		// }
+		}
+		console.log('Markers:', markers);
 
 		if (!this.props.ready) return (<div></div>);
 
@@ -51,10 +51,11 @@ class MapPage extends Component {
 }
 
 export default createContainer(() => {
-	let locationsHandler = Meteor.subscribe('location.team');
-	let missionsHandler = Meteor.subscribe('missions.team');
+	let locationsHandle = Meteor.subscribe('locations.team');
+	let missionsHandle = Meteor.subscribe('missions.team');
+	console.log('CreateContainer', Locations.find({}, {limit: 2}).fetch(), locationsHandle.ready());
 	return {
-		ready: locationsHandler.ready(),
-		currentLocations: Locations.find({}, {limit: 2}).fetch()
+		ready: locationsHandle.ready(),
+		currentLocations: Locations.find().fetch()
 	};
 }, MapPage);

@@ -4,6 +4,8 @@ import { camelize } from './lib/String';
 import { makeCancelable } from './lib/cancelablePromise';
 import invariant from 'invariant';
 
+import '../../less/maps.scss';
+
 const mapStyles = {
 	container: {
 		position: 'absolute',
@@ -104,7 +106,10 @@ export class Map extends React.Component {
 			let mapConfig = Object.assign({}, {
 				center,
 				zoom: this.props.zoom,
-				styles: this.props.styles
+				styles: this.props.styles,
+				disbleDefaultUI: true,
+				mapTypeControl: false,
+				zoomControl: false,
 			});
 
 			this.map = new maps.Map(node, mapConfig);

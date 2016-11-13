@@ -8,41 +8,40 @@ export default Locations = new Mongo.Collection('locations');
 // TODO use astronomy with an index on time
 
 Meteor.methods({
-	'location.update'(sessionId, lat, long, acc, time) {
+	'location.update'(session, lat, lng, acc, time) {
 		let user = Meteor.user();
 		if (!user || !user.team) throw new Meteor.Error(403);
 
-		if (!user.sessions || user.sessions.indexOf(sessionId) < 0) {
+		if (!user.sessions || user.sessions.indexOf(session) < 0) {
 			let sessions = user.sessions;
 			if (!sessions) sessions = [];
-			sessions.push(sessionId);
+			sessions.push(session);
 			Meteor.users.update({_id: Meteor.userId()}, {$set: {"sessions": sessions}});
 		}
 
-		let last = Locations.findOne({sessionId}, {sort: {time: -1, limit: 1}, fields: {lat: true, long: true}});
+		let last = Locations.findOne({session}, {sort: {time: -1, limit: 1}, fields: {lat: true, lng: true}});
 		if (last) {
-			let dist = distance(lat, long, last.lat, last.long);
+			let dist = distance(lat, lng, last.lat, last.lng);
 			if (dist < 0.005) {
-				console.log('Location update too small', dist);
 				return;
 			}
 		}
 
 		Locations.insert({
-			sessionId, lat, long, acc, time
+			session, lat, lng, acc, time
 		});
-		if (Math.random() > 0.9) fakerCheck(sessionId);
+		if (Math.random() > 0.9) fakerCheck(session);
 
 		team = Teams.findOne({name: user.team});
-		// checkObjective(team, lat, long, acc);
+		// checkObjective(team, lat, lng, acc);
 	}
 });
 
-function fakerCheck(sessionId) {
+function fakerCheck(session) {
 	console.log('Faker check unimplemented');
 }
 
-function checkObjective(teamId, lat, long, acc) {
+function checkObjective(teamId, lat, lng, acc) {
 	console.log('Objective check unimplemented');
 }
 
@@ -53,19 +52,20 @@ if (Meteor.isServer) {
 
 	// for team/private, only publish the last or most recent 10 locations?
 
-	Meteor.publish('location.team', function(){
-		let team = Meteor.users.find({_id: this.userid}, {team: true}).team;
+	Meteor.publish('locations.team', function(){
+		let user = Meteor.users.findOne({_id: this.userId}, {team: true});
+		let team = user.team;
 		if (!team) {
 			this.ready();
 			return;
 		}
 
 		let sessions = [];
-		let users = Meteor.users.find({team: team});
+		let users = Meteor.users.find({team: team}).fetch();
 		for (let i = 0; i < users.length; i++) {
 			sessions = sessions.concat(users[i].sessions || []);
 		}
 
-		return Locations.find({sessions: { $in: sessions}}, {sort: {time: -1}});
+		return Locations.find({session: { $in: sessions}}, {sort: {time: -1}});
 	});
 }
