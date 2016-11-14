@@ -4,7 +4,7 @@ import { createContainer } from 'meteor/react-meteor-data';
 
 class AdminPage extends Component {
 	render() {
-		if (this.props.user.isAdmin) {
+		if (this.props.user.admin) {
 			return (
 				<div>
 					{this.props.children}

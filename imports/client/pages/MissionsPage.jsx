@@ -61,12 +61,12 @@ class MissionsPage extends Component {
 					{this.props.complete.length > 0 && <Subheader inset={true}>Completed</Subheader>}
 					{complete}
 				</List>
-				<List style={{margin: '30px 0'}}>
-					{this.props.all.length > 0 && <Subheader inset={true}>All</Subheader>}
-					{all}
-				</List>
 			</div>
 		);
+				// <List style={{margin: '30px 0'}}>
+				// 	{this.props.all.length > 0 && <Subheader inset={true}>All</Subheader>}
+				// 	{all}
+				// </List>
 	}
 }
 

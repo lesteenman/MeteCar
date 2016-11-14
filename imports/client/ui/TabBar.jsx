@@ -24,7 +24,17 @@ export default class MainTabBar extends Component {
 	}
 
 	render() {
-		console.log('Active Tab:', this.props.page);
+		// console.log('Active Tab:', this.props.page);
+
+		let admin;
+		console.log('User admin?', JSON.stringify(Meteor.user()));
+		if (Meteor.user().admin) {
+			admin = (<Tab
+				onActive={this.onPage.bind(this, 'admin')}
+				value="dashboard"
+				label="Admin"
+			/>);
+		}
 		return (
 			<div>
 				<Tabs value={this.props.page}>
@@ -52,7 +62,7 @@ export default class MainTabBar extends Component {
 						label="Missions"
 						/*icon={missionsIcon}*/
 					/>
-					/* <Tab label="Admin" /> */
+					{admin}
 				</Tabs>
 			</div>
 		);

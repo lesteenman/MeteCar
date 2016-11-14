@@ -67,6 +67,7 @@ if (Meteor.isServer) {
 				email: true,
 				team: true,
 				sessions: true,
+				admin: true,
 			}
 		};
 

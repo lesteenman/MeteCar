@@ -9,8 +9,9 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 
-import '../less/app';
-import '../less/transitions';
+import '../less/app.scss';
+import '../less/styles.scss';
+import '../less/transitions.scss';
 
 class App extends Component {
 	// Keep track of window width
@@ -66,10 +67,14 @@ class App extends Component {
 };
 
 export default createContainer(() => {
+	let usersHandle = Meteor.subscribe('users.all');
 	let teamHandle = Meteor.subscribe('teams.all');
 	let avatarsHandle = Meteor.subscribe('avatars.all');
 
 	return {
-		ready: teamHandle.ready() && avatarsHandle.ready() && !Meteor.loggingIn(),
+		ready: teamHandle.ready() &&
+			avatarsHandle.ready() &&
+			usersHandle.ready() &&
+			!Meteor.loggingIn(),
 	}
 }, App);

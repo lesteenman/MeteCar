@@ -26,6 +26,8 @@ import CreateTeamPage from '../client/pages/CreateTeamPage.jsx';
 import PickTeamPage from '../client/pages/PickTeamPage.jsx';
 
 import AdminDashboardPage from '../client/pages/AdminDashboardPage.jsx';
+import AdminTeamsPage from '../client/pages/AdminTeamsPage.jsx';
+import AdminTeamPage from '../client/pages/AdminTeamPage.jsx';
 
 export default renderRoutes = function() {
 	return (
@@ -42,6 +44,10 @@ export default renderRoutes = function() {
 					<Route component={TeamedUserContainer}>
 						<Route path="/missions/:id" component={MissionPage} />
 					</Route>
+					<Route component={AdminPageContainer}>
+						<Route path="/admin/teams" component={AdminTeamsPage} />
+						<Route path="/admin/teams/:id" component={AdminTeamPage} />
+					</Route>
 				</Route>
 
 				<Route component={PageWithMenuContainer}>
@@ -52,18 +58,20 @@ export default renderRoutes = function() {
 
 					<Route component={TeamedUserContainer}>
 						<Route path="/team-manage" component={ManageTeamPage} />
-						<Route component={PageWithTabsContainer}>
+					</Route>
+					<Route component={PageWithTabsContainer}>
+						<Route component={TeamedUserContainer}>
 							<Route path="/dashboard" component={DashboardPage} />
 							<Route path="/map" component={MapPage} />
 							<Route path="/missions" component={MissionsPage} />
 							<Route path="/photos" component={PhotosPage} />
 						</Route>
+						<Route component={AdminPageContainer}>
+							<Route path="/admin" component={AdminDashboardPage} />
+						</Route>
 					</Route>
 				</Route>
 
-				<Route component={AdminPageContainer}>
-					<Route path="/admin" component={AdminDashboardPage} />
-				</Route>
 			</Route>
 		</Router>
 	);
