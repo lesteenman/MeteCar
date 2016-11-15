@@ -1,0 +1,10 @@
+Next up:
+
+- Implement location missions
+- Implement puzzle missions
+- Implement photo missions
+- Implement photo viewing (just see all of them at first)
+- Implement photo rating
+
+- Approve new team members
+- Remove team members
