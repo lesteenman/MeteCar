@@ -27,13 +27,25 @@ Meteor.startup(() => {
 	// 	}
 	// }).listen(8025);
 
+	console.log('Startup...');
+
 	insertAdminAccount();
 	insertTestData();
 });
 
 function insertAdminAccount() {
-	if (!Meteor.users.find({name: 'admin'})) {
+	if (!Meteor.users.find({username: 'admin'}).count()) {
 		console.log('Creating admin user...');
+		let admin = Accounts.createUser({
+			username: 'admin',
+			email: 'eriksteenman+metecar-admin@gmail.com',
+			password: 'godmode12',
+			profile: {
+				team: false,
+				admin: true,
+			}
+		});
+		console.log('User created');
 	}
 }
 

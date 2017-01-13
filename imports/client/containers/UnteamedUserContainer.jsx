@@ -13,11 +13,12 @@ class UnteamedUser extends Component {
 				if (Meteor.loggingIn() || !userTeamHandle.ready()) return;
 
 				let user = Meteor.user();
+				console.log('Unteamed container', user);
 
 				if (!user) {
 					console.log('User not authenticated; Redirect to login');
 					browserHistory.push('/login');
-				} else if (user.team) {
+				} else if (user.profile.admin || user.team) {
 					console.log('User has a team; Redirect to dashboard');
 					browserHistory.push('/dashboard');
 				}

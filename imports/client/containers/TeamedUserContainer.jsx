@@ -18,7 +18,7 @@ class TeamedUser extends Component {
 				if (!user) {
 					console.log('User not authenticated; Redirect to login');
 					browserHistory.push('/login');
-				} else if (!user.team) {
+				} else if (!user.team && !user.profile.admin) {
 					console.log('User has no team; Redirect to team-pick');
 					browserHistory.push('/team-pick');
 				}

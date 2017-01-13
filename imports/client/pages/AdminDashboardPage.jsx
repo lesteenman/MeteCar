@@ -10,6 +10,18 @@ export default class AdminDashboardPage extends Component {
 			<div>
 				<Helmet title='Admin' />
 				<List>
+					<Link to='/admin/missions'>
+						<ListItem
+							primaryText="Missions"
+							secondaryText="Manage open missions"
+						/>
+					</Link>
+					<Link to='/admin/photos'>
+						<ListItem
+							primaryText="Photos"
+							secondaryText="Manage open missions"
+						/>
+					</Link>
 					<Link to='/admin/teams'>
 						<ListItem
 							primaryText="Teams"

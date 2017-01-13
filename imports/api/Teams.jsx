@@ -32,6 +32,10 @@ export const Team = Class.create({
 			type: String,
 			optional: true,
 		},
+		hidden: {
+			type: Boolean,
+			optional: true,
+		},
 		captain: String,
 	},
 	meteorMethods: {
@@ -119,7 +123,7 @@ Meteor.methods({
 
 if (Meteor.isServer) {
 	Meteor.publish('teams.all', function() {
-		return Teams.find({}, {
+		return Teams.find({hidden: false}, {
 			fields: {
 				_id: true,
 				name: true,

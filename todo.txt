@@ -1,5 +1,11 @@
 Next up:
 
+- Create admin actions
+- Create the admin pages:
+ - teams: in admin tab
+ - active missions page
+ - submitted photos page
+
 - Implement location missions
 - Implement puzzle missions
 - Implement photo missions

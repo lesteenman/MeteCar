@@ -26,14 +26,33 @@ export default class MainTabBar extends Component {
 	render() {
 		// console.log('Active Tab:', this.props.page);
 
-		let admin;
-		console.log('User admin?', JSON.stringify(Meteor.user()));
-		if (Meteor.user().admin) {
-			admin = (<Tab
-				onActive={this.onPage.bind(this, 'admin')}
-				value="dashboard"
-				label="Admin"
-			/>);
+		if (Meteor.user() && Meteor.user().profile.admin) {
+			return (
+				<div>
+					<Tabs value={this.props.page}>
+						<Tab
+							onActive={this.onPage.bind(this, 'admin-map')}
+							value="map"
+							label="Map"
+						/>
+						<Tab
+							onActive={this.onPage.bind(this, 'admin-photos')}
+							value="photos"
+							label="Photos"
+						/>
+						<Tab
+							onActive={this.onPage.bind(this, 'admin-missions')}
+							value="missions"
+							label="Missions"
+						/>
+						<Tab
+							onActive={this.onPage.bind(this, 'admin-teams')}
+							value="teams"
+							label="Teams"
+						/>
+					</Tabs>
+				</div>
+			);
 		}
 		return (
 			<div>
@@ -62,7 +81,6 @@ export default class MainTabBar extends Component {
 						label="Missions"
 						/*icon={missionsIcon}*/
 					/>
-					{admin}
 				</Tabs>
 			</div>
 		);
