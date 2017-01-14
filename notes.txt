@@ -1,0 +1,39 @@
+Next up
+=======
+
+(Please, do them one by one this time)
+
+- Create the admin pages:
+ - teams: in admin-only tab
+ - active missions page
+ - submitted photos page
+
+- Just create all these actions step by stap. Make sure we can:
+- Activate/deactivate a mission's team
+- Modify a team's members
+- Create missions of various types (Bigger feature, of course)
+- Activate/Deactivate a mission in general
+
+- At some point in between this, make some simple non-admin views where
+  the other users can at least see the data that is being edited by admins.
+  Interactability is not yet necessary.
+
+- Implement location missions
+- Implement puzzle missions
+- Implement photo missions
+- Implement photo viewing (just see all of them at first)
+- Implement photo rating
+
+- Approve new team members
+- Remove team members
+
+Later
+=====
+- Android app
+- Make notifications work
+- iOS app
+- let it work properly as a chrome web app?
+
+Much later
+==========
+More beautiful desktop version which can be used for e.g. creating functions

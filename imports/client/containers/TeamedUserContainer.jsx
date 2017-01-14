@@ -5,6 +5,8 @@ import { createContainer } from 'meteor/react-meteor-data';
 import { Tracker } from 'meteor/tracker'
 import { browserHistory } from 'react-router'
 
+import { needsTeam } from '../../helpers/user.js'
+
 class TeamedUser extends Component {
 	componentWillMount() {
 		setTimeout(function() {
@@ -18,7 +20,7 @@ class TeamedUser extends Component {
 				if (!user) {
 					console.log('User not authenticated; Redirect to login');
 					browserHistory.push('/login');
-				} else if (!user.team && !user.profile.admin) {
+				} else if (needsTeam(user)) {
 					console.log('User has no team; Redirect to team-pick');
 					browserHistory.push('/team-pick');
 				}
@@ -27,7 +29,7 @@ class TeamedUser extends Component {
 	}
 
 	render() {
-		if (!this.props.ready || !this.props.team) return (<div></div>);
+		if (!this.props.ready || needsTeam(Meteor.user())) return (<div></div>);
 
 		return (
 			<div>

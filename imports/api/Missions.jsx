@@ -1,4 +1,5 @@
 import { Class, Enum } from 'meteor/jagi:astronomy';
+import { isAdmin } from '../helpers/user.js';
 
 export const Missions = new Mongo.Collection('missions');
 
@@ -20,6 +21,10 @@ export const Mission = Class.create({
 		type: MissionType,
 		order: Number,
 		optional: Boolean,
+		open: {
+			type: Boolean,
+			default: false,
+		},
 		lat: {
 			type: Number,
 			optional: true
@@ -48,11 +53,21 @@ if (Meteor.isServer) {
 	// missions.admin.all
 	// missions.team
 	Meteor.publish('missions.team', function() {
-		let user = this.userId;
-		let team = Meteor.users.find({_id: user}).team;
+		let userId = this.userId;
+		let user = Meteor.users.findOne({_id: userId});
+		let team = Meteor.users.find({_id: userId}).team;
 
-		// TODO: Base on available submissions
-		return Missions.find();
+		if (isAdmin(user)) {
+			return Missions.find();
+		}
+		else {
+			let teamSubmissions = Submissions.find({
+				team: team,
+			}).fetch();
+			return Missions.find({
+				_id: {$in: _.pluck(teamSubmissions, 'mission')}
+			});
+		}
 	});
 }
 

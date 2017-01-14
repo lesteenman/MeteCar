@@ -57,9 +57,6 @@ Meteor.users.deny({
 });
 
 if (Meteor.isServer) {
-	// users.admin.all
-	// just users.all?
-
 	Meteor.publish('users.all', function() {
 		const options = {
 			fields: {

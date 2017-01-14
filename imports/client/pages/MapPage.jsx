@@ -5,15 +5,22 @@ import { createContainer } from 'meteor/react-meteor-data';
 
 import Map, { Marker } from '../ui/google-map';
 import mapStyle from '../ui/google-map/style.json';
+import TitledPage from '../ui/TitledPage.jsx';
 
 import { Missions } from '../../api/Missions.jsx';
 import Locations from '../../api/Locations.jsx';
 import { distance, containingViewport, calculateZoomLevel } from '../../helpers/location.js';
 
-class MapPage extends Component {
-	render() {
-		if (!this.props.ready) return (<div></div>);
+class MapPage extends TitledPage {
+	isReady() {
+		return this.props.ready;
+	}
 
+	getTitle() {
+		return "Map";
+	}
+
+	pageRender() {
 		let currentLocations = _.chain(this.props.locations)
 			.groupBy('session')
 			.map(function(locations) {
@@ -75,18 +82,13 @@ class MapPage extends Component {
 			
 		}
 
-		if (!this.props.ready) return (<div></div>);
-
 		return (
-			<div>
-				<Helmet title='Map' />
-				<Map google={window.google}
-					zoom={initialZoom}
-					initialCenter={initialCenter}
-					styles={mapStyle}>
-					{markers}
-				</Map>
-			</div>
+			<Map google={window.google}
+				zoom={initialZoom}
+				initialCenter={initialCenter}
+				styles={mapStyle}>
+				{markers}
+			</Map>
 		);
 	}
 }

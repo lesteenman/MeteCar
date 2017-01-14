@@ -123,14 +123,24 @@ Meteor.methods({
 
 if (Meteor.isServer) {
 	Meteor.publish('teams.all', function() {
-		return Teams.find({hidden: false}, {
-			fields: {
-				_id: true,
-				name: true,
-				description: true,
-				captain: true,
-				avatar: true,
-			}	
+		let user = Meteor.users.findOne({_id: this.userId});
+		let filter = (user && user.profile.admin) ? {} : {
+			hidden: false,
+		};
+		let fields = {
+			_id: true,
+			name: true,
+			description: true,
+			captain: true,
+			avatar: true,
+		};
+
+		if (user && user.profile.admin) {
+			fields.hidden = true;
+		}
+
+		return Teams.find(filter, {
+			fields: fields
 		});
 	});
 

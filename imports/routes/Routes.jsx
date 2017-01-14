@@ -45,7 +45,6 @@ export default renderRoutes = function() {
 						<Route path="/missions/:id" component={MissionPage} />
 					</Route>
 					<Route component={AdminPageContainer}>
-						<Route path="/admin/teams" component={AdminTeamsPage} />
 						<Route path="/admin/teams/:id" component={AdminTeamPage} />
 					</Route>
 				</Route>
@@ -68,9 +67,7 @@ export default renderRoutes = function() {
 						</Route>
 						<Route component={AdminPageContainer}>
 							<Route path="/admin" component={AdminDashboardPage} />
-							<Route path="/admin-map" component={AdminDashboardPage} />
-							<Route path="/admin-photos" component={AdminDashboardPage} />
-							<Route path="/admin-teams" component={AdminDashboardPage} />
+							<Route path="/admin-teams" component={AdminTeamsPage} />
 						</Route>
 					</Route>
 				</Route>

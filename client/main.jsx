@@ -14,7 +14,11 @@ import '../imports/startup/clientSubscriptions.jsx';
 
 // Start location tracking
 import '../imports/startup/geoLocation.jsx';
+// Register for notifications
 import '../imports/startup/notifications.jsx';
+
+// Global helper functions
+import '../imports/helpers/user.js';
 
 Meteor.startup(() => {
 	injectTapEventPlugin();
