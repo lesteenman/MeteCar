@@ -3,7 +3,7 @@ import { Mongo } from 'meteor/mongo';
 import { Class, Enum } from 'meteor/jagi:astronomy';
 
 import { Missions } from './Missions.jsx';
-import { Submission, Submissions } from './Submissions.jsx';
+import { Submission, Submissions, SubmissionState } from './Submissions.jsx';
 
 export const Teams = new Mongo.Collection('teams');
 
@@ -39,12 +39,40 @@ export const Team = Class.create({
 		captain: String,
 	},
 	meteorMethods: {
-		pickMember(member) {
+		approveMember(member) {
 
 		},
 		kickMember(member) {
 
 		},
+	},
+	helpers: {
+		currentMainMission() {
+			let approved = Submissions.find({
+				team: this._id,
+				state: SubmissionState.APPROVED,
+			}).fetch();
+
+			// Get which of these is the last in order
+			let lastFinished = Missions.findOne({
+				optional: false,
+				_id: {$in: _.pluck(approved, 'mission')}
+			}, {
+				sort: {order: -1},
+				limit: 1,
+			});
+			let lastFinishedOrder = lastFinished ? lastFinished.order : 0;
+
+			// Get the first open mission with an order greater than the last (or 0)
+			let nextOpen = Missions.findOne({
+				order: {$gt: lastFinishedOrder}
+			}, {
+				sort: {order: 1},
+				limit: 1
+			});
+
+			return nextOpen;
+		}
 	},
 	events: {
 		beforeUpdate(e) {

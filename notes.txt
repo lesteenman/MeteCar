@@ -3,16 +3,14 @@ Next up
 
 (Please, do them one by one this time)
 
-- Create the admin pages:
- - teams: in admin-only tab
- - active missions page
- - submitted photos page
+- submitted photos page
 
+- See a team's submissions, and reject them afterwards
+- Add a map to a mission page
 - Just create all these actions step by stap. Make sure we can:
-- Activate/deactivate a mission's team
+- See a team's active/open missions
 - Modify a team's members
 - Create missions of various types (Bigger feature, of course)
-- Activate/Deactivate a mission in general
 
 - At some point in between this, make some simple non-admin views where
   the other users can at least see the data that is being edited by admins.
@@ -37,3 +35,8 @@ Later
 Much later
 ==========
 More beautiful desktop version which can be used for e.g. creating functions
+
+Notifications
+=============
+Admins: each submission
+Team: submissions by your teams

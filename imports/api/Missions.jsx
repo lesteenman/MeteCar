@@ -1,6 +1,7 @@
 import { Class, Enum } from 'meteor/jagi:astronomy';
 import { isAdmin } from '../helpers/user.js';
-import { Submissions, SubmissionState } from './Submissions.jsx';
+import { Submissions } from './Submissions.jsx';
+import { Team } from './Teams.jsx';
 
 export const Missions = new Mongo.Collection('missions');
 
@@ -69,8 +70,9 @@ if (Meteor.isServer) {
 
 		let userId = this.userId;
 		let user = Meteor.users.findOne({_id: userId});
-		let team = user.team;
-		if (!team) {
+		let teamId = user.team;
+		let team = Team.findOne({_id: teamId});
+		if (!teamId) {
 			this.ready();
 			return false;
 		}
@@ -81,7 +83,7 @@ if (Meteor.isServer) {
 		 * Any mission with an open submission
 		 */
 		let teamSubmissions = Submissions.find({
-			team: team,
+			team: teamId,
 		}).fetch();
 
 		availableIds.push({_id: {$in: _.pluck(teamSubmissions, 'mission')}});
@@ -89,29 +91,32 @@ if (Meteor.isServer) {
 		/**
 		 * The first mission after the last approved submission
 		 */
-		// Approved missions
-		let approved = Submissions.find({
-			team: team,
-			state: SubmissionState.APPROVED,
-		}).fetch();
+		// // Approved missions
+		// let approved = Submissions.find({
+		// 	team: teamId,
+		// 	state: SubmissionState.APPROVED,
+		// }).fetch();
 
-		// Get which of these is the last in order
-		let lastFinished = Missions.findOne({
-			optional: false,
-			_id: {$in: _.pluck(approved, 'mission')}
-		}, {
-			sort: {order: -1},
-			limit: 1,
-		});
-		let lastFinishedOrder = lastFinished ? lastFinished.order : 0;
+		// // Get which of these is the last in order
+		// let lastFinished = Missions.findOne({
+		// 	optional: false,
+		// 	_id: {$in: _.pluck(approved, 'mission')}
+		// }, {
+		// 	sort: {order: -1},
+		// 	limit: 1,
+		// });
+		// let lastFinishedOrder = lastFinished ? lastFinished.order : 0;
 
-		// Get the first open mission with an order greater than the last (or 0)
-		let nextOpen = Missions.findOne({
-			order: {$gt: lastFinishedOrder}
-		}, {
-			sort: {order: 1},
-			limit: 1
-		});
+		// // Get the first open mission with an order greater than the last (or 0)
+		// let nextOpen = Missions.findOne({
+		// 	order: {$gt: lastFinishedOrder}
+		// }, {
+		// 	sort: {order: 1},
+		// 	limit: 1
+		// });
+		// if (nextOpen) availableIds.push({_id: nextOpen._id});
+
+		let nextOpen = team.currentMainMission();
 		if (nextOpen) availableIds.push({_id: nextOpen._id});
 
 		/**
