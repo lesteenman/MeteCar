@@ -50,8 +50,6 @@ export default TeamedUserContainer = createContainer((props) => {
 	let teamHandle = Meteor.subscribe('teams.all');
 	let team = Meteor.user() ? Meteor.user().team : undefined;
 
-	console.log('Props', Meteor.loggingIn(), userTeamHandle.ready(), teamHandle.ready());
-
 	return {
 		children: props.children,
 		team: team,

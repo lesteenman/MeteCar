@@ -20,7 +20,6 @@ export default class TitledPage extends Component {
 	}
 
 	componentWillMount() {
-		console.log('Will mount');
 		this.__titledpage_rendered__ = false;
 		this.__titledpage_titleset__ = true;
 	}
@@ -41,7 +40,6 @@ export default class TitledPage extends Component {
 	}
 
 	getTitle() {
-		console.log('Using the default getTitle');
 		this.__titledpage_titleset__ = false;
 		return "Autospeurtocht 2017";
 	}

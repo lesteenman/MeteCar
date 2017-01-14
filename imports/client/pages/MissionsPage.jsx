@@ -30,102 +30,145 @@ class MissionsPage extends TitledPage {
 
 	}
 
-	adminRender() {
-		let all = [];
+	categoriesToLists(categories, renderFunc) {
+		let listItems = {};
 
-		for (let i = 0; i < this.props.all.length; i++) {
-			let mission = this.props.all[i];
-			let page = '/missions/' + mission._id;
-			all.push(
-				<Link
-					to={page}
-					key={mission._id}
-				>
-					<ListItem
-						primaryText={mission.title}
-						secondaryText={mission.description}
-						rightIcon={mission.open ? openIcon : closedIcon}
-					/>
-				</Link>
-			);
+		for (let [title, missions] of Object.entries(categories)) {
+			let list = [];
+			for (let i = 0; i < missions.length; i++) {
+				let mission = missions[i];
+				let page = '/missions/' + mission._id;
+				let render = renderFunc(mission);
+				list.push(
+					<Link
+						to={page}
+						key={mission._id}
+					>
+						{render}
+					</Link>
+				);
+			}
+			listItems[title] = list;
 		}
 
+		let lists = [];
+
+		for (let [title, list] of Object.entries(listItems)) {
+			if (list.length) {
+				lists.push(
+					<List style={{margin: '10px 0'}} key={title}>
+						<Subheader inset={true}>{title}</Subheader>
+						{list}
+					</List>
+				);
+			}
+		}
+
+		return lists;
+	}
+
+	adminRender() {
+		let categories = {
+			main: [],
+			optional: [],
+		};
+
+		for (let mission of this.props.all) {
+			if (mission.optional) categories['optional'].push(mission);
+			else categories['main'].push(mission);
+		}
+
+		let lists = this.categoriesToLists(categories, this.adminMissionRender);
+
 		return (
-			<List style={{margin: '10px 0'}}>
-				{all}
-			</List>
+			<div>
+				{lists}
+			</div>
 		);
 	}
 
 	normalRender() {
-		let available = [];
+		let categories = {
+			'Available': this.props.available,
+			'Pending': this.props.sent,
+			'Completed': this.props.approved,
+		};
 
-		console.log('Available: ', this.props.available);
+		let lists = this.categoriesToLists(categories, this.normalMissionRender);
 
-		for (let i = 0; i < this.props.available.length; i++) {
-			let mission = this.props.available[i];
-			let page = '/missions/' + mission._id;
-			available.push(
-				<Link
-					to={page}
-					key={mission._id}
-				>
-					<ListItem
-						primaryText={mission.title}
-						secondaryText={mission.description}
-						key={mission._id}
-					/>
-				</Link>
-			);
-		}
-
-		let complete = [];
 		return (
 			<div>
-				<List style={{margin: '10px 0'}}>
-					{available}
-				</List>
-				<List style={{margin: '10px 0'}}>
-					{this.props.complete.length > 0 && <Subheader inset={true}>Completed</Subheader>}
-					{complete}
-				</List>
+				{lists}
 			</div>
+		);
+	}
+
+	adminMissionRender(mission) {
+		let icon = mission.open ? openIcon : closedIcon;
+		return (
+			<ListItem
+				primaryText={mission.title}
+				secondaryText={mission.description}
+				rightIcon={icon}
+			/>
+		);
+	}
+
+	normalMissionRender(mission) {
+		return (
+			<ListItem
+				primaryText={mission.title}
+				secondaryText={mission.description}
+			/>
 		);
 	}
 }
 
 export default createContainer(() => {
-	let missionsHandle = Meteor.subscribe('missions.team');
-	let submissionsHandle = Meteor.subscribe('submissions.team');
-
-	let team = Meteor.user().team;
-	let all, available, complete;
-
 	if (isAdmin(Meteor.user())) {
-		all = Missions.find({}).fetch();
-	} else {
-		let availableSubmissions = Submissions.find({
-			team: team,
-			state: {$in: [SubmissionState.OPEN, SubmissionState.SENT]},
-		}).fetch();
+		missionsHandle = Meteor.subscribe('missions.admin.all');
+		return {
+			ready: missionsHandle.ready(),
+			all: Missions.find({}).fetch(),
+		};
+	}
+	else {
+		missionsHandle = Meteor.subscribe('missions.team');
+		submissionsHandle = Meteor.subscribe('submissions.team');
 
-		let completeSubmissions = Submissions.find({
+		let team = Meteor.user().team;
+
+		let sentSubmissions = Submissions.find({
+			team: team,
+			state: SubmissionState.SENT,
+		}).fetch();
+		let sentSubmissionIds = _.pluck(sentSubmissions, 'mission');
+
+		let approvedSubmissions = Submissions.find({
 			team: team,
 			state: SubmissionState.APPROVED,
 		}).fetch();
+		let approvedSubmissionIds = _.pluck(approvedSubmissions, 'mission');
 
 		available = Missions.find({
-			_id: {$in: _.pluck(availableSubmissions, 'mission')}
+			$and: [
+				{_id: {$nin: sentSubmissionIds}},
+				{_id: {$nin: approvedSubmissions}},
+			]
 		}).fetch();
-		complete = Missions.find({
-			_id: {$in: _.pluck(completeSubmissions, 'mission')}
+		sent = Missions.find({
+			_id: {$in: sentSubmissionIds}
 		}).fetch();
+		approved = Missions.find({
+			_id: {$in: approvedSubmissionIds}
+		}).fetch();
+
+		return {
+			ready: missionsHandle.ready() && submissionsHandle.ready(),
+			sent: sent,
+			available: available,
+			approved: approved,
+		};
 	}
 
-	return {
-		ready: missionsHandle.ready() && (isAdmin(Meteor.user()) || submissionsHandle.ready()),
-		all: all,
-		available: available,
-		complete: complete,
-	};
 }, MissionsPage);

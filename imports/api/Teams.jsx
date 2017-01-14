@@ -88,21 +88,21 @@ Meteor.methods({
 
 		Meteor.users.update(Meteor.userId(), {$set: {team: team._id}});
 
-		if (Meteor.isServer) {
-			let firstMission = Missions.findOne({order: 1});
-			let firstSubmission = new Submission({
-				mission: firstMission._id,
-				team: team._id,
-			});
-			firstSubmission.save(function(error, id) {
-				if (error ) {
-					console.error(error);
-					// Roll back
-					team.remove();
-					Meteor.users.update(Meteor.userId(), {$set: {team: null}});
-				}
-			});
-		}
+		// if (Meteor.isServer) {
+		// 	let firstMission = Missions.findOne({order: 1});
+		// 	let firstSubmission = new Submission({
+		// 		mission: firstMission._id,
+		// 		team: team._id,
+		// 	});
+		// 	firstSubmission.save(function(error, id) {
+		// 		if (error ) {
+		// 			console.error(error);
+		// 			// Roll back
+		// 			team.remove();
+		// 			Meteor.users.update(Meteor.userId(), {$set: {team: null}});
+		// 		}
+		// 	});
+		// }
 	},
 	'teams.update'(name, description, photo) {
 		
