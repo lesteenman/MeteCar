@@ -3,27 +3,26 @@ Next up
 
 (Please, do them one by one this time)
 
+
+- See a team's available missions, and either create a correct submission or reject an existing one
+
 - submitted photos page
+- Implement photo missions submission
 
-- See a team's submissions, and reject them afterwards
+- Modify a team's members (admin and captains)
+
+- Create question mission (puzzle)
+- Create photo mission
+- Create location mission
+
+- Implement location missions submission
+- Implement puzzle missions submission
+- Publicize a mission's photos to everyone
+- Implement photo rating(?)
+
+- Approve new team members (captain and admin both)
+
 - Add a map to a mission page
-- Just create all these actions step by stap. Make sure we can:
-- See a team's active/open missions
-- Modify a team's members
-- Create missions of various types (Bigger feature, of course)
-
-- At some point in between this, make some simple non-admin views where
-  the other users can at least see the data that is being edited by admins.
-  Interactability is not yet necessary.
-
-- Implement location missions
-- Implement puzzle missions
-- Implement photo missions
-- Implement photo viewing (just see all of them at first)
-- Implement photo rating
-
-- Approve new team members
-- Remove team members
 
 Later
 =====
