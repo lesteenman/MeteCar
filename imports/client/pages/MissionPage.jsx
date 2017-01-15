@@ -17,10 +17,9 @@ class MissionPage extends TitledPage {
 	}
 
 	getTitle() { return this.props.mission ? this.props.mission.title : ''; }
-	isReady() { return this.props.ready; }
+	isReady() { return this.props.ready && this.props.mission; }
 
 	pageRender() {
-		console.log('Mission:', this.props.mission);
 		let mission = this.props.mission;
 
 		let top;
@@ -57,10 +56,6 @@ class MissionPage extends TitledPage {
 			if (err) console.error('Error while setting mission.open:', err);
 			else if (result != 1) console.error('Unexpected response while saving mission:', result);
 		});
-
-		// TODO: How will people now get this mission in their list? Should we maybe not
-		// work with 'open' submissions , but with a fake 'subcription' that has the logic
-		// of which missions are currently available for a team?
 	}
 
 	adminActions() {
@@ -82,7 +77,7 @@ class MissionPage extends TitledPage {
 }
 
 export default createContainer((props) => {
-	let teamHandle = Meteor.subscribe('missions.team');
+	let teamHandle = Meteor.subscribe(isAdmin(Meteor.user()) ? 'missions.admin.all' : 'missions.team');
 	let mission = Mission.findOne({_id: props.routeParams.id});
 
 	return {
