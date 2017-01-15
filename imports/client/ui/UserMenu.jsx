@@ -3,7 +3,9 @@ import { browserHistory, Link } from 'react-router';
 
 import { createContainer } from 'meteor/react-meteor-data';
 
-import { Teams } from '../../api/Teams.jsx';
+import { Team } from '/imports/api/Teams.jsx';
+import { User } from '/imports/api/Accounts.jsx';
+
 import Drawer from 'material-ui/Drawer';
 import MenuItem from 'material-ui/MenuItem';
 import Divider from 'material-ui/Divider';
@@ -68,8 +70,8 @@ class UserMenu extends Component {
 }
 
 export default createContainer(({ registerToggleMenu }) => {
-	let teamId = Meteor.user() ? Meteor.user().team : undefined;
-	let team = Teams.findOne(teamId);
+	let teamId = User.current() ? User.current().team : undefined;
+	let team = Team.findOne(teamId);
 
 	return {
 		registerToggleMenu,

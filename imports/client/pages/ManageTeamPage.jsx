@@ -5,7 +5,8 @@ import { createContainer } from 'meteor/react-meteor-data';
 
 import { browserHistory } from 'react-router';
 
-import { Team } from '../../api/Teams.jsx';
+import { Team } from '/imports/api/Teams.jsx';
+import { User } from '/imports/api/Accounts.jsx';
 import TeamAvatars from '../../api/TeamAvatars.jsx';
 
 import { InputLine, ActionButton, ExtraButton } from '../ui/UiComponents.jsx';
@@ -96,10 +97,10 @@ class CreateTeamPage extends Component {
 }
 
 export default createContainer(() => {
-	let team = Team.findOne({_id: Meteor.user().team});
+	let team = Team.findOne({_id: User.current().team});
 	return {
 		team: team,
-		captain: team ? Meteor.users.findOne({_id: team.captain}) : undefined,
-		members: Meteor.users.find({team: team._id}).fetch(),
+		captain: team ? User.findOne({_id: team.captain}) : undefined,
+		members: User.find({team: team._id}).fetch(),
 	};
 }, CreateTeamPage);

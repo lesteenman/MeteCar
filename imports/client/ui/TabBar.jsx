@@ -1,16 +1,13 @@
 import React, { Component } from 'react';
 
-// import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-// import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
-// import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import { browserHistory } from 'react-router'
 
 import { Link } from 'react-router';
-// import {BottomNavigation, BottomNavigationItem} from 'material-ui/BottomNavigation';
 import { Tabs, Tab } from 'material-ui/Tabs';
 import FontIcon from 'material-ui/FontIcon';
 
 import { TabBar, TabBarButton } from './UiComponents.jsx';
+import { User } from '/imports/api/Accounts.jsx';
 
 const homeIcon = <FontIcon className="material-icons">home</FontIcon>;
 const mapIcon = <FontIcon className="material-icons">location_on</FontIcon>;
@@ -24,10 +21,8 @@ export default class MainTabBar extends Component {
 	}
 
 	render() {
-		// console.log('Active Tab:', this.props.page);
-
 		let admin = '';
-		if (Meteor.user() && Meteor.user().profile.admin) {
+		if (User.current().isAdmin()) {
 			admin = (
 				<Tab
 					onActive={this.onPage.bind(this, 'admin-teams')}

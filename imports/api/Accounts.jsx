@@ -30,6 +30,44 @@ var isEmailValid = function(address) {
 // 	}
 // });
 
+export const User = Class.create({
+	name: 'User',
+	collection: Meteor.users,
+	fields: {
+		id: {
+			type: String,
+			resolve(doc) {
+				return doc._id;
+			},
+		},
+		username: String,
+		team: String,
+		admin: {
+			type: Boolean,
+			default: false,
+		},
+	},
+	helpers: {
+		isAdmin() {
+			return this.admin;
+		},
+		needsTeam() {
+			return !(this.admin || this.team);
+		},
+	},
+});
+
+User.current = function(ref) {
+	let userId;
+	try {
+		userId = Meteor.userId();
+	} catch (e) {
+		// Probably in a publish function
+		userId = ref ? ref.userId : null;
+	}
+	return userId ? User.findOne({_id: userId}) : null;
+};
+
 Meteor.methods({
 	'accounts.signup'(username, email, password1, password2) {
 		// TODO: Test and re-enable later
@@ -37,8 +75,6 @@ Meteor.methods({
 		if (password1.length < 8) throw new Meteor.Error('password1', 'Password too short');
 		if (password1 !== password2) throw new Meteor.Error('password2', 'Password not equal');
 		let password = password1;
-
-		console.log('Creating User:', email, password); // TODO: Clearly remove this
 
 		let user = Accounts.createUser({
 			username: username,

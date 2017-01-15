@@ -42,9 +42,8 @@ export const Submission = Class.create({
 
 if (Meteor.isServer) {
 	Meteor.publish('submissions.team', function() {
-		let user = Meteor.users.findOne({_id: this.userId});
-		let team = user.team;
-		return Submissions.find({team: team});
+		let user = User.current(this);
+		return Submissions.find({team: user.team});
 	});
 	// Meteor.publish('submissions.admin.all', function() {
 

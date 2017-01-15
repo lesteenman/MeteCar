@@ -1,5 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { Teams } from './Teams.jsx';
+import { User } from './Accounts.jsx';
 
 import { distance } from '../helpers/location.js';
 
@@ -9,14 +10,15 @@ export default Locations = new Mongo.Collection('locations');
 
 Meteor.methods({
 	'location.update'(session, lat, lng, acc, time) {
-		let user = Meteor.user();
+		let user = User.current();
 		if (!user || !user.team) throw new Meteor.Error(403);
 
 		if (!user.sessions || user.sessions.indexOf(session) < 0) {
 			let sessions = user.sessions;
 			if (!sessions) sessions = [];
 			sessions.push(session);
-			Meteor.users.update({_id: Meteor.userId()}, {$set: {"sessions": sessions}});
+			user.sessions = sessions;
+			user.save();
 		}
 
 		let last = Locations.findOne({session}, {sort: {time: -1, limit: 1}, fields: {lat: true, lng: true}});
@@ -56,7 +58,7 @@ if (Meteor.isServer) {
 	});
 
 	Meteor.publish('locations.team', function() {
-		let user = Meteor.users.findOne({_id: this.userId}, {team: true});
+		let user = User.findOne({_id: this.userId}, {team: true});
 		let team = user.team;
 		if (!team) {
 			this.ready();
@@ -64,7 +66,7 @@ if (Meteor.isServer) {
 		}
 
 		let sessions = [];
-		let users = Meteor.users.find({team: team}).fetch();
+		let users = User.find({team: team}).fetch();
 		for (let i = 0; i < users.length; i++) {
 			sessions = sessions.concat(users[i].sessions || []);
 		}

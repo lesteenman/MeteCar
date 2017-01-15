@@ -3,6 +3,7 @@ import { Mongo } from 'meteor/mongo';
 import { Class, Enum } from 'meteor/jagi:astronomy';
 
 import { Missions } from './Missions.jsx';
+import { User } from './Accounts.jsx';
 import { Submission, Submissions, SubmissionState } from './Submissions.jsx';
 
 export const Teams = new Mongo.Collection('teams');
@@ -46,7 +47,7 @@ export const Team = Class.create({
 
 		},
 		setHidden(hidden) {
-			if (!isAdmin(Meteor.user())) return false;
+			if (!User.current().isAdmin()) return false;
 			this.hidden = hidden;
 			this.save();
 		}
@@ -105,7 +106,7 @@ export const Team = Class.create({
 
 Meteor.methods({
 	'teams.create'(name, description, photo) {
-		let user = Meteor.user();
+		let user = User.current();
 		if (!user) throw new Meteor.Error('not-allowed', 'No user');
 		if (user.team) throw new Meteor.Error('not-allowed', 'User already has a team');
 
@@ -115,36 +116,21 @@ Meteor.methods({
 		let team = new Team({
 			name: name,
 			description: description,
-			captain: Meteor.userId()
+			captain: user.id,
 		});
 		team.save();
 
-		Meteor.users.update(Meteor.userId(), {$set: {team: team._id}});
-
-		// if (Meteor.isServer) {
-		// 	let firstMission = Missions.findOne({order: 1});
-		// 	let firstSubmission = new Submission({
-		// 		mission: firstMission._id,
-		// 		team: team._id,
-		// 	});
-		// 	firstSubmission.save(function(error, id) {
-		// 		if (error ) {
-		// 			console.error(error);
-		// 			// Roll back
-		// 			team.remove();
-		// 			Meteor.users.update(Meteor.userId(), {$set: {team: null}});
-		// 		}
-		// 	});
-		// }
+		user.team = team._id;
+		user.save();
 	},
 	'teams.update'(name, description, photo) {
 		
 	},
 	'teams.pick'(team) {
 		// TODO: Let a captain confirm first (add to an array in the teams object?)
-		let user = Meteor.user();
-
-		Meteor.users.update(Meteor.userId(), {$set: {team: team}});
+		let user = User.current();
+		user.team = team;
+		user.save();
 	},
 	'teams.member.confirm'(userId) {
 
@@ -156,10 +142,9 @@ Meteor.methods({
 
 if (Meteor.isServer) {
 	Meteor.publish('teams.all', function() {
-		let user = Meteor.users.findOne({_id: this.userId});
-		let filter = (user && user.profile.admin) ? {} : {
-			hidden: false,
-		};
+		let user = User.current(this);
+
+		let filter;
 		let fields = {
 			_id: true,
 			name: true,
@@ -168,9 +153,22 @@ if (Meteor.isServer) {
 			avatar: true,
 		};
 
-		if (user && user.profile.admin) {
-			fields.hidden = true;
+		if (!user) {
+			filter = {
+				hidden: false,
+			};
+		} else {
+			if (user.isAdmin()) {
+				filter = {};
+			} else {
+				filter = {$or: [
+					{hidden: false},
+					{_id: user.team},
+				]};
+			}
 		}
+
+		// console.log('Filter, fields:', filter, fields);
 
 		return Teams.find(filter, {
 			fields: fields

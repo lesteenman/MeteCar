@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
-import { Accounts } from 'meteor/accounts-base';
 import { createContainer } from 'meteor/react-meteor-data';
 
 import { Tracker } from 'meteor/tracker'
 import { browserHistory } from 'react-router'
 
-import { needsTeam } from '../../helpers/user.js'
+import { User } from '/imports/api/Accounts.jsx';
 
 class UnteamedUser extends Component {
 	componentWillMount() {
@@ -14,13 +13,13 @@ class UnteamedUser extends Component {
 				let userTeamHandle = Meteor.subscribe('users.all');
 				if (Meteor.loggingIn() || !userTeamHandle.ready()) return;
 
-				let user = Meteor.user();
+				let user = User.current();
 				console.log('Unteamed container', user);
 
 				if (!user) {
 					console.log('User not authenticated; Redirect to login');
 					browserHistory.push('/login');
-				} else if (!needsTeam(user)) {
+				} else if (!user.needsTeam()) {
 					console.log('User has a team; Redirect to dashboard');
 					browserHistory.push('/dashboard');
 				}
@@ -48,7 +47,7 @@ UnteamedUser.propTypes = {
 
 export default UnteamedUserContainer = createContainer((props) => {
 	let userTeamHandle = Meteor.subscribe('users.all');
-	let team = Meteor.user() ? Meteor.user().team : undefined;
+	let team = User.current() ? User.current().team : undefined;
 	let loggingIn = Meteor.loggingIn();
 	let userTeamReady = userTeamHandle.ready();
 

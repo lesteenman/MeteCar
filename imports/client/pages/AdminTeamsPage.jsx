@@ -5,14 +5,16 @@ import { createContainer } from 'meteor/react-meteor-data';
 
 import { List, ListItem } from 'material-ui/List';
 
-import { Teams } from '../../api/Teams.jsx';
+import { Team } from '../../api/Teams.jsx';
+import TitledPage from '/imports/client/ui/TitledPage.jsx';
 
-class AdminDashboardPage extends Component {
-	render() {
-		if (!this.props.ready) return (<div></div>);
+class AdminTeamsPage extends TitledPage {
+	isReady() { return this.props.ready; }
+	getTitle() { return "Admin - Teams"; }
 
+	pageRender() {
 		let teams = [];
-		this.props.teams.forEach(function(team) {
+		for (let team of this.props.teams) {
 			let link = '/admin/teams/' + team._id;
 			teams.push(
 				<Link to={link} key={team._id}>
@@ -21,15 +23,12 @@ class AdminDashboardPage extends Component {
 					/>
 				</Link>
 			);
-		});
+		};
 
 		return (
-			<div>
-				<Helmet title="Admin - Teams" />
-				<List>
-					{teams}
-				</List>
-			</div>
+			<List>
+				{teams}
+			</List>
 		);
 	}
 }
@@ -38,6 +37,6 @@ export default createContainer(() => {
 	let teamHandler = Meteor.subscribe('teams.all');
 	return {
 		ready: teamHandler.ready(),
-		teams: Teams.find().fetch(),
+		teams: Team.find().fetch(),
 	};
-}, AdminDashboardPage);
+}, AdminTeamsPage);

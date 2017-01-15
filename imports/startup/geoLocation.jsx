@@ -1,4 +1,5 @@
 import { Tracker } from 'meteor/tracker'
+import { User } from '/imports/api/Accounts.jsx';
 
 function deviceIdentifier() {
 	let id;
@@ -18,7 +19,7 @@ var lastTime = false;
 
 if (Meteor.isClient) {
 	Tracker.autorun(() => {
-		if (Meteor.loggingIn() || !Meteor.user() || !Meteor.user().team) return;
+		if (Meteor.loggingIn() || !User.current() || !User.current().team) return;
 
 		navigator.geolocation.watchPosition(function(loc) {
 			let id = deviceIdentifier(),

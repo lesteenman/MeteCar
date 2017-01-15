@@ -2,6 +2,7 @@ import { Class, Enum } from 'meteor/jagi:astronomy';
 import { isAdmin } from '../helpers/user.js';
 import { Submissions } from './Submissions.jsx';
 import { Team } from './Teams.jsx';
+import { User } from './Accounts.jsx';
 
 export const Missions = new Mongo.Collection('missions');
 
@@ -51,7 +52,7 @@ export const Mission = Class.create({
 	},
 	meteorMethods: {
 		setOpen(open) {
-			if (!isAdmin(Meteor.user())) return false;
+			if (!User.current().isAdmin()) return false;
 
 			this.open = open;
 			return this.save();
@@ -69,7 +70,7 @@ if (Meteor.isServer) {
 		// - The first required, open mission after the last accepted submission
 
 		let userId = this.userId;
-		let user = Meteor.users.findOne({_id: userId});
+		let user = User.findOne({_id: userId});
 		let teamId = user.team;
 		let team = Team.findOne({_id: teamId});
 		if (!teamId) {
@@ -139,7 +140,7 @@ if (Meteor.isServer) {
 
 	Meteor.publish('missions.admin.all', function() {
 		let userId = this.userId;
-		let user = Meteor.users.findOne({_id: userId});
+		let user = User.findOne({_id: userId});
 		if (!isAdmin(user)) {
 			this.ready();
 			return false;

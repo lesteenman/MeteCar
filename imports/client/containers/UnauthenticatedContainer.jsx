@@ -9,7 +9,7 @@ class Unauthenticated extends Component {
 	componentWillMount() {
 		setTimeout(function() {
 			Tracker.autorun(() => {
-				if (Meteor.user()) {
+				if (User.current()) {
 					console.log('User is authenticated; Redirect to dashboard');
 					browserHistory.push('/dashboard');
 				}
@@ -18,7 +18,7 @@ class Unauthenticated extends Component {
 	}
 
 	render() {
-		if (!Meteor.loggingIn() && !this.props.user) {
+		if (!Meteor.loggingIn() && !User.current()) {
 			return (
 				<div>
 					{this.props.children}
@@ -30,7 +30,5 @@ class Unauthenticated extends Component {
 }
 
 export default UnauthenticatedContainer = createContainer(() => {
-	return {
-		user: Meteor.user()
-	};
+	return {};
 }, Unauthenticated);

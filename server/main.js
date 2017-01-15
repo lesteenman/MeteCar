@@ -2,10 +2,10 @@ import { Meteor } from 'meteor/meteor';
 
 import { Missions, createTestMissions } from '../imports/api/Missions.jsx';
 
-import '../imports/api/Accounts.jsx';
-import '../imports/api/Teams.jsx';
-import '../imports/api/Locations.jsx';
-import '../imports/api/TeamAvatars.jsx';
+import '/imports/api/Accounts.jsx';
+import '/imports/api/Teams.jsx';
+import '/imports/api/Locations.jsx';
+import '/imports/api/TeamAvatars.jsx';
 import './notifications.js';
 
 // TODO: Create admin, missions, etc. on boot

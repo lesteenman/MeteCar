@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { Accounts } from 'meteor/accounts-base';
+import { User } from '/imports/api/Accounts.jsx';
 import { createContainer } from 'meteor/react-meteor-data';
 
 class AdminPage extends Component {
 	render() {
-		if (this.props.user.profile.admin) {
+		let user = User.current();
+		if (user && user.isAdmin()) {
 			return (
 				<div>
 					{this.props.children}
@@ -21,7 +22,5 @@ class AdminPage extends Component {
 }
 
 export default AdminPageContainer = createContainer(() => {
-	return {
-		user: Meteor.user()
-	};
+	return {};
 }, AdminPage);

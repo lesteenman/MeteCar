@@ -6,12 +6,11 @@ import { createContainer } from 'meteor/react-meteor-data';
 import Subheader from 'material-ui/Subheader';
 import { List, ListItem } from 'material-ui/List';
 
-import { Missions } from '../../api/Missions.jsx';
-import { Submissions, SubmissionState } from '../../api/Submissions.jsx';
+import { Mission } from '/imports/api/Missions.jsx';
+import { User } from '/imports/api/Accounts.jsx';
+import { Submission, SubmissionState } from '/imports/api/Submissions.jsx';
 
 import TitledPage from '../ui/TitledPage.jsx';
-
-import { isAdmin } from '../../helpers/user.js';
 
 import FontIcon from 'material-ui/FontIcon';
 const openIcon = <FontIcon className="material-icons">lock_open</FontIcon>;
@@ -22,7 +21,7 @@ class MissionsPage extends TitledPage {
 	isReady() { return this.props.ready; }
 
 	pageRender() {
-		if (isAdmin(Meteor.user())) {
+		if (User.current().isAdmin()) {
 			return this.adminRender();
 		} else {
 			return this.normalRender();
@@ -125,41 +124,41 @@ class MissionsPage extends TitledPage {
 }
 
 export default createContainer(() => {
-	if (isAdmin(Meteor.user())) {
+	if (User.current().isAdmin()) {
 		missionsHandle = Meteor.subscribe('missions.admin.all');
 		return {
 			ready: missionsHandle.ready(),
-			all: Missions.find({}).fetch(),
+			all: Mission.find({}).fetch(),
 		};
 	}
 	else {
 		missionsHandle = Meteor.subscribe('missions.team');
 		submissionsHandle = Meteor.subscribe('submissions.team');
 
-		let team = Meteor.user().team;
+		let team = User.current().team;
 
-		let sentSubmissions = Submissions.find({
+		let sentSubmissions = Submission.find({
 			team: team,
 			state: SubmissionState.SENT,
 		}).fetch();
 		let sentSubmissionIds = _.pluck(sentSubmissions, 'mission');
 
-		let approvedSubmissions = Submissions.find({
+		let approvedSubmissions = Submission.find({
 			team: team,
 			state: SubmissionState.APPROVED,
 		}).fetch();
 		let approvedSubmissionIds = _.pluck(approvedSubmissions, 'mission');
 
-		available = Missions.find({
+		available = Mission.find({
 			$and: [
 				{_id: {$nin: sentSubmissionIds}},
 				{_id: {$nin: approvedSubmissions}},
 			]
 		}).fetch();
-		sent = Missions.find({
+		sent = Mission.find({
 			_id: {$in: sentSubmissionIds}
 		}).fetch();
-		approved = Missions.find({
+		approved = Mission.find({
 			_id: {$in: approvedSubmissionIds}
 		}).fetch();
 

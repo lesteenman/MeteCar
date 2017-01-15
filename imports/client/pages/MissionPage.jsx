@@ -2,10 +2,11 @@ import React, { Component } from 'react';
 import Helmet from 'react-helmet';
 import { createContainer } from 'meteor/react-meteor-data';
 
-import { Mission, MissionType } from '../../api/Missions.jsx';
+import { Mission, MissionType } from '/imports/api/Missions.jsx';
+import { User } from '/imports/api/Accounts.jsx';
+
 import TitledPage from '../ui/TitledPage.jsx';
 import PaperPage from '../ui/PaperPage.jsx';
-import { isAdmin } from '../../helpers/user.js';
 
 import Toggle from 'material-ui/Toggle';
 import { Card, CardTitle, CardMedia, CardText } from 'material-ui/Card';
@@ -34,7 +35,7 @@ class MissionPage extends TitledPage {
 		}
 
 		let actions;
-		if (isAdmin(Meteor.user())) {
+		if (User.current().isAdmin()) {
 			actions = this.adminActions();
 		} else {
 			// Get actions based on the card type
@@ -77,7 +78,7 @@ class MissionPage extends TitledPage {
 }
 
 export default createContainer((props) => {
-	let teamHandle = Meteor.subscribe(isAdmin(Meteor.user()) ? 'missions.admin.all' : 'missions.team');
+	let teamHandle = Meteor.subscribe(User.current().isAdmin() ? 'missions.admin.all' : 'missions.team');
 	let mission = Mission.findOne({_id: props.routeParams.id});
 
 	return {

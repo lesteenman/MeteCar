@@ -7,8 +7,8 @@ import { Card, CardTitle, CardMedia, CardText } from 'material-ui/Card';
 import { List, ListItem } from 'material-ui/List';
 import PopOver from 'material-ui/Popover';
 
-import { isAdmin } from '../../helpers/user.js';
-import { Team } from '../../api/Teams.jsx';
+import { Team } from '/imports/api/Teams.jsx';
+import { User } from '/imports/api/Accounts.jsx';
 import TitledPage from '../ui/TitledPage.jsx';
 
 class AdminTeamPage extends TitledPage {
@@ -35,7 +35,7 @@ class AdminTeamPage extends TitledPage {
 		let actions = this.getActions(team);
 
 		let details = [];
-		if (isAdmin(Meteor.user())) {
+		if (User.current().isAdmin()) {
 			details.push(
 				<div key='hidden'>
 					Hidden: {team.hidden ? 'yes' : 'no'}
@@ -66,7 +66,7 @@ class AdminTeamPage extends TitledPage {
 	}
 
 	getActions(team) {
-		if (Meteor.user().profile.admin) {
+		if (User.current().isAdmin()) {
 			return (
 				<CardText>
 					<List>
@@ -140,7 +140,7 @@ export default createContainer((props) => {
 	return {
 		ready: teamHandler.ready(),
 		team: team,
-		members: Meteor.users.find({
+		members: User.find({
 			team: team._id,
 		}).fetch(),
 	};

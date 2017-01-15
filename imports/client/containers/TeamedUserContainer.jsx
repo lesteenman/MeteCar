@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
-import { Accounts } from 'meteor/accounts-base';
+import { User } from '/imports/api/Accounts.jsx';
 import { createContainer } from 'meteor/react-meteor-data';
 
 import { Tracker } from 'meteor/tracker'
 import { browserHistory } from 'react-router'
-
-import { needsTeam } from '../../helpers/user.js'
 
 class TeamedUser extends Component {
 	componentWillMount() {
@@ -16,11 +14,11 @@ class TeamedUser extends Component {
 
 				if (Meteor.loggingIn() || !userTeamHandle.ready() || !teamHandle.ready()) return;
 
-				let user = Meteor.user();
+				let user = User.current();
 				if (!user) {
 					console.log('User not authenticated; Redirect to login');
 					browserHistory.push('/login');
-				} else if (needsTeam(user)) {
+				} else if (user.needsTeam()) {
 					console.log('User has no team; Redirect to team-pick');
 					browserHistory.push('/team-pick');
 				}
@@ -29,7 +27,7 @@ class TeamedUser extends Component {
 	}
 
 	render() {
-		if (!this.props.ready || needsTeam(Meteor.user())) return (<div></div>);
+		if (!this.props.ready || User.current().needsTeam()) return (<div></div>);
 
 		return (
 			<div>
@@ -48,7 +46,7 @@ TeamedUser.propTypes = {
 export default TeamedUserContainer = createContainer((props) => {
 	let userTeamHandle = Meteor.subscribe('users.all');
 	let teamHandle = Meteor.subscribe('teams.all');
-	let team = Meteor.user() ? Meteor.user().team : undefined;
+	let team = User.current() ? User.current().team : undefined;
 
 	return {
 		children: props.children,
