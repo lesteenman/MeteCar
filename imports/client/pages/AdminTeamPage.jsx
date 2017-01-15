@@ -2,56 +2,85 @@ import React, { Component } from 'react';
 import Helmet from 'react-helmet';
 import { createContainer } from 'meteor/react-meteor-data';
 
+import Toggle from 'material-ui/Toggle';
+import { Card, CardTitle, CardMedia, CardText } from 'material-ui/Card';
 import { List, ListItem } from 'material-ui/List';
+import PopOver from 'material-ui/Popover';
 
-import { Teams } from '../../api/Teams.jsx';
+import { isAdmin } from '../../helpers/user.js';
+import { Team } from '../../api/Teams.jsx';
+import TitledPage from '../ui/TitledPage.jsx';
 
-class AdminTeamPage extends Component {
-	render() {
-		if (!this.props.ready) return (<div></div>);
+class AdminTeamPage extends TitledPage {
+	constructor(props, context) {
+		super(props, context);
 
+		this.handleSetHidden = this._handleSetHidden.bind(this);
+		this.handleMemberSelected = this._handleMemberSelected.bind(this);
+		this.handleMemberDeselected = this._handleMemberDeselected.bind(this);
+
+		this.state = {
+			memberPopoverOpen: false,
+		};
+	}
+
+	getTitle() { return 'Team'; }
+	isReady() { return this.props.ready; }
+
+	pageRender() {
 		let team = this.props.team;
 		let title = "Team '"+team.name+"'";
 
 		let members = this.getMembers(team);
 		let actions = this.getActions(team);
 
-		return (
-			<div>
-				<Helmet title={title}/>
-				<table>
-					<tbody>
-						<tr>
-							<td>description</td><td>{team.description}</td>
-						</tr>
-						<tr>
-							<td>hidden</td><td>{team.hidden ? 'yes' : 'no'}</td>
-						</tr>
-					</tbody>
-				</table>
+		let details = [];
+		if (isAdmin(Meteor.user())) {
+			details.push(
+				<div key='hidden'>
+					Hidden: {team.hidden ? 'yes' : 'no'}
+				</div>
+			);
+		}
 
-				<h2>Members</h2>
+		return (
+			<Card style={{margin: '20px'}}>
+				<CardTitle title={title} />
+				<CardMedia>
+					<img src=''/>
+				</CardMedia>
+				<CardText>
+					{team.description}
+				</CardText>
+				<CardText>
+					{details}
+				</CardText>
+
+				<CardTitle title='Members' />
 				{members}
 
+				<CardTitle title='Actions' />
 				{actions}
-			</div>
+			</Card>
 		);
 	}
 
 	getActions(team) {
 		if (Meteor.user().profile.admin) {
 			return (
-				<List>
-					<ListItem
-						primaryText="delete team"
-					>
-					</ListItem>
-					<ListItem
-						primaryText="toggle hidden"
-						secondaryText={"currently: " + team.hidden ? "yes" : "no"}
-					>
-					</ListItem>
-				</List>
+				<CardText>
+					<List>
+						<ListItem
+							primaryText="delete team"
+						>
+						</ListItem>
+						<Toggle
+							toggled={team.hidden}
+							onToggle={this.handleSetHidden}
+							label="Hidden"
+						/>
+					</List>
+				</CardText>
 			);
 		} else if (false) { // Team owner
 			return (
@@ -63,25 +92,56 @@ class AdminTeamPage extends Component {
 	}
 
 	getMembers(team) {
-		let members = '';
-		console.log('Members: ', this.props.members);
+		let members = [];
 		for (let member of this.props.members) {
-			console.log('Member: ', member);
+			members.push(
+				<ListItem
+					onTouchTap={this.handleMemberSelected}
+					key={member.username}
+				>
+					{member.username}
+				</ListItem>
+			);
 		}
-		return members;
+		return (
+			<List>
+				{members}
+				<PopOver
+					open={false}
+					onRequestClose={this.handleMemberDeselected}
+					anchorEl={this.state.selectedMember}
+				>
+				</PopOver>
+			</List>
+		);
+	}
+
+	_handleMemberSelected(event) {
+		this.setState({
+			memberPopoverOpen: true,
+			selectedMember: event.currentTarget,
+		});
+	}
+
+	_handleMemberDeselected() {
+		this.setState({
+			memberPopoverOpen: false,
+		});
+	}
+
+	_handleSetHidden(event, hidden) {
+		this.props.team.setHidden(hidden);
 	}
 }
 
 export default createContainer((props) => {
 	let teamHandler = Meteor.subscribe('teams.all');
-	let team = Teams.findOne(props.routeParams.id);
+	let team = Team.findOne(props.routeParams.id);
 	return {
 		ready: teamHandler.ready(),
 		team: team,
 		members: Meteor.users.find({
-			profile: {
-				team: team._id,
-			}
+			team: team._id,
 		}).fetch(),
 	};
 }, AdminTeamPage);

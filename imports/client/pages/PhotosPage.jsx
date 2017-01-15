@@ -10,6 +10,7 @@ export default class PhotosPage extends TitledPage {
 	}
 
 	pageRender() {
+		// Use GridList
 		return (
 			<div>
 				<PaperPage>

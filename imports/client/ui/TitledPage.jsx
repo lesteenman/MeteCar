@@ -26,7 +26,7 @@ export default class TitledPage extends Component {
 
 	componentDidMount() {
 		if (!this.__titledpage_rendered__) {
-			console.error("WARNING: It seems you are overriding the 'render' method of a TitledPage ('"+this.constructor.name+"'). Use the PageRender() function intead!");
+			console.error("WARNING: It seems you are overriding the 'render' method of a TitledPage ('"+this.constructor.name+"'). Use the pageRender() function intead!");
 		}
 		if (!this.__titledpage_titleset__) {
 			console.error("WARNING: No title was set for TitledPage '"+this.constructor.name+"'. Define a 'getTitle' function to do so. Using the default title.");

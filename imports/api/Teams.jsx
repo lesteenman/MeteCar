@@ -45,6 +45,11 @@ export const Team = Class.create({
 		kickMember(member) {
 
 		},
+		setHidden(hidden) {
+			if (!isAdmin(Meteor.user())) return false;
+			this.hidden = hidden;
+			this.save();
+		}
 	},
 	helpers: {
 		currentMainMission() {

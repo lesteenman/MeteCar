@@ -40,10 +40,8 @@ function insertAdminAccount() {
 			username: 'admin',
 			email: 'eriksteenman+metecar-admin@gmail.com',
 			password: 'godmode12',
-			profile: {
-				team: false,
-				admin: true,
-			}
+			team: false,
+			admin: true,
 		});
 		console.log('User created');
 	}
