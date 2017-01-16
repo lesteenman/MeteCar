@@ -108,7 +108,7 @@ if (Meteor.isServer) {
 			return false;
 		}
 
-		let availableIds = Team.getMissions();
+		let availableIds = team.getMissions();
 
 		return Missions.find({
 			_id: {$in: availableIds},

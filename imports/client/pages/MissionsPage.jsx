@@ -152,7 +152,7 @@ export default createContainer(() => {
 		available = Mission.find({
 			$and: [
 				{_id: {$nin: sentSubmissionIds}},
-				{_id: {$nin: approvedSubmissions}},
+				{_id: {$nin: approvedSubmissionIds}},
 			]
 		}).fetch();
 		sent = Mission.find({
