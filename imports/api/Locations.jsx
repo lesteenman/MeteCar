@@ -55,6 +55,12 @@ if (Meteor.isServer) {
 	// for team/private, only publish the last or most recent 10 locations?
 
 	Meteor.publish('locations.admin.all', function() {
+		let user = User.current(this);
+		if (!(user && user.isAdmin())) {
+			this.ready();
+			return;
+		}
+		return Locations.find();
 	});
 
 	Meteor.publish('locations.team', function() {

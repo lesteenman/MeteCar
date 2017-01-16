@@ -7,8 +7,9 @@ import Map, { Marker } from '../ui/google-map';
 import mapStyle from '../ui/google-map/style.json';
 import TitledPage from '../ui/TitledPage.jsx';
 
-import { Missions } from '../../api/Missions.jsx';
-import Locations from '../../api/Locations.jsx';
+import { User } from '/imports/api/Accounts.jsx';
+import { Mission } from '/imports/api/Missions.jsx';
+import Locations from '/imports/api/Locations.jsx';
 import { distance, containingViewport, calculateZoomLevel } from '../../helpers/location.js';
 
 class MapPage extends TitledPage {
@@ -94,11 +95,23 @@ class MapPage extends TitledPage {
 }
 
 export default createContainer(() => {
-	let locationsHandle = Meteor.subscribe('locations.team');
-	let missionsHandle = Meteor.subscribe('missions.team');
+	let ready, locations, missions;
+	if (User.current().isAdmin()) {
+		let locationsHandle = Meteor.subscribe('locations.admin.all');
+		let missionsHandle = Meteor.subscribe('missions.admin.all');
+		ready = locationsHandle.ready() && missionsHandle.ready();
+		locations = {}; // Locations.find().fetch(); // Only last locations
+		missions = Mission.find({type: 'location'}).fetch();
+	} else {
+		let locationsHandle = Meteor.subscribe('locations.team');
+		let missionsHandle = Meteor.subscribe('missions.team');
+		ready = locationsHandle.ready() && missionsHandle.ready();
+		locations = Locations.find().fetch(); // Only last and relevant locations
+		missions = Mission.find({type: 'location'}).fetch();
+	}
 	return {
-		ready: locationsHandle.ready() && missionsHandle.ready(),
-		locations: Locations.find().fetch(),
-		missions: Missions.find({type: 'location'}).fetch(),
+		ready: ready,
+		locations: locations,
+		missions: missions,
 	};
 }, MapPage);
