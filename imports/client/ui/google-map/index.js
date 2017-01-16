@@ -107,9 +107,10 @@ export class Map extends React.Component {
 				center,
 				zoom: this.props.zoom,
 				styles: this.props.styles,
-				disbleDefaultUI: true,
+				disableDefaultUI: true,
 				mapTypeControl: false,
-				// zoomControl: false,
+				zoomControl: this.props.allowZooming,
+				draggable: this.props.allowPanning,
 			});
 
 			this.map = new maps.Map(node, mapConfig);
@@ -208,6 +209,8 @@ Map.propTypes = {
 	visible: T.bool,
 	styles: T.array,
 	children: T.array,
+	allowPanning: T.bool,
+	allowZooming: T.bool,
 };
 
 evtNames.forEach(e => Map.propTypes[camelize(e)] = T.func);
@@ -222,7 +225,9 @@ Map.defaultProps = {
 	centerAroundCurrentLocation: false,
 	style: {},
 	containerStyle: {},
-	visible: true
+	visible: true,
+	allowPanning: true,
+	allowZooming: true,
 };
 
 export default Map;

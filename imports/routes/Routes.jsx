@@ -63,7 +63,7 @@ export default renderRoutes = function() {
 					<Route component={PageWithTabsContainer}>
 						<Route component={TeamedUserContainer}>
 							<Route path="/dashboard" component={DashboardPage} />
-							<Route path="/map" component={MapPage} />
+							<Route path="/map(/:centerType/:centerId)" component={MapPage} />
 							<Route path="/missions" component={MissionsPage} />
 							<Route path="/photos" component={PhotosPage} />
 						</Route>

@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
-import Helmet from 'react-helmet';
 import { createContainer } from 'meteor/react-meteor-data';
+import { Link } from 'react-router';
 
 import { Mission, MissionType } from '/imports/api/Missions.jsx';
 import { User } from '/imports/api/Accounts.jsx';
 
 import TitledPage from '../ui/TitledPage.jsx';
 import PaperPage from '../ui/PaperPage.jsx';
+import MissionMap from '../ui/MissionMap.jsx';
 
 import Toggle from 'material-ui/Toggle';
 import { Card, CardTitle, CardMedia, CardText } from 'material-ui/Card';
@@ -15,10 +16,15 @@ class MissionPage extends TitledPage {
 	constructor(props, context) {
 		super(props, context);
 		this.handleSetOpen = this._handleSetOpen.bind(this);
+		this.toMap = this._toMap.bind(this);
 	}
 
 	getTitle() { return this.props.mission ? this.props.mission.title : ''; }
 	isReady() { return this.props.ready && this.props.mission; }
+
+	_toMap() {
+		console.log('Would now navigate to the map and zoom on mission', this.props.mission._id);
+	}
 
 	pageRender() {
 		let mission = this.props.mission;
@@ -26,11 +32,15 @@ class MissionPage extends TitledPage {
 		let top;
 		if (mission.type == MissionType.LOCATION) {
 			top = (
-				<CardMedia>
-					<div>
-						Hier komt een kaart
-					</div>
-				</CardMedia>
+				<Link to={'/map/mission/' + mission._id}>
+					<CardMedia style={{height: '200px'}} >
+						<MissionMap
+							missions={[mission]}
+							allowZooming={false}
+							allowPanning={false}
+						/>
+					</CardMedia>
+				</Link>
 			);
 		}
 

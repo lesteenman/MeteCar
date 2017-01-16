@@ -22,8 +22,6 @@ Next up
 
 - Approve new team members (captain and admin both)
 
-- Add a map to a mission page
-
 Later
 =====
 - Android app
