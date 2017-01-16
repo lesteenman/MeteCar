@@ -96,6 +96,7 @@ if (Meteor.isServer) {
 	Meteor.publish('users.all', function() {
 		const options = {
 			fields: {
+				id: true,
 				username: true,
 				email: true,
 				team: true,

@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 
 import { browserHistory } from 'react-router'
 
-import { Link } from 'react-router';
 import { Tabs, Tab } from 'material-ui/Tabs';
 import FontIcon from 'material-ui/FontIcon';
 
@@ -21,8 +20,8 @@ export default class MainTabBar extends Component {
 	}
 
 	render() {
-		let admin = '';
-		if (User.current().isAdmin()) {
+		let admin;
+		if (User.current() && User.current().isAdmin()) {
 			admin = (
 				<Tab
 					onActive={this.onPage.bind(this, 'admin-teams')}

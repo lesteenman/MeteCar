@@ -61,14 +61,7 @@ export const Mission = Class.create({
 });
 
 if (Meteor.isServer) {
-	// missions.admin.all
-	// missions.team
 	Meteor.publish('missions.team', function() {
-		// PUBLISH:
-		// - All open optional missions
-		// - All missions with a submission
-		// - The first required, open mission after the last accepted submission
-
 		let userId = this.userId;
 		let user = User.findOne({_id: userId});
 		let teamId = user.team;
@@ -78,63 +71,10 @@ if (Meteor.isServer) {
 			return false;
 		}
 
-		let availableIds = [];
-
-		/**
-		 * Any mission with an open submission
-		 */
-		let teamSubmissions = Submissions.find({
-			team: teamId,
-		}).fetch();
-
-		availableIds.push({_id: {$in: _.pluck(teamSubmissions, 'mission')}});
-
-		/**
-		 * The first mission after the last approved submission
-		 */
-		// // Approved missions
-		// let approved = Submissions.find({
-		// 	team: teamId,
-		// 	state: SubmissionState.APPROVED,
-		// }).fetch();
-
-		// // Get which of these is the last in order
-		// let lastFinished = Missions.findOne({
-		// 	optional: false,
-		// 	_id: {$in: _.pluck(approved, 'mission')}
-		// }, {
-		// 	sort: {order: -1},
-		// 	limit: 1,
-		// });
-		// let lastFinishedOrder = lastFinished ? lastFinished.order : 0;
-
-		// // Get the first open mission with an order greater than the last (or 0)
-		// let nextOpen = Missions.findOne({
-		// 	order: {$gt: lastFinishedOrder}
-		// }, {
-		// 	sort: {order: 1},
-		// 	limit: 1
-		// });
-		// if (nextOpen) availableIds.push({_id: nextOpen._id});
-
-		let nextOpen = team.currentMainMission();
-		if (nextOpen) availableIds.push({_id: nextOpen._id});
-
-		/**
-		 * Open optional missions
-		 */
-		let openOptional = Missions.find({
-			optional: true,
-			open: true,
-		}).fetch();
-		if (openOptional && openOptional.length) {
-			availableIds.push({_id: {$in: _.pluck(openOptional, 'mission')}});
-		}
-
-		// console.log('Query:', availableIds);
+		let availableIds = Team.getMissions();
 
 		return Missions.find({
-			$or: availableIds
+			_id: {$in: availableIds},
 		});
 	});
 

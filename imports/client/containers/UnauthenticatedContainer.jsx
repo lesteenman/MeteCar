@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { Accounts } from 'meteor/accounts-base';
 import { createContainer } from 'meteor/react-meteor-data';
-
 import { Tracker } from 'meteor/tracker'
 import { browserHistory } from 'react-router'
+
+import { User } from '/imports/api/Accounts.jsx';
 
 class Unauthenticated extends Component {
 	componentWillMount() {

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import Helmet from 'react-helmet';
 import { createContainer } from 'meteor/react-meteor-data';
+import { Link } from 'react-router';
 
 import Toggle from 'material-ui/Toggle';
 import { Card, CardTitle, CardMedia, CardText } from 'material-ui/Card';
@@ -67,13 +67,14 @@ class AdminTeamPage extends TitledPage {
 
 	getActions(team) {
 		if (User.current().isAdmin()) {
+			console.log('Getting actions for team', team);
 			return (
 				<CardText>
 					<List>
-						<ListItem
-							primaryText="delete team"
-						>
-						</ListItem>
+						<ListItem primaryText="delete team" />
+						<Link to={"/admin/teams/"+team._id+"/missions"}>
+							<ListItem primaryText="missions" />
+						</Link>
 						<Toggle
 							toggled={team.hidden}
 							onToggle={this.handleSetHidden}
@@ -94,6 +95,7 @@ class AdminTeamPage extends TitledPage {
 	getMembers(team) {
 		let members = [];
 		for (let member of this.props.members) {
+			console.log('Member:', member);
 			members.push(
 				<ListItem
 					onTouchTap={this.handleMemberSelected}

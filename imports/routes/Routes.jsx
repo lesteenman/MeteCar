@@ -28,6 +28,7 @@ import PickTeamPage from '../client/pages/PickTeamPage.jsx';
 import AdminDashboardPage from '../client/pages/AdminDashboardPage.jsx';
 import AdminTeamsPage from '../client/pages/AdminTeamsPage.jsx';
 import AdminTeamPage from '../client/pages/AdminTeamPage.jsx';
+import AdminTeamMissionsPage from '../client/pages/AdminTeamMissionsPage.jsx';
 
 export default renderRoutes = function() {
 	return (
@@ -46,6 +47,7 @@ export default renderRoutes = function() {
 					</Route>
 					<Route component={AdminPageContainer}>
 						<Route path="/admin/teams/:id" component={AdminTeamPage} />
+						<Route path="/admin/teams/:id/missions" component={AdminTeamMissionsPage} />
 					</Route>
 				</Route>
 

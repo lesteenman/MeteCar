@@ -78,7 +78,36 @@ export const Team = Class.create({
 			});
 
 			return nextOpen;
-		}
+		},
+
+		/**
+		 * Returns an array of mission ids for missions that are currently
+		 * available for this team
+		 */
+		getMissions() {
+			let missionIds = [];
+
+			// Any mission with an open submission
+			let teamSubmissions = Submissions.find({
+				team: this.id,
+			}).fetch();
+			missionIds.concat(_.pluck(teamSubmissions, 'mission'));
+
+			// Current main mission
+			let nextOpen = this.currentMainMission();
+			if (nextOpen) missionIds.push(nextOpen._id);
+
+			// Open optional missions
+			let openOptional = Missions.find({
+				optional: true,
+				open: true,
+			}).fetch();
+			if (openOptional && openOptional.length) {
+				missionIds.concat(_.pluck(openOptional, 'mission'));
+			}
+
+			return _.uniq(missionIds);
+		},
 	},
 	events: {
 		beforeUpdate(e) {

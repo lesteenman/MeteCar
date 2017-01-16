@@ -45,7 +45,7 @@ if (Meteor.isServer) {
 		let user = User.current(this);
 		return Submissions.find({team: user.team});
 	});
-	// Meteor.publish('submissions.admin.all', function() {
-
-	// });
+	Meteor.publish('submissions.admin.team', function(team) {
+		return Submissions.find({team: team});
+	});
 }
