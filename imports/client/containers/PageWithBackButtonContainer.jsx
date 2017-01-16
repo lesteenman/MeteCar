@@ -24,7 +24,6 @@ export default class PageWithMenuContainer extends Component {
 	}
 
 	_back() {
-		console.log('Would navigate back');
 		browserHistory.goBack();
 	}
 

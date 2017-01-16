@@ -1,4 +1,5 @@
 import { Class, Enum } from 'meteor/jagi:astronomy';
+import { User } from './Accounts.jsx';
 
 export const Submissions = new Mongo.Collection('submissions');
 
@@ -46,6 +47,12 @@ if (Meteor.isServer) {
 		return Submissions.find({team: user.team});
 	});
 	Meteor.publish('submissions.admin.team', function(team) {
+		console.log('Subscribing to team submissions of team', team);
+		if (!User.current(this).isAdmin()) return this.ready();
 		return Submissions.find({team: team});
+	});
+	Meteor.publish('submissions.admin.all', function() {
+		if (!User.current(this).isAdmin()) return this.ready();
+		return Submissions.find();
 	});
 }

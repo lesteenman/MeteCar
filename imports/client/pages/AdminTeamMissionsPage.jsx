@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { browserHistory } from 'react-router';
 import { createContainer } from 'meteor/react-meteor-data';
 
 import { List, ListItem } from 'material-ui/List';
@@ -16,6 +17,8 @@ class AdminTeamMissionsPage extends TitledPage {
 
 		this.handleMissionSelected = this._handleMissionSelected.bind(this);
 		this.handleMissionDeselected = this._handleMissionDeselected.bind(this);
+		this.setCompleted = this._setCompleted.bind(this);
+		this.setNotCompleted = this._setNotCompleted.bind(this);
 
 		this.state = {
 			popoverOpened: false,
@@ -27,16 +30,46 @@ class AdminTeamMissionsPage extends TitledPage {
 
 	pageRender() {
 		let missions = [];
-
-		console.log('Missions', this.props.missions);
+		let teamId = this.props.team._id;
 
 		this.props.missions.forEach((mission) => {
 			missions.push(
-				<ListItem key={mission._id} onTouchTap={this.handleMissionSelected}>
-					{mission.title}
-				</ListItem>
+				<ListItem
+					key={mission._id}
+					onTouchTap={this.handleMissionSelected.bind(this, mission, true)}
+					primaryText={mission.title}
+					secondaryText={mission.isComplete(teamId) ? 'completed' : ''}
+				/>
 			);
 		});
+		this.props.unavailableMissions.forEach((mission) => {
+			missions.push(
+				<ListItem
+					key={mission._id}
+					onTouchTap={this.handleMissionSelected.bind(this, mission, false)}
+					style={{color: '#333'}}
+					primaryText={mission.title}
+				/>
+			);
+		});
+
+		let selectedMission = this.state.selectedMission;
+		let toMission = function() {
+			browserHistory.push('/missions/' + (selectedMission ? selectedMission._id : ''));
+		};
+
+		let setCompletedItem, mission;
+		if ((mission = this.state.selectedMission) && this.state.selectedMissionAvailable) {
+			if (mission.isComplete(teamId)) {
+				setCompletedItem = (
+					<MenuItem primaryText="set not completed" onTouchTap={this.setNotCompleted.bind(this, selectedMission)}/>
+				);
+			} else {
+				setCompletedItem = (
+					<MenuItem primaryText="set completed" onTouchTap={this.setCompleted.bind(this, selectedMission)}/>
+				);
+			}
+		}
 
 		return (
 			<div>
@@ -46,26 +79,46 @@ class AdminTeamMissionsPage extends TitledPage {
 				<PopOver
 					open={this.state.popoverOpened}
 					onRequestClose={this.handleMissionDeselected}
-					anchorEl={this.state.selectedMission}
+					anchorEl={this.state.selectedMissionEl}
 				>
 					<Menu>
-						<MenuItem primaryText="set completed"/>
-						<MenuItem primaryText="set not completed"/>
-						<MenuItem primaryText="view mission"/>
+						{setCompletedItem}
+						<MenuItem
+							primaryText="view mission"
+							onTouchTap={toMission}
+						/>
 					</Menu>
 				</PopOver>
 			</div>
 		);
 	}
 
-	_handleMissionSelected(event) {
+	_setCompleted() {
+		this.state.selectedMission.setCompleted(this.props.team._id, true);
 		this.setState({
-			popoverOpened: true,
-			selectedMission: event.currentTarget,
+			popoverOpened: false,
 		});
 	}
 
-	_handleMissionDeselected() {
+	_setNotCompleted() {
+		this.state.selectedMission.setCompleted(this.props.team._id, false);
+		this.setState({
+			popoverOpened: false,
+		});
+	}
+
+	_handleMissionSelected(mission, available, event) {
+		let el = event.currentTarget;
+		this.setState({
+			popoverOpened: true,
+			selectedMissionEl: el,
+			selectedMission: mission,
+			selectedMissionAvailable: available,
+		});
+		return event.nativeEvent.preventDefault();
+	}
+
+	_handleMissionDeselected(e) {
 		this.setState({
 			popoverOpened: false,
 		});
@@ -76,21 +129,24 @@ export default createContainer((props) => {
 	let teamHandler = Meteor.subscribe('teams.all');
 	let team = Team.findOne(props.routeParams.id);
 	let missionIds = team.getMissions();
-	console.log('mission ids', missionIds);
+	console.log('MissionIds', missionIds);
 
-	let submissionsHandler = Meteor.subscribe('submissions.admin.team', team.id);
-	let submissions = Submission.find({
-		mission: {$in: missionIds}
-	}).fetch();
+	let submissionsHandler = Meteor.subscribe('submissions.admin.team', team._id);
 
 	let missionHandler = Meteor.subscribe('missions.admin.all');
 	let missions = Mission.find({
 		_id: {$in: missionIds}
 	}).fetch();
+
+	let unavailableMissions = Mission.find({
+		_id: {$nin: missionIds}
+	}).fetch();
+
 	return {
 		ready: submissionsHandler.ready() && missionHandler.ready() && teamHandler.ready(),
 		team: team,
 		missions: missions,
-		submissions: submissions,
+		// submissions: submissions,
+		unavailableMissions: unavailableMissions,
 	};
 }, AdminTeamMissionsPage);

@@ -1,6 +1,6 @@
 import { Class, Enum } from 'meteor/jagi:astronomy';
 import { isAdmin } from '../helpers/user.js';
-import { Submissions } from './Submissions.jsx';
+import { Submission, SubmissionState } from './Submissions.jsx';
 import { Team } from './Teams.jsx';
 import { User } from './Accounts.jsx';
 
@@ -57,6 +57,43 @@ export const Mission = Class.create({
 			this.open = open;
 			return this.save();
 		},
+		setCompleted(team, completed) {
+			if (!User.current().isAdmin()) return false;
+
+			let submission = Submission.findOne({
+				team: team,
+				mission: this._id,
+			});
+			// console.log('Setting mission', this, 'completed for', team);
+			if (completed) {
+				if (!submission) submission = new Submission();
+				if (submission.state == SubmissionState.APPROVED) return;
+
+				submission.team = team;
+				submission.mission = this._id;
+				submission.state = SubmissionState.APPROVED;
+				submission.save();
+			} else {
+				if (!(submission && submission.state == SubmissionState.APPROVED)) return;
+				submission.remove();
+			}
+		},
+	},
+	helpers: {
+		hasSubmission(team) {
+			return Submission.find({
+				mission: this._id,
+				team: team,
+			}).count() > 0;
+		},
+		isComplete(team) {
+			let submissions = Submission.find({
+				mission: this._id,
+				team: team,
+				state: SubmissionState.APPROVED,
+			});
+			return submissions.count() > 0;
+		},
 	},
 });
 
@@ -79,18 +116,13 @@ if (Meteor.isServer) {
 	});
 
 	Meteor.publish('missions.admin.all', function() {
-		let userId = this.userId;
-		let user = User.findOne({_id: userId});
-		if (!isAdmin(user)) {
-			this.ready();
-			return false;
-		}
+		if (!User.current(this).isAdmin(this)) return this.ready();
 		return Missions.find();
 	});
 }
 
 export function createTestMissions() {
-	console.log('Attempting to create test missions');
+	console.log('Creating test missions');
 
 	let mission1 = new Mission({
 		title: 'And so it begins!',

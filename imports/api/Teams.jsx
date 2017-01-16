@@ -85,13 +85,13 @@ export const Team = Class.create({
 		 * available for this team
 		 */
 		getMissions() {
-			let missionIds = [];
+			let missionIds;
 
-			// Any mission with an open submission
+			// Any mission with a submission
 			let teamSubmissions = Submissions.find({
-				team: this.id,
+				team: this._id,
 			}).fetch();
-			missionIds.concat(_.pluck(teamSubmissions, 'mission'));
+			missionIds = _.pluck(teamSubmissions, 'mission');
 
 			// Current main mission
 			let nextOpen = this.currentMainMission();

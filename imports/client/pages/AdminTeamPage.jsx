@@ -67,7 +67,6 @@ class AdminTeamPage extends TitledPage {
 
 	getActions(team) {
 		if (User.current().isAdmin()) {
-			console.log('Getting actions for team', team);
 			return (
 				<CardText>
 					<List>
@@ -95,7 +94,6 @@ class AdminTeamPage extends TitledPage {
 	getMembers(team) {
 		let members = [];
 		for (let member of this.props.members) {
-			console.log('Member:', member);
 			members.push(
 				<ListItem
 					onTouchTap={this.handleMemberSelected}
