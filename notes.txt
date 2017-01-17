@@ -3,11 +3,10 @@ Next up
 
 (Please, do them one by one this time)
 
-- Implement photo missions submission
-- TODO:
-	- Show a bubble for unapproved missions for Admin
-
-- submitted photos page
+- Let picking a team work again
+- Let team avatars work
+- FIXME: Setting a mission as completed does not stream next mission to the team
+- Switch a photo mission to 'results publicized'
 
 - Modify a team's members (admin and captains)
 
@@ -21,6 +20,8 @@ Next up
 - Implement photo rating(?)
 
 - Approve new team members (captain and admin both)
+- Show who succeeded when after results are publicized for teams
+- Show a bubble for unapproved photos for Admin
 
 Later
 =====
