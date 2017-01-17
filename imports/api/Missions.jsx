@@ -40,6 +40,10 @@ export const Mission = Class.create({
 			type: String,
 			optional: true
 		},
+		publicResults: {
+			type: Boolean,
+			default: false,
+		},
 		// trigger: {
 			
 		// },
@@ -99,8 +103,8 @@ export const Mission = Class.create({
 
 if (Meteor.isServer) {
 	Meteor.publish('missions.team', function() {
-		let userId = this.userId;
-		let user = User.findOne({_id: userId});
+		let user = User.current(this);
+		if (!(user && user.team)) return this.ready()
 		let teamId = user.team;
 		let team = Team.findOne({_id: teamId});
 		if (!teamId) {
@@ -116,7 +120,8 @@ if (Meteor.isServer) {
 	});
 
 	Meteor.publish('missions.admin.all', function() {
-		if (!User.current(this).isAdmin(this)) return this.ready();
+		let user = User.current(this);
+		if (!user && user.isAdmin()) return this.ready();
 		return Missions.find();
 	});
 }

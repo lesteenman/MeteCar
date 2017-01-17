@@ -5,12 +5,7 @@ Next up
 
 - Implement photo missions submission
 - TODO:
-	- When a file has been uploaded, create an open submission and set photo as data
-	- When there is an open submission with data, enable upload button
-	- Allow admin to approve the image
-	- Set meta for file (for what mission and team is it)
-	- (mostly in ImageUpload) show currently uploaded image
-	- Allow overwriting submitted image
+	- Show a bubble for unapproved missions for Admin
 
 - submitted photos page
 

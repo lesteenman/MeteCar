@@ -43,7 +43,7 @@ export default renderRoutes = function() {
 
 				<Route component={PageWithBackButtonContainer}>
 					<Route component={TeamedUserContainer}>
-						<Route path="/missions/:id" component={MissionPage} />
+						<Route path="/missions/:missionId" component={MissionPage} />
 					</Route>
 					<Route component={AdminPageContainer}>
 						<Route path="/admin/teams/:id" component={AdminTeamPage} />

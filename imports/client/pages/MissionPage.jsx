@@ -4,13 +4,17 @@ import { Link } from 'react-router';
 
 import { Mission, MissionType } from '/imports/api/Missions.jsx';
 import { User } from '/imports/api/Accounts.jsx';
-import { Submission, SubmissionPhotos } from '/imports/api/Submissions.jsx';
+import { Team } from '/imports/api/Teams.jsx';
+import { Submission, SubmissionState, SubmissionPhotos } from '/imports/api/Submissions.jsx';
 
 import TitledPage from '../ui/TitledPage.jsx';
 import PaperPage from '../ui/PaperPage.jsx';
 import MissionMap from '../ui/MissionMap.jsx';
 import ImageUpload from '../ui/ImageUpload.jsx';
 
+import { List, ListItem } from 'material-ui/List';
+import Subheader from 'material-ui/Subheader';
+import Divider from 'material-ui/Divider';
 import RaisedButton from 'material-ui/RaisedButton';
 import Toggle from 'material-ui/Toggle';
 import { Card, CardTitle, CardMedia, CardText } from 'material-ui/Card';
@@ -20,11 +24,15 @@ class MissionPage extends TitledPage {
 		super(props, context);
 		this.handleSetOpen = this._handleSetOpen.bind(this);
 		this.onUpload = this._onUpload.bind(this);
+		this.onSubmit = this._onSubmit.bind(this);
+		this.onRevoke = this._onRevoke.bind(this);
 		this.toMap = this._toMap.bind(this);
 	}
 
 	getTitle() { return this.props.mission ? this.props.mission.title : ''; }
-	isReady() { return this.props.ready && this.props.mission; }
+	isReady() {
+		return this.props.ready && this.props.mission;
+	}
 
 	_toMap() {
 		console.log('Would now navigate to the map and zoom on mission', this.props.mission._id);
@@ -80,9 +88,8 @@ class MissionPage extends TitledPage {
 	adminActions() {
 		return (
 			<div>
-				<CardTitle>
-					Admin Actions
-				</CardTitle>
+				<Divider />
+				<Subheader>Admin Actions</Subheader>
 				<CardText>
 					<Toggle
 						toggled={this.props.mission.open}
@@ -95,19 +102,37 @@ class MissionPage extends TitledPage {
 	}
 
 	photoActions(mission) {
-		return (
-			<div>
-				<ImageUpload
-					ref='submission'
-					collection={SubmissionPhotos}
-					onUpload={this.onUpload}
-				/>
-				<RaisedButton
-					disabled={true}
-					label="submit"
-				/>
-			</div>
-		);
+		let submission = this.props.submission;
+		console.log('Submission', submission);
+		if (submission && submission.state == SubmissionState.SENT) {
+			let image = SubmissionPhotos.findOne({_id: submission.data});
+			return (
+				<div>
+					<img src={image ? image.link() : image} style={{maxWidth: '100%'}}/>
+					<RaisedButton
+						disabled={!(submission && submission.state == SubmissionState.SENT)}
+						label="revoke submission"
+						onTouchTap={this.onRevoke}
+					/>
+				</div>
+			);
+		} else {
+			return (
+				<div>
+					<ImageUpload
+						ref='submission'
+						value={submission ? submission.data : undefined}
+						collection={SubmissionPhotos}
+						onUpload={this.onUpload}
+					/>
+					<RaisedButton
+						disabled={!(submission && submission.state == SubmissionState.OPEN)}
+						label="submit"
+						onTouchTap={this.onSubmit}
+					/>
+				</div>
+			);
+		}
 	}
 
 	_onUpload(error, fileId) {
@@ -116,14 +141,24 @@ class MissionPage extends TitledPage {
 		} else {
 			console.log('Received an image:', fileId);
 			let submission;
-			if (!(submission = Submission.findOne({team: User.current().team, mission: this.props.mission}))) {
-				submission = new Submission();
-				submission.team = User.current().team;
-				submission.mission = this.props.mission;
-				submission.save();
+			if (submission = Submission.findOne({team: User.current().team, mission: this.props.mission._id})) {
+				console.log('Dropping an old submission');
+				submission.drop();
 			}
-			submission.submit(fileId);
+			console.log('Opening a new submission');
+			submission = new Submission();
+			submission.open(this.props.mission._id, fileId);
 		}
+	}
+
+	_onSubmit() {
+		let submission = this.props.submission;
+		if (submission) submission.submit();
+	}
+
+	_onRevoke() {
+		let submission = this.props.submission;
+		if (submission) submission.revoke();
 	}
 
 	puzzleActions(mission) {
@@ -132,18 +167,22 @@ class MissionPage extends TitledPage {
 }
 
 export default createContainer((props) => {
-	let teamHandle = Meteor.subscribe(User.current().isAdmin() ? 'missions.admin.all' : 'missions.team');
-	let mission = Mission.findOne({_id: props.routeParams.id});
+	let user = User.current();
+	console.log('User:', user.isAdmin(), user.team);
 
-	let submissionHandle = Meteor.subscribe(User.current().isAdmin() ? 'submissions.admin.all' : 'submissions.team');
+	let teamHandle = Meteor.subscribe(user.isAdmin() ? 'missions.admin.all' : 'missions.team');
+	let mission = Mission.findOne({_id: props.routeParams.missionId});
+
+	let submissionHandle = Meteor.subscribe(user.isAdmin() ? 'submissions.admin.all' : 'submissions.team');
+	// let submissionPhotosHandle = Meteor.subscribe('submission-photos.mission', user.team, props.routeParams.missionId);
 	let submissionPhotosHandle = Meteor.subscribe('submission-photos.team');
-	let adminSubmissions = Submission.find({mission: props.routeParams.id}).fetch();
-	let submissions = Submission.findOne({mission: props.routeParams.id});
+	let adminSubmissions = Submission.find({mission: props.routeParams.missionId}).fetch();
+	let submission = Submission.findOne({mission: props.routeParams.missionId, team: user.team});
 
 	return {
-		ready: teamHandle.ready() && submissionHandle.ready() && submissionPhotosHandle.ready() && adminSubmissions.ready(),
+		ready: teamHandle.ready() && submissionHandle.ready() && submissionPhotosHandle.ready(),
 		mission: mission,
 		adminSubmissions: adminSubmissions,
-		submissions: submissions,
+		submission: submission,
 	}
 }, MissionPage);

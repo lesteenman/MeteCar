@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import Images from '../../api/TeamAvatars.jsx';
 import LinearProgress from 'material-ui/LinearProgress';
 
 import CameraIcon from 'material-ui/svg-icons/image/photo-camera';
@@ -60,23 +59,26 @@ class ImageUpload extends Component {
 	}
 
 	render() {
+		let image;
+		if (this.state.uploadedFile) {
+			image = this.state.uploadedFile;
+		} else if (this.props.value) {
+			let imageObj = this.props.collection.findOne({_id: this.props.value});
+			image = imageObj ? imageObj.link() : undefined;
+		}
+
 		let containerStyle = {
 			position: 'relative',
 			width: '100%',
 			height: '300px',
 			border: '1px solid rgb(91,93,101)',
-			backgroundSize: 'cover',
+			backgroundImage: 'url('+image+')',
+			backgroundSize: 'contain',
+			backgroundPosition: '50% 50%',
+			backgroundRepeat: 'no-repeat',
 			backgroundColor: 'transparent',
 			cursor: 'pointer',
 		};
-
-		let image;
-		if (this.state.uploadedFile) {
-			image = this.state.uploadedFile
-		} else if (this.props.file) {
-			image = this.props.collection.findOne({_id: this.props.file}).link();
-		}
-		containerStyle.backgroundImage = 'url('+image+')';
 
 		let iconStyle = {
 			position: 'absolute',
@@ -137,7 +139,7 @@ ImageUpload.propTypes = {
 	height: React.PropTypes.number,
 	collection: React.PropTypes.object.isRequired,
 	value: React.PropTypes.string, // file ID on the given collection
-	onUpload: React.PropTypes.function, // (error, file.id) => {}
+	onUpload: React.PropTypes.func, // (error, file.id) => {}
 };
 
 export default ImageUpload;

@@ -21,12 +21,24 @@ export const SubmissionPhotos = new FilesCollection({
 });
 
 if (Meteor.isServer) {
-	Meteor.publish('photo-submissions.team', function() {
-		return SubmissionPhotos.find().cursor();
+	Meteor.publish('submission-photos.mission', function(teamId, missionId) {
+		let submission = Submission.findOne({
+			team: teamId,
+			mission: mission,
+		});
+		let mission = Mission.findOne({_id: missionId});
+		console.log('Subscribing to photos for one mission', teamId, missionId, submission._id, submission.data);
+		if (submission && submission.data && mission && mission.type == MissionType.PHOTO) {
+			return SubmissionPhotos.find({_id: submission.data}).cursor;
+		}
+		return this.ready();
 	});
-	Meteor.publish('photo-submissions.admin.all', function() {
+	Meteor.publish('submission-photos.team', function() {
+		return SubmissionPhotos.find({}).cursor;
+	});
+	Meteor.publish('submission-photos.admin.all', function() {
 		if (!User.current(this).isAdmin()) return this.ready();
-		return SubmissionPhotos.find().cursor();
+		return SubmissionPhotos.find({}).cursor;
 	});
 }
 
@@ -56,26 +68,40 @@ export const Submission = Class.create({
 		team: String,
 	},
 	meteorMethods: {
-		submit(data) {
-			console.log('Team submits', this, data);
+		drop() {
+			console.log('Old submission would be dropped', this._id);
+			let user = User.current(this);
+			if (!(user.team == this.team || user.isAdmin())) return false;
+			this.remove();
+		},
+		open(mission, data) {
+			let user = User.current(this);
+			console.log('Team opens a submission', mission, data);
+			this.state = SubmissionState.OPEN;
+			this.team = user.team;
+			this.mission = mission;
+			this.data = data;
+			this.save();
+		},
+		revoke() {
+			console.log('Submission would be revoked', this._id);
+			let user = User.current(this);
+			if (!(user.team == this.team || user.isAdmin())) return false;
+			this.state = SubmissionState.OPEN;
+			this.save();
+		},
+		submit() {
 			let mission = Mission.findOne({_id: this.mission});
-			if (mission.type == MissionType.PHOTO) {
-				if (this.data) {
-					// Remove any old photos
-					let oldPhoto = SubmissionPhotos.findOne(this.data);
-					if (oldPhoto) oldPhoto.remove();
-				}
-				this.data = data;
-				this.save();
-			} else if (mission.type == MissionType.PUZZLE) {
-			}
+			this.state = SubmissionState.SENT;
+			this.save();
 		},
-		'admin.approve': function() {
-			console.log('Admin Approves mission', this);
+		approve: function() {
+			this.state = SubmissionState.APPROVED;
+			this.save();
 		},
-		'admin.reject': function() {
-			console.log('Admin Rejects mission', this);
-			// TODO: Either move it back to 'OPEN' or 'REJECTED'
+		reject: function() {
+			this.state = SubmissionState.OPEN;
+			this.save();
 		},
 	}
 });
@@ -93,5 +119,25 @@ if (Meteor.isServer) {
 	Meteor.publish('submissions.admin.all', function() {
 		if (!User.current(this).isAdmin()) return this.ready();
 		return Submissions.find();
+	});
+	Meteor.publish('submissions.admin.photo.all', function() {
+		if (!User.current(this).isAdmin()) return this.ready();
+		let missions = Mission.find({
+			type: MissionType.PHOTO,
+		}).fetch();
+		let missionIds = _.pluck(missions, '_id');
+		return Submissions.find({
+			mission: {$in: missionIds}
+		});
+	});
+	Meteor.publish('submissions.photo.all', function() {
+		let missions = Mission.find({
+			publicResults: true,
+			type: MissionType.PHOTO,
+		}).fetch();
+		let missionIds = _.pluck(missions, '_id');
+		return Submissions.find({
+			mission: {$in: missionIds},
+		});
 	});
 }

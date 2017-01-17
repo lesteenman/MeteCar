@@ -13,8 +13,9 @@ import './notifications.js';
 import httpProxy from 'http-proxy';
 import fs from 'fs';
 
+// Meteor.absoluteUrl.defaultOptions.rootUrl = 'https://auto.steenman.me';
 Meteor.startup(() => {
-	// process.env.ROOT_URL = 'https://steenman.me:3025';
+	// process.env.ROOT_URL = 'https://auto.steenman.me';
 	// httpProxy.createServer({
 	// 	ws: true,
 	// 	target: {
