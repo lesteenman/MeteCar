@@ -42,7 +42,6 @@ class CreateTeamPage extends Component {
 	}
 
 	render() {
-		// TODO: Add photo
 		let {name: nameError, description: descriptionError, error: error} = this.state.error;
 		return (
 			<div className='form-container'>

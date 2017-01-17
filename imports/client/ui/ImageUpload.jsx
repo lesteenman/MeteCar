@@ -10,24 +10,15 @@ class ImageUpload extends Component {
 	constructor(props) {
 		super(props);
 
-		this.upload = this._upload.bind(this);
 		this.state = {
 			file: ''
-		}
-	}
-
-	_upload(callback) {
-		if (this.uploader) {
-			this.onFinishCb = callback;
-			this.uploader.start();
-		} else {
-			callback(true);
 		}
 	}
 
 	componentDidMount() {
 		this.refs.input.onchange = (e) => {
 			let file = e.currentTarget.files[0];
+			console.log("A file was set", file);
 			if (file) {
 				let reader = new FileReader();
 				reader.onload = (e) => {
@@ -56,12 +47,14 @@ class ImageUpload extends Component {
 					this.setState({upload: null, progress: null, uploadedFile: null});
 					if (error) {
 						this.setState({error: error.reason});
-						if (this.onFinishCb) this.onFinishCb(false);
+						if (this.props.onUpload) this.props.onUpload(error);
 					} else {
-						this.setState({file: fileObj.url});
-						if (this.onFinishCb) this.onFinishCb(fileObj._id);
+						this.setState({file: fileObj._id});
+						if (this.props.onUpload) this.props.onUpload(undefined, fileObj._id);
 					}
 				});
+
+				this.uploader.start();
 			}
 		};
 	}
@@ -77,7 +70,12 @@ class ImageUpload extends Component {
 			cursor: 'pointer',
 		};
 
-		let image = this.state.uploadedFile || this.props.file;
+		let image;
+		if (this.state.uploadedFile) {
+			image = this.state.uploadedFile
+		} else if (this.props.file) {
+			image = this.props.collection.findOne({_id: this.props.file}).link();
+		}
 		containerStyle.backgroundImage = 'url('+image+')';
 
 		let iconStyle = {
@@ -138,6 +136,8 @@ class ImageUpload extends Component {
 ImageUpload.propTypes = {
 	height: React.PropTypes.number,
 	collection: React.PropTypes.object.isRequired,
+	value: React.PropTypes.string, // file ID on the given collection
+	onUpload: React.PropTypes.function, // (error, file.id) => {}
 };
 
 export default ImageUpload;

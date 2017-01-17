@@ -3,11 +3,16 @@ Next up
 
 (Please, do them one by one this time)
 
-
-- See a team's available missions, and either create a correct submission or reject an existing one
+- Implement photo missions submission
+- TODO:
+	- When a file has been uploaded, create an open submission and set photo as data
+	- When there is an open submission with data, enable upload button
+	- Allow admin to approve the image
+	- Set meta for file (for what mission and team is it)
+	- (mostly in ImageUpload) show currently uploaded image
+	- Allow overwriting submitted image
 
 - submitted photos page
-- Implement photo missions submission
 
 - Modify a team's members (admin and captains)
 

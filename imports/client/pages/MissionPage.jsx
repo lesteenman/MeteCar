@@ -4,11 +4,14 @@ import { Link } from 'react-router';
 
 import { Mission, MissionType } from '/imports/api/Missions.jsx';
 import { User } from '/imports/api/Accounts.jsx';
+import { Submission, SubmissionPhotos } from '/imports/api/Submissions.jsx';
 
 import TitledPage from '../ui/TitledPage.jsx';
 import PaperPage from '../ui/PaperPage.jsx';
 import MissionMap from '../ui/MissionMap.jsx';
+import ImageUpload from '../ui/ImageUpload.jsx';
 
+import RaisedButton from 'material-ui/RaisedButton';
 import Toggle from 'material-ui/Toggle';
 import { Card, CardTitle, CardMedia, CardText } from 'material-ui/Card';
 
@@ -16,6 +19,7 @@ class MissionPage extends TitledPage {
 	constructor(props, context) {
 		super(props, context);
 		this.handleSetOpen = this._handleSetOpen.bind(this);
+		this.onUpload = this._onUpload.bind(this);
 		this.toMap = this._toMap.bind(this);
 	}
 
@@ -48,7 +52,11 @@ class MissionPage extends TitledPage {
 		if (User.current().isAdmin()) {
 			actions = this.adminActions();
 		} else {
-			// Get actions based on the card type
+			if (mission.type == MissionType.PHOTO) {
+				actions = this.photoActions(mission);
+			} else if (mission.type == MissionType.PUZZLE) {
+				actions = this.puzzleActions(mission);
+			}
 		}
 
 		return (
@@ -85,14 +93,57 @@ class MissionPage extends TitledPage {
 			</div>
 		);
 	}
+
+	photoActions(mission) {
+		return (
+			<div>
+				<ImageUpload
+					ref='submission'
+					collection={SubmissionPhotos}
+					onUpload={this.onUpload}
+				/>
+				<RaisedButton
+					disabled={true}
+					label="submit"
+				/>
+			</div>
+		);
+	}
+
+	_onUpload(error, fileId) {
+		if (error) {
+			console.error("Error uploading submission photo", error);
+		} else {
+			console.log('Received an image:', fileId);
+			let submission;
+			if (!(submission = Submission.findOne({team: User.current().team, mission: this.props.mission}))) {
+				submission = new Submission();
+				submission.team = User.current().team;
+				submission.mission = this.props.mission;
+				submission.save();
+			}
+			submission.submit(fileId);
+		}
+	}
+
+	puzzleActions(mission) {
+		
+	}
 }
 
 export default createContainer((props) => {
 	let teamHandle = Meteor.subscribe(User.current().isAdmin() ? 'missions.admin.all' : 'missions.team');
 	let mission = Mission.findOne({_id: props.routeParams.id});
 
+	let submissionHandle = Meteor.subscribe(User.current().isAdmin() ? 'submissions.admin.all' : 'submissions.team');
+	let submissionPhotosHandle = Meteor.subscribe('submission-photos.team');
+	let adminSubmissions = Submission.find({mission: props.routeParams.id}).fetch();
+	let submissions = Submission.findOne({mission: props.routeParams.id});
+
 	return {
-		ready: teamHandle.ready(),
+		ready: teamHandle.ready() && submissionHandle.ready() && submissionPhotosHandle.ready() && adminSubmissions.ready(),
 		mission: mission,
+		adminSubmissions: adminSubmissions,
+		submissions: submissions,
 	}
 }, MissionPage);
