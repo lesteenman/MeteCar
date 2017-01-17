@@ -25,7 +25,7 @@ export default class SignupPage extends Component {
 			password2 = this.refs.password2.value();
 		Meteor.call('accounts.signup', username, email, password1, password2, (error, result) => {
 			if (error) {
-				console.log('Error', error);
+				console.log('Error', error.message);
 				let errorState = {};
 				if (['error', 'email', 'password1', 'password2'].indexOf(error.error) >= 0) {
 					errorState[error.error] = error.reason;

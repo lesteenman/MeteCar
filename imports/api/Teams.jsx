@@ -36,6 +36,7 @@ export const Team = Class.create({
 		hidden: {
 			type: Boolean,
 			optional: true,
+			default: false,
 		},
 		captain: String,
 	},
