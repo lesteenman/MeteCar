@@ -14,6 +14,7 @@ import { Menu, MenuItem } from 'material-ui/Menu';
 
 import { GridList, GridTile } from 'material-ui/GridList';
 import IconButton from 'material-ui/IconButton';
+import Subheader from 'material-ui/Subheader';
 import CheckIcon from 'material-ui/svg-icons/av/playlist-add-check';
 
 class PhotosPage extends TitledPage {
@@ -74,16 +75,21 @@ class PhotosPage extends TitledPage {
 						);
 					}
 					photos.push(
-						<GridTile
+						<a href={image.link()}
 							key={submission._id}
-							title={team.name}
-							subtitle={subtitle}
-							titleStyle={titleStyle}
-							actionIcon={adminIcon}
-							onTouchTap={console.log('requesting to view photo', image._id)}
+							data-lightbox={"mission-" + mission._id}
+							data-title={team.name}
 						>
-							<img src={image.link()} />
-						</GridTile>
+							<GridTile
+								title={team.name}
+								subtitle={subtitle}
+								titleStyle={titleStyle}
+								actionIcon={adminIcon}
+								onTouchTap={console.log('requesting to view photo', image._id)}
+							>
+								<img src={image.link()} />
+							</GridTile>
+						</a>
 					);
 				}
 			});
@@ -92,7 +98,7 @@ class PhotosPage extends TitledPage {
 					style={{display: 'flex', flexWrap: 'wrap', justifyContent: 'space-around'}}
 					key={mission._id}
 				>
-					<h2>{mission.title}</h2>
+					<Subheader>{mission.title}</Subheader>
 					<GridList
 						style={{display: 'flex', flexWrap: 'nowrap', overflowX: 'auto'}}
 					>

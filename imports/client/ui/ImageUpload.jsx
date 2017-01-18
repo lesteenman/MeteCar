@@ -9,15 +9,18 @@ class ImageUpload extends Component {
 	constructor(props) {
 		super(props);
 
+		// console.log('re-create imageupload');
+
 		this.state = {
 			file: ''
 		}
 	}
 
 	componentDidMount() {
+		// console.log('imageupload did mount');
 		this.refs.input.onchange = (e) => {
 			let file = e.currentTarget.files[0];
-			console.log("A file was set", file);
+			// console.log("A file was set", file);
 			if (file) {
 				let reader = new FileReader();
 				reader.onload = (e) => {
@@ -32,17 +35,17 @@ class ImageUpload extends Component {
 				}, false);
 
 				this.uploader.on('start', () => {
-					console.log('Starting');
+					// console.log('Starting');
 					this.setState({upload: this.uploader});
 				});
 
 				this.uploader.on('progress', (progress) => {
-					console.log('Progress', progress);
+					// console.log('Progress', progress);
 					this.setState({progress: progress});
 				});
 
 				this.uploader.on('end', (error, fileObj) => {
-					console.log('Done', error, fileObj);
+					console.log('FileUpload Done', error, fileObj);
 					this.setState({upload: null, progress: null, uploadedFile: null});
 					if (error) {
 						this.setState({error: error.reason});
@@ -58,10 +61,17 @@ class ImageUpload extends Component {
 		};
 	}
 
+	getFile() {
+		return this.state.file;
+	}
+
 	render() {
 		let image;
 		if (this.state.uploadedFile) {
 			image = this.state.uploadedFile;
+		} else if (this.state.file) {
+			let imageObj = this.props.collection.findOne({_id: this.state.file});
+			image = imageObj ? imageObj.link() : undefined;
 		} else if (this.props.value) {
 			let imageObj = this.props.collection.findOne({_id: this.props.value});
 			image = imageObj ? imageObj.link() : undefined;

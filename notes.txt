@@ -3,6 +3,9 @@ Next up
 
 (Please, do them one by one this time)
 
+- Dude, use dialogs!
+ - Approving/Disapproving missions
+
 - Let team avatars work
 - FIXME: Setting a mission as completed does not stream next mission to the team
 - Switch a photo mission to 'results publicized'
@@ -17,6 +20,7 @@ Next up
 - Implement puzzle missions submission
 - Publicize a mission's photos to everyone
 - Implement photo rating(?)
+- Scoring
 
 - Approve new team members (captain and admin both)
 - Show who succeeded when after results are publicized for teams

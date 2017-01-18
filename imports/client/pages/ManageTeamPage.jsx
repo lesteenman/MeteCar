@@ -25,16 +25,10 @@ class CreateTeamPage extends Component {
 		let team = Team.findOne({_id: id});
 		team.name = this.refs.name.value();
 		team.description = this.refs.description.value();
-		this.refs.avatar.upload(function(result) {
-			if (result) {
-				if (result !== true) {
-					team.avatar = result;
-				}
-				team.save();
-			} else {
-				console.error('Uploading Failed');
-			}
-		});
+		if (this.refs.avatar.getFile()) {
+			team.avatar = this.refs.avatar.getFile();
+		}
+		team.save();
 	}
 
 	render() {
@@ -65,10 +59,7 @@ class CreateTeamPage extends Component {
 			}
 		}
 
-		let avatar, avatarUrl;
-		if (avatar = TeamAvatars.findOne(this.props.team.avatar)) {
-			avatarUrl = avatar.link();
-		}
+		let avatar = TeamAvatars.findOne({_id: this.props.team.avatar});
 
 		return (
 			<div className='form-container'>
@@ -80,7 +71,7 @@ class CreateTeamPage extends Component {
 				<ImageUpload
 					ref='avatar'
 					collection={TeamAvatars}
-					file={avatarUrl}
+					file={avatar ? avatar._id : undefined}
 				/>
 
 				{captainSection}
