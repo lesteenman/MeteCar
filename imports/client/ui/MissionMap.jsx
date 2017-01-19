@@ -4,7 +4,9 @@ import { createContainer } from 'meteor/react-meteor-data';
 import Map, { Marker, InfoWindow } from '../ui/google-map';
 import mapStyle from '../ui/google-map/style.json';
 
+import TeamAvatars from '/imports/api/TeamAvatars.jsx';
 import { User } from '/imports/api/Accounts.jsx';
+import { Team } from '/imports/api/Teams.jsx';
 import { Mission } from '/imports/api/Missions.jsx';
 import { Location } from '/imports/api/Locations.jsx';
 import { distance, containingViewport, calculateZoomLevel } from '../../helpers/location.js';
@@ -48,6 +50,13 @@ export default class MissionMap extends Component {
 		currentLocations.forEach((location) => {
 			let user = User.findOne({sessions: location.session});
 			if (!user) return;
+			let avatar;
+			if (user.team) {
+				let team = Team.findOne(user.team);
+				avatar = TeamAvatars.findOne(team.avatar);
+				if (avatar)
+					console.log('Found a team avatar to use instead of the default:', avatar.link());
+			}
 			markers.push(
 				<Marker
 					key={location.time}
@@ -56,6 +65,7 @@ export default class MissionMap extends Component {
 					name={location.session}
 					position={{lat: location.lat, lng: location.lng}}
 					onClick={this.onMarkerClick}
+					icon={avatar ? avatar.link() : undefined}
 				/>
 			);
 		});
