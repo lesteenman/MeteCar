@@ -7,6 +7,7 @@ import { Card, CardTitle, CardMedia, CardText } from 'material-ui/Card';
 import { List, ListItem } from 'material-ui/List';
 import PopOver from 'material-ui/Popover';
 
+import TeamAvatars from '/imports/api/TeamAvatars.jsx';
 import { Team } from '/imports/api/Teams.jsx';
 import { User } from '/imports/api/Accounts.jsx';
 import TitledPage from '../ui/TitledPage.jsx';
@@ -33,6 +34,7 @@ class AdminTeamPage extends TitledPage {
 
 		let members = this.getMembers(team);
 		let actions = this.getActions(team);
+		let avatar = TeamAvatars.findOne(this.props.team.avatar);
 
 		let details = [];
 		if (User.current().isAdmin()) {
@@ -47,7 +49,7 @@ class AdminTeamPage extends TitledPage {
 			<Card style={{margin: '20px'}}>
 				<CardTitle title={title} />
 				<CardMedia>
-					<img src=''/>
+					<img src={avatar ? avatar.link() : ''}/>
 				</CardMedia>
 				<CardText>
 					{team.description}

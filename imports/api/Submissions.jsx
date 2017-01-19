@@ -26,10 +26,10 @@ if (Meteor.isServer) {
 			team: teamId,
 			mission: mission,
 		});
-		let mission = Mission.findOne({_id: missionId});
+		let mission = Mission.findOne(missionId);
 		console.log('Subscribing to photos for one mission', teamId, missionId, submission._id, submission.data);
 		if (submission && submission.data && mission && mission.type == MissionType.PHOTO) {
-			return SubmissionPhotos.find({_id: submission.data}).cursor;
+			return SubmissionPhotos.find(submission.data).cursor;
 		}
 		return this.ready();
 	});
@@ -91,7 +91,7 @@ export const Submission = Class.create({
 			this.save();
 		},
 		submit() {
-			let mission = Mission.findOne({_id: this.mission});
+			let mission = Mission.findOne(this.mission);
 			this.state = SubmissionState.SENT;
 			this.save();
 		},

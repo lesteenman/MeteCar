@@ -106,7 +106,7 @@ if (Meteor.isServer) {
 		let user = User.current(this);
 		if (!(user && user.team)) return this.ready()
 		let teamId = user.team;
-		let team = Team.findOne({_id: teamId});
+		let team = Team.findOne(teamId);
 		if (!teamId) {
 			this.ready();
 			return false;

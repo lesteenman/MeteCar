@@ -64,7 +64,7 @@ if (Meteor.isServer) {
 	});
 
 	Meteor.publish('locations.team', function() {
-		let user = User.findOne({_id: this.userId}, {team: true});
+		let user = User.findOne(this.userId, {team: true});
 		let team = user.team;
 		if (!team) {
 			this.ready();

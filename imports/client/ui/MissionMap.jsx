@@ -108,9 +108,9 @@ export default class MissionMap extends Component {
 			selectedMarker: marker,
 		};
 		if (props.type === 'user') {
-			state.user = User.findOne({_id: props.userId});
+			state.user = User.findOne(props.userId);
 		} else {
-			state.mission = Mission.findOne({_id: props.missionId});
+			state.mission = Mission.findOne(props.missionId);
 		}
 		this.setState(state);
 	}

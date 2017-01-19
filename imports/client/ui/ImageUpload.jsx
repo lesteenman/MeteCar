@@ -70,10 +70,10 @@ class ImageUpload extends Component {
 		if (this.state.uploadedFile) {
 			image = this.state.uploadedFile;
 		} else if (this.state.file) {
-			let imageObj = this.props.collection.findOne({_id: this.state.file});
+			let imageObj = this.props.collection.findOne(this.state.file);
 			image = imageObj ? imageObj.link() : undefined;
 		} else if (this.props.value) {
-			let imageObj = this.props.collection.findOne({_id: this.props.value});
+			let imageObj = this.props.collection.findOne(this.props.value);
 			image = imageObj ? imageObj.link() : undefined;
 		}
 

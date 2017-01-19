@@ -6,7 +6,6 @@ Next up
 - Dude, use dialogs!
  - Approving/Disapproving missions
 
-- Let team avatars work
 - FIXME: Setting a mission as completed does not stream next mission to the team
 - Switch a photo mission to 'results publicized'
 

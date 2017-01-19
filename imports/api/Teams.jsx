@@ -11,7 +11,6 @@ export const Teams = new Mongo.Collection('teams');
 export const Team = Class.create({
 	name: 'Team',
 	collection: Teams,
-	secured: false,
 	fields: {
 		name: {
 			type: String,
@@ -51,7 +50,34 @@ export const Team = Class.create({
 			if (!User.current().isAdmin()) return false;
 			this.hidden = hidden;
 			this.save();
-		}
+		},
+		update(name, description, avatar) {
+			let user = User.current();
+			if (user._id != this.captain && !user.isAdmin()) {
+				console.log('someone other than the team captain or an admin is trying to update the team');
+				return 'Only the captain can make changes';
+			}
+
+			console.log('Updating team to:', name, description, avatar);
+			this.name = name;
+			this.description = description;
+			this.avatar = avatar;
+			return true;
+		},
+		pick() {
+			// TODO: Let a captain confirm first (add to an array in the teams object?)
+			let user = User.current();
+			user.team = team;
+			user.save();
+		},
+		confirmMember(userId) {
+			let user = User.current();
+
+		},
+		removeMember(userId) {
+			let user = User.current();
+
+		},
 	},
 	helpers: {
 		currentMainMission() {
@@ -110,28 +136,6 @@ export const Team = Class.create({
 			return _.uniq(missionIds);
 		},
 	},
-	events: {
-		beforeUpdate(e) {
-			let doc = e.currentTarget;
-			if (Meteor.userId() != doc.captain) {
-				console.log('someone other than the team captain is trying to update the team');
-				return false;
-			}
-
-			let allowed = ['name', 'description', 'avatar'];
-			let modified = doc.getModified();
-			for (let f = 0; f < modified.length; f++) {
-				let field = modified[f];
-					if (allowed.indexOf(field) < 0) {
-						console.log('Field not allowed', field, allowed.indexOf(field));
-						return false;
-					}
-			}
-
-			console.log('Updating:', modified);
-			return true;
-		},
-	},
 });
 
 Meteor.methods({
@@ -152,21 +156,6 @@ Meteor.methods({
 
 		user.team = team._id;
 		user.save();
-	},
-	'teams.update'(name, description, photo) {
-		
-	},
-	'teams.pick'(team) {
-		// TODO: Let a captain confirm first (add to an array in the teams object?)
-		let user = User.current();
-		user.team = team;
-		user.save();
-	},
-	'teams.member.confirm'(userId) {
-
-	},
-	'teams.member.remove'(userId) {
-
 	},
 });
 

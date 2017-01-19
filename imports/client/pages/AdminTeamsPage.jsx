@@ -4,7 +4,9 @@ import { Link } from 'react-router';
 import { createContainer } from 'meteor/react-meteor-data';
 
 import { List, ListItem } from 'material-ui/List';
+import Avatar from 'material-ui/Avatar';
 
+import TeamAvatars from '../../api/TeamAvatars.jsx';
 import { Team } from '../../api/Teams.jsx';
 import TitledPage from '/imports/client/ui/TitledPage.jsx';
 
@@ -16,10 +18,12 @@ class AdminTeamsPage extends TitledPage {
 		let teams = [];
 		for (let team of this.props.teams) {
 			let link = '/admin/teams/' + team._id;
+			let avatar = TeamAvatars.findOne({_id: team.avatar});
 			teams.push(
 				<Link to={link} key={team._id}>
 					<ListItem
 						primaryText={team.name}
+						rightAvatar={avatar ? <Avatar src={avatar.link()} /> : undefined}
 					/>
 				</Link>
 			);

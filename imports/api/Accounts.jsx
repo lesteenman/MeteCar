@@ -65,7 +65,7 @@ User.current = function(ref) {
 		// Probably in a publish function
 		userId = ref ? ref.userId : null;
 	}
-	return userId ? User.findOne({_id: userId}) : null;
+	return userId ? User.findOne(userId) : null;
 };
 
 Meteor.methods({

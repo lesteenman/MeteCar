@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import Helmet from 'react-helmet';
 
 import { createContainer } from 'meteor/react-meteor-data';
 
@@ -11,9 +10,11 @@ import TeamAvatars from '../../api/TeamAvatars.jsx';
 
 import { InputLine, ActionButton, ExtraButton } from '../ui/UiComponents.jsx';
 import ImageUpload from '../ui/ImageUpload.jsx';
+import TitledPage from '../ui/TitledPage.jsx';
+
 import '../less/form.scss';
 
-class CreateTeamPage extends Component {
+class CreateTeamPage extends TitledPage {
 	constructor(props) {
 		super(props);
 
@@ -21,17 +22,27 @@ class CreateTeamPage extends Component {
 		this.submit = this._submit.bind(this);
 	}
 
+	getTitle() { return "Manage team"; }
+
 	_submit(id) {
-		let team = Team.findOne({_id: id});
-		team.name = this.refs.name.value();
-		team.description = this.refs.description.value();
+		let team = Team.findOne(id);
+		let name = this.refs.name.value();
+		let description = this.refs.description.value();
+		let avatar = team.avatar;
 		if (this.refs.avatar.getFile()) {
-			team.avatar = this.refs.avatar.getFile();
+			avatar = this.refs.avatar.getFile();
 		}
-		team.save();
+		let result = team.update(name, description, avatar);
+		if (result === true) {
+			browserHistory.push('/dashboard');
+		} else {
+			this.setState({
+				error: result,
+			});
+		}
 	}
 
-	render() {
+	pageRender() {
 		let { nameError, descriptionError, error} = this.state.error;
 
 		let captainSection;
@@ -59,19 +70,18 @@ class CreateTeamPage extends Component {
 			}
 		}
 
-		let avatar = TeamAvatars.findOne({_id: this.props.team.avatar});
+		// let avatar = TeamAvatars.findOne({_id: this.props.team.avatar});
+		console.log('Team:', this.props.team);
 
 		return (
 			<div className='form-container'>
-				<Helmet title="Manage team" />
-
 				<InputLine ref='name' label='Team name' value={this.props.team.name} error={nameError} />
 				<InputLine ref='description' label='Team description' value={this.props.team.description} multiLine={true} error={descriptionError} />
 
 				<ImageUpload
 					ref='avatar'
 					collection={TeamAvatars}
-					file={avatar ? avatar._id : undefined}
+					value={this.props.team.avatar}
 				/>
 
 				{captainSection}
@@ -80,18 +90,22 @@ class CreateTeamPage extends Component {
 					{error}
 				</div>
 
-				<ActionButton handler={this.submit.bind(this, this.props.team._id)}>Save</ActionButton>
-				<ExtraButton handler={browserHistory.goBack}>Cancel</ExtraButton>
+				{this.props.team.captain == Meteor.userId() ? (
+				<div>
+					<ActionButton handler={this.submit.bind(this, this.props.team._id)}>Save</ActionButton>
+					<ExtraButton handler={browserHistory.goBack}>Cancel</ExtraButton>
+				</div>
+				) : ''}
 			</div>
 		);
 	}
 }
 
 export default createContainer(() => {
-	let team = Team.findOne({_id: User.current().team});
+	let team = Team.findOne(User.current().team);
 	return {
 		team: team,
-		captain: team ? User.findOne({_id: team.captain}) : undefined,
+		captain: team ? User.findOne(team.captain) : undefined,
 		members: User.find({team: team._id}).fetch(),
 	};
 }, CreateTeamPage);

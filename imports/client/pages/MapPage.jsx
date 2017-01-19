@@ -55,7 +55,7 @@ export default createContainer((props) => {
 	let centerType = props.routeParams.centerType;
 	let centerId = props.routeParams.centerId;
 	if (centerType == 'mission') {
-		let mission = Mission.findOne({_id: centerId});
+		let mission = Mission.findOne(centerId);
 		if (mission && mission.type == MissionType.LOCATION) {
 			center = {
 				lat: mission.lat,
