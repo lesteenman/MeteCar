@@ -3,9 +3,7 @@ Next up
 
 (Please, do them one by one this time)
 
-- Dude, use dialogs!
- - Approving/Disapproving missions
-
+- Dialog for approving/disapproving missions
 - FIXME: Setting a mission as completed does not stream next mission to the team
 - Switch a photo mission to 'results publicized'
 
@@ -24,6 +22,11 @@ Next up
 - Approve new team members (captain and admin both)
 - Show who succeeded when after results are publicized for teams
 - Show a bubble for unapproved photos for Admin
+
+- Show current locations with team icons on map
+- Fix automatic zoom and focus of map
+- Optionally include current session's current location in map centering
+- Merge map icons
 
 Later
 =====

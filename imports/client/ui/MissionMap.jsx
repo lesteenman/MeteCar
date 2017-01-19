@@ -6,7 +6,7 @@ import mapStyle from '../ui/google-map/style.json';
 
 import { User } from '/imports/api/Accounts.jsx';
 import { Mission } from '/imports/api/Missions.jsx';
-import Locations from '/imports/api/Locations.jsx';
+import { Location } from '/imports/api/Locations.jsx';
 import { distance, containingViewport, calculateZoomLevel } from '../../helpers/location.js';
 
 export default class MissionMap extends Component {
@@ -22,9 +22,9 @@ export default class MissionMap extends Component {
 	}
 
 	render() {
-		// TODO: Helper in Locations.jsx to filter all current locations
-		console.log("Rendering", this.props);
-		let vp = containingViewport(this.props.users.concat(this.props.missions));
+		let currentLocations = Location.currentLocations();
+
+		let vp = containingViewport(this.props.missions);
 
 		let lat = vp.lat2 - (vp.lat2 - vp.lat1) / 2;
 		let lng = vp.lng2 - (vp.lng2 - vp.lng1) / 2;
@@ -36,9 +36,6 @@ export default class MissionMap extends Component {
 		};
 
 		// Make an educated guess about the zoom level required to fit all points
-
-		console.log('Viewport between', vp);
-
 		let vpw = distance(vp.lat1, vp.lng1, vp.lat2, vp.lng1);
 		let vph = distance(vp.lat1, vp.lng1, vp.lat1, vp.lng2);
 
@@ -47,19 +44,18 @@ export default class MissionMap extends Component {
 
 		let initialZoom = Math.min(15, Math.max(horizontalZoom, verticalZoom));
 
-		console.log('Using zoom:', initialZoom);
-		console.log('Would want to use zoom', horizontalZoom, verticalZoom);
-		console.log('Centering', this.props.center, initialCenter);
-
 		let markers = [];
-		this.props.users.forEach((user) => {
+		currentLocations.forEach((location) => {
+			let user = User.findOne({sessions: location.session});
+			if (!user) return;
 			markers.push(
 				<Marker
-					key={user.time}
+					key={location.time}
 					type='user'
-					userId={user.userId}
-					name={user.session}
-					position={{lat: user.lat, lng: user.lng}}
+					userId={user._id}
+					name={location.session}
+					position={{lat: location.lat, lng: location.lng}}
+					onClick={this.onMarkerClick}
 				/>
 			);
 		});
@@ -106,12 +102,9 @@ export default class MissionMap extends Component {
 		state = {
 			infoWindowVisible: true,
 			selectedMarker: marker,
+			user: props.type == 'user' ? User.findOne(props.userid) : undefined,
+			mission: props.type == 'mission' ? Mission.findOne(props.missionId) : undefined,
 		};
-		if (props.type === 'user') {
-			state.user = User.findOne(props.userId);
-		} else {
-			state.mission = Mission.findOne(props.missionId);
-		}
 		this.setState(state);
 	}
 
@@ -126,7 +119,9 @@ export default class MissionMap extends Component {
 			);
 		} else if (this.state.user) {
 			info = (
-				<div>User: {this.state.user.username}</div>
+				<div>
+					User: {this.state.user.username}
+				</div>
 			);
 		} else {
 			info = (
@@ -153,6 +148,7 @@ MissionMap.defaultProps = {
 	users: [],
 	allowPanning: true,
 	allowZooming: true,
+	showCurrent: true,
 };
 
 MissionMap.propTypes = {
@@ -161,4 +157,5 @@ MissionMap.propTypes = {
 	allowPanning: React.PropTypes.bool,
 	allowZooming: React.PropTypes.bool,
 	center: React.PropTypes.object,
+	showCurrent: React.PropTypes.bool,
 };

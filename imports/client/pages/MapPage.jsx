@@ -40,14 +40,14 @@ export default createContainer((props) => {
 		let locationsHandle = Meteor.subscribe('locations.admin.all');
 		let missionsHandle = Meteor.subscribe('missions.admin.all');
 		ready = locationsHandle.ready() && missionsHandle.ready();
-		locations = {}; // Locations.find().fetch(); // Only last locations
+		// locations = {}; // Locations.find().fetch(); // Only last locations
 		missions = Mission.find({type: 'location'}).fetch();
 	}
 	else {
 		let locationsHandle = Meteor.subscribe('locations.team');
 		let missionsHandle = Meteor.subscribe('missions.team');
 		ready = locationsHandle.ready() && missionsHandle.ready();
-		locations = Locations.find().fetch(); // Only last and relevant locations
+		// locations = Locations.find().fetch(); // Only last and relevant locations
 		missions = Mission.find({type: 'location'}).fetch();
 	}
 

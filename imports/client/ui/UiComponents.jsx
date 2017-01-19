@@ -10,7 +10,7 @@ import TextField from 'material-ui/TextField';
 const WideButton = (props) => {
 	return (<button
 		className={`${props.buttonType} button`}
-		onClick={props.handler}
+		onTouchTap={props.handler}
 	>{props.children}</button>)
 }
 

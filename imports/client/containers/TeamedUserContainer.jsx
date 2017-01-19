@@ -12,7 +12,6 @@ class TeamedUser extends Component {
 				let userTeamHandle = Meteor.subscribe('users.all');
 				let teamHandle = Meteor.subscribe('teams.all');
 
-				console.log('Teamed User autorun', Meteor.loggingIn(), userTeamHandle.ready(), teamHandle.ready());
 				if (Meteor.loggingIn() || !userTeamHandle.ready() || !teamHandle.ready()) return;
 
 				let user = User.current();

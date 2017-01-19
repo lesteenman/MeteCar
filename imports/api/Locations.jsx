@@ -1,12 +1,53 @@
+import { Class } from 'meteor/jagi:astronomy';
 import { Meteor } from 'meteor/meteor';
-import { Teams } from './Teams.jsx';
+import { Team } from './Teams.jsx';
 import { User } from './Accounts.jsx';
+import { Mission, MissionType } from './Missions.jsx';
 
 import { distance } from '../helpers/location.js';
 
 export default Locations = new Mongo.Collection('locations');
 
-// TODO use astronomy with an index on time
+export const Location = Class.create({
+	name: 'Location',
+	collection: Locations,
+	fields: {
+		_id: String,
+		session: String,
+		lat: Number,
+		lng: Number,
+		acc: Number,
+		time: {
+			type: Number,
+			index: -1,
+		},
+	},
+});
+
+Location.last = function(session) {
+	return Location.findOne({session: session}, {sort: {time: -1, limit: 1}});
+};
+
+// To work reactively, this needs subscriptions on locations (obviously).
+// It also needs users and teams, but those should all have already been
+// subscribed to by our root pages.
+Location.currentLocations = function() {
+	let users = User.find();
+
+	let sessionIds = [];
+	users.forEach((user) => {
+		if (user.sessions) sessionIds = sessionIds.concat(user.sessions);
+	});
+
+	let locations = [];
+	sessionIds.forEach((sessionId) => {
+		let sessionLocation = Location.last(sessionId);
+		// TODO: Check if it still somewhat recent
+		if (sessionLocation) locations.push(sessionLocation);
+	});
+
+	return locations;
+}
 
 Meteor.methods({
 	'location.update'(session, lat, lng, acc, time) {
@@ -21,7 +62,7 @@ Meteor.methods({
 			user.save();
 		}
 
-		let last = Locations.findOne({session}, {sort: {time: -1, limit: 1}, fields: {lat: true, lng: true}});
+		let last = Location.last(session);
 		if (last) {
 			let dist = distance(lat, lng, last.lat, last.lng);
 			if (dist < 0.005) {
@@ -29,13 +70,28 @@ Meteor.methods({
 			}
 		}
 
-		Locations.insert({
-			session, lat, lng, acc, time
-		});
-		if (Math.random() > 0.9) fakerCheck(session);
+		let location = new Location();
+		location.session = session;
+		location.lat = lat;
+		location.lng = lng;
+		location.acc = acc;
+		location.time = time;
+		location.save();
 
-		team = Teams.findOne({name: user.team});
-		// checkObjective(team, lat, lng, acc);
+		// if (Math.random() > 0.9) fakerCheck(session);
+
+		// team = Team.findOne({name: user.team});
+		// let missionIds = team.getMissions();
+		// let missions = Mission.find({
+		// 	id: {$in: missionIds},
+		// 	type: MissionType.LOCATION,
+		// }).fetch();
+		// missions.forEach((mission) => {
+		// 	// check if is open
+		// 	// check if location is near enough
+		// 	// ...
+		// 	// profit! :D
+		// });
 	}
 });
 
@@ -64,15 +120,15 @@ if (Meteor.isServer) {
 	});
 
 	Meteor.publish('locations.team', function() {
-		let user = User.findOne(this.userId, {team: true});
-		let team = user.team;
-		if (!team) {
+		let user = User.current(this);
+		if (!(user && user.team)) {
+			console.log('unteamed user found');
 			this.ready();
 			return;
 		}
 
 		let sessions = [];
-		let users = User.find({team: team}).fetch();
+		let users = User.find({team: user.team}).fetch();
 		for (let i = 0; i < users.length; i++) {
 			sessions = sessions.concat(users[i].sessions || []);
 		}

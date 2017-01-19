@@ -46,6 +46,7 @@ export const User = Class.create({
 			type: Boolean,
 			default: false,
 		},
+		sessions: [String],
 	},
 	helpers: {
 		isAdmin() {

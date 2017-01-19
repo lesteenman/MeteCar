@@ -19,8 +19,6 @@ function deg2rad(deg) {
 export function containingViewport(locations) {
 	let latMin, latMax, lngMin, lngMax;
 
-	console.log('Locations:', locations);
-
 	locations.forEach(function(l) {
 		if (latMin === undefined || l.lat < latMin) latMin = l.lat;
 		if (latMax === undefined || l.lat > latMax) latMax = l.lat;
@@ -34,7 +32,6 @@ export function containingViewport(locations) {
 		lng1: lngMin,
 		lng2: lngMax,
 	}
-	console.log('Viewport: ', vp);
 	return vp;
 }
 
@@ -48,7 +45,6 @@ export function calculateZoomLevel(screenWidth, range) {
 		metersPerPixel /= 2;
 		zoomLevel++;
 	}
-	console.log("zoom level = ", zoomLevel);
 	return zoomLevel;
 }
 
