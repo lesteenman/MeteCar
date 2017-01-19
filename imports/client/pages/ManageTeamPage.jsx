@@ -12,13 +12,15 @@ import { InputLine, ActionButton, ExtraButton } from '../ui/UiComponents.jsx';
 import ImageUpload from '../ui/ImageUpload.jsx';
 import TitledPage from '../ui/TitledPage.jsx';
 
+import Snackbar from 'material-ui/Snackbar';
+
 import '../less/form.scss';
 
 class CreateTeamPage extends TitledPage {
 	constructor(props) {
 		super(props);
 
-		this.state = {error: {}};
+		this.state = {error: {}, snackbar: ''};
 		this.submit = this._submit.bind(this);
 	}
 
@@ -34,7 +36,9 @@ class CreateTeamPage extends TitledPage {
 		}
 		let result = team.update(name, description, avatar);
 		if (result === true) {
-			browserHistory.push('/dashboard');
+			this.setState({
+				snackbar: "Opgeslagen.",
+			});
 		} else {
 			this.setState({
 				error: result,
@@ -90,10 +94,14 @@ class CreateTeamPage extends TitledPage {
 					{error}
 				</div>
 
+				<Snackbar
+					open={!!this.state.snackbar}
+					message={this.state.snackbar}
+				/>
+
 				{this.props.team.captain == Meteor.userId() ? (
 				<div>
 					<ActionButton handler={this.submit.bind(this, this.props.team._id)}>Save</ActionButton>
-					<ExtraButton handler={browserHistory.goBack}>Cancel</ExtraButton>
 				</div>
 				) : ''}
 			</div>

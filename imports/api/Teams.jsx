@@ -62,6 +62,7 @@ export const Team = Class.create({
 			this.name = name;
 			this.description = description;
 			this.avatar = avatar;
+			this.save();
 			return true;
 		},
 		pick() {

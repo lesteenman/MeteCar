@@ -44,6 +44,7 @@ export default renderRoutes = function() {
 				<Route component={PageWithBackButtonContainer}>
 					<Route component={TeamedUserContainer}>
 						<Route path="/missions/:missionId" component={MissionPage} />
+						<Route path="/team-manage" component={ManageTeamPage} />
 					</Route>
 					<Route component={AdminPageContainer}>
 						<Route path="/admin/teams/:id" component={AdminTeamPage} />
@@ -57,9 +58,6 @@ export default renderRoutes = function() {
 						<Route path="/team-pick" component={PickTeamPage} />
 					</Route>
 
-					<Route component={TeamedUserContainer}>
-						<Route path="/team-manage" component={ManageTeamPage} />
-					</Route>
 					<Route component={PageWithTabsContainer}>
 						<Route component={TeamedUserContainer}>
 							<Route path="/dashboard" component={DashboardPage} />
