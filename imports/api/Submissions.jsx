@@ -1,26 +1,40 @@
 import { Class, Enum } from 'meteor/jagi:astronomy';
 import { User } from './Accounts.jsx';
-import { FilesCollection } from 'meteor/ostrio:files';
 
 import { Mission, MissionType } from './Missions.jsx';
 
 export const Submissions = new Mongo.Collection('submissions');
-export const SubmissionPhotos = new FilesCollection({
-	allowClientCode: false,
-	collectionName: 'submission-photos',
-	downloadRoute: '/img/submissions',
-	storagePath: Meteor.absolutePath + '/../public/submissions/',
-	public: true, // TODO: False? Only for those who should see it?
-	onBeforeUpload: function(file) {
-		if (file.size <= 1024*1024*5 && /png|jpg|jpeg/i.test(file.extension)) {
-			return true;
-		} else {
-			return 'Please upload image, max 5mb';
-		}
-	},
+export const SubmissionPhotos = new FS.Collection('submissionPhotos', {
+	stores: [
+		new FS.Store.FileSystem('submissionPhotos', {
+			path: Meteor.absolutePath + "/../public/submissions/",
+		}),
+	],
+	// allowClientCode: false,
+	// collectionName: 'submission-photos',
+	// downloadRoute: '/img/submissions',
+	// storagePath: Meteor.absolutePath + '/../public/submissions/',
+	// public: true, // TODO: False? Only for those who should see it?
+	// onBeforeUpload: function(file) {
+	// 	if (file.size <= 1024*1024*5 && /png|jpg|jpeg/i.test(file.extension)) {
+	// 		return true;
+	// 	} else {
+	// 		return 'Please upload image, max 5mb';
+	// 	}
+	// },
 });
 
 if (Meteor.isServer) {
+	SubmissionPhotos.allow({
+		'insert': function() {
+			return true;
+		},
+		'download': function() {
+			// TODO: Only return true if the user can actually see this submission!
+			return true;
+		},
+	});
+
 	Meteor.publish('submission-photos.mission', function(teamId, missionId) {
 		let submission = Submission.findOne({
 			team: teamId,

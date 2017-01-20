@@ -38,7 +38,7 @@ export class Marker extends React.Component {
 
 	renderMarker() {
 		let {
-			map, google, position, mapCenter
+			map, google, position, mapCenter, icon
 		} = this.props;
 		if (!google) {
 			return null;
@@ -53,6 +53,7 @@ export class Marker extends React.Component {
 			map: map,
 			position: position
 		};
+		if (icon) pref.icon = icon;
 		this.marker = new google.maps.Marker(pref);
 
 		evtNames.forEach(e => {

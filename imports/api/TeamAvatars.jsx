@@ -1,26 +1,28 @@
-import { FilesCollection } from 'meteor/ostrio:files';
+var createSquareThumb = function(fileObj, readStream, writeStream) {
+	  var size = '40';
+	  gm(readStream).autoOrient().resize(size, size + '^').gravity('Center').extent(size, size).stream('PNG').pipe(writeStream);
+};
 
-const TeamAvatars = new FilesCollection({
-	// debug: true,
-	allowClientCode: false,
-	collectionName: 'avatars',
-	downloadRoute: '/img/avatars',
-	storagePath: Meteor.absolutePath + '/../public/avatars/',
-	public: true,
-	onBeforeUpload: function(file) {
-		if (file.size <= 1024*1024*5 && /png|jpg|jpeg/i.test(file.extension)) {
-			return true;
-		} else {
-			return 'Please upload image, max 5mb';
-		}
-	},
+const TeamAvatars = new FS.Collection("avatars", {
+	stores: [
+		new FS.Store.FileSystem("full", {
+			path: Meteor.absolutePath + "/../public/avatars/",
+		}),
+		new FS.Store.FileSystem("thumbs", {
+			path: Meteor.absolutePath + "/../public/avatars/thumbs/",
+			transformWrite: createSquareThumb
+		}),
+	],
 });
-
 export default TeamAvatars;
 
 if (Meteor.isServer) {
-	// TeamAvatars.denyClient();
+	TeamAvatars.allow({
+		'insert': function() { return true; },
+		'download': function() { return true; },
+	});
+
 	Meteor.publish('avatars.all', function() {
-		return TeamAvatars.find({}).cursor;
+		return TeamAvatars.find({});
 	});
 }

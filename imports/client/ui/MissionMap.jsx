@@ -54,8 +54,6 @@ export default class MissionMap extends Component {
 			if (user.team) {
 				let team = Team.findOne(user.team);
 				avatar = TeamAvatars.findOne(team.avatar);
-				if (avatar)
-					console.log('Found a team avatar to use instead of the default:', avatar.link());
 			}
 			markers.push(
 				<Marker
@@ -63,9 +61,10 @@ export default class MissionMap extends Component {
 					type='user'
 					userId={user._id}
 					name={location.session}
+					timestamp={location.time}
 					position={{lat: location.lat, lng: location.lng}}
 					onClick={this.onMarkerClick}
-					icon={avatar ? avatar.link() : undefined}
+					icon={avatar ? avatar.url({store: 'thumbs'}) : undefined}
 				/>
 			);
 		});
@@ -76,7 +75,7 @@ export default class MissionMap extends Component {
 					key={mission._id}
 					type='mission'
 					missionId={mission._id}
-					name={mission.session}
+					name={mission.title}
 					position={{lat: mission.lat, lng: mission.lng}}
 					onClick={this.onMarkerClick}
 				/>
@@ -109,12 +108,19 @@ export default class MissionMap extends Component {
 	}
 
 	_onMarkerClick(props, marker) {
+		console.log('marker clicked', props);
 		state = {
 			infoWindowVisible: true,
 			selectedMarker: marker,
-			user: props.type == 'user' ? User.findOne(props.userid) : undefined,
-			mission: props.type == 'mission' ? Mission.findOne(props.missionId) : undefined,
+			user: undefined,
+			mission: undefined,
 		};
+		if (props.type == 'user') {
+			state.user = User.findOne(props.userId);
+			state.session = props.name;
+			state.timestamp = props.timestamp;
+		}
+		if (props.type == 'mission') state.mission = Mission.findOne(props.missionId);
 		this.setState(state);
 	}
 
@@ -130,7 +136,9 @@ export default class MissionMap extends Component {
 		} else if (this.state.user) {
 			info = (
 				<div>
-					User: {this.state.user.username}
+					User: {this.state.user.username}<br />
+					Session: {this.state.session}<br />
+					Timestamp: {new Date(this.state.timestamp).toDateString()}<br />
 				</div>
 			);
 		} else {

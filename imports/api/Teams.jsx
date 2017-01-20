@@ -61,7 +61,7 @@ export const Team = Class.create({
 			console.log('Updating team to:', name, description, avatar);
 			this.name = name;
 			this.description = description;
-			this.avatar = avatar;
+			if (avatar || avatar === false) this.avatar = avatar;
 			this.save();
 			return true;
 		},

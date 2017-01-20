@@ -3,31 +3,38 @@ Next up
 
 (Please, do them one by one this time)
 
-- Use team icons on the map
+[x] Move to collectionFS for files
+[x] Test new file upload with avatars
+[x] Test thumb method
+[ ] Cluster map icons (use markerClusterer of google maps - new implementation in the maps lib)
+[ ] Implement new files system for submissions (upload with cb)
 
-- Dialog for approving/disapproving missions
-- FIXME: Setting a mission as completed does not stream next mission to the team
-- Switch a photo mission to 'results publicized'
+[ ] Use team icons on the map
+	[ ] Possible using collectionFS
+[ ] Completed missions get a green icon on the map
 
-- Modify a team's members (admin and captains)
+[ ] Dialog for approving/disapproving missions
+[ ] FIXME: Setting a mission as completed does not stream next mission to the team
+[ ] Switch a photo mission to 'results publicized'
 
-- Create question mission (puzzle)
-- Create photo mission
-- Create location mission
+[ ] Modify a team's members (admin and captains)
 
-- Implement location missions submission
-- Implement puzzle missions submission
-- Publicize a mission's photos to everyone
-- Implement photo rating(?)
-- Scoring
+[ ] Create question mission (puzzle)
+[ ] Create photo mission
+[ ] Create location mission
 
-- Approve new team members (captain and admin both)
-- Show who succeeded when after results are publicized for teams
-- Show a bubble for unapproved photos for Admin
+[ ] Implement location missions submission
+[ ] Implement puzzle missions submission
+[ ] Publicize a mission's photos to everyone
+[ ] Implement photo rating(?)
+[ ] Scoring
 
-- Fix automatic zoom and focus of map
-- Optionally include current session's current location in map centering
-- Merge map icons
+[ ] Approve new team members (captain and admin both)
+[ ] Show who succeeded when after results are publicized for teams
+[ ] Show a bubble for unapproved photos for Admin
+
+[ ] Fix automatic zoom and focus of map
+[ ] Optionally include current session's current location in map centering
 
 Later
 =====

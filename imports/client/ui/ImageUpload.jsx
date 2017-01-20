@@ -21,44 +21,55 @@ class ImageUpload extends Component {
 		this.refs.input.onchange = (e) => {
 			let file = e.currentTarget.files[0];
 			// console.log("A file was set", file);
-			if (file) {
-				let reader = new FileReader();
-				reader.onload = (e) => {
-					this.setState({uploadedFile: e.target.result});
-				};
-				reader.readAsDataURL(file);
+			// if (file) {
+			// 	this.props.collection.insert(file, 
 
-				this.uploader = this.props.collection.insert({
-					file: file,
-					streams: 'dynamic',
-					chunkSize: 'dynamic',
-				}, false);
+				// let reader = new FileReader();
+				// reader.onload = (e) => {
+				// 	this.setState({uploadedFile: e.target.result});
+				// };
+				// reader.readAsDataURL(file);
 
-				this.uploader.on('start', () => {
-					// console.log('Starting');
-					this.setState({upload: this.uploader});
-				});
+				// this.uploader = this.props.collection.insert({
+				// 	file: file,
+				// 	streams: 'dynamic',
+				// 	chunkSize: 'dynamic',
+				// }, false);
 
-				this.uploader.on('progress', (progress) => {
-					// console.log('Progress', progress);
-					this.setState({progress: progress});
-				});
+				// this.uploader.on('start', () => {
+				// 	// console.log('Starting');
+				// 	this.setState({upload: this.uploader});
+				// });
 
-				this.uploader.on('end', (error, fileObj) => {
-					console.log('FileUpload Done', error, fileObj);
-					this.setState({upload: null, progress: null, uploadedFile: null});
-					if (error) {
-						this.setState({error: error.reason});
-						if (this.props.onUpload) this.props.onUpload(error);
-					} else {
-						this.setState({file: fileObj._id});
-						if (this.props.onUpload) this.props.onUpload(undefined, fileObj._id);
-					}
-				});
+				// this.uploader.on('progress', (progress) => {
+				// 	// console.log('Progress', progress);
+				// 	this.setState({progress: progress});
+				// });
 
-				this.uploader.start();
-			}
+				// this.uploader.on('end', (error, fileObj) => {
+				// 	console.log('FileUpload Done', error, fileObj);
+				// 	this.setState({upload: null, progress: null, uploadedFile: null});
+				// 	if (error) {
+				// 		this.setState({error: error.reason});
+				// 		if (this.props.onUpload) this.props.onUpload(error);
+				// 	} else {
+				// 		this.setState({file: fileObj._id});
+				// 		if (this.props.onUpload) this.props.onUpload(undefined, fileObj._id);
+				// 	}
+				// });
+
+				// this.uploader.start();
+			// }
 		};
+	}
+
+	hasFile() {
+		return !!this.refs.input.files[0];
+	}
+
+	upload(cb) {
+		let file = this.refs.input.files[0];
+		this.props.collection.insert(file, cb);
 	}
 
 	getFile() {
@@ -71,10 +82,10 @@ class ImageUpload extends Component {
 			image = this.state.uploadedFile;
 		} else if (this.state.file) {
 			let imageObj = this.props.collection.findOne(this.state.file);
-			image = imageObj ? imageObj.link() : undefined;
+			image = imageObj ? imageObj.url() : undefined;
 		} else if (this.props.value) {
 			let imageObj = this.props.collection.findOne(this.props.value);
-			image = imageObj ? imageObj.link() : undefined;
+			image = imageObj ? imageObj.url() : undefined;
 		}
 
 		let containerStyle = {

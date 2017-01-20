@@ -49,7 +49,7 @@ class AdminTeamPage extends TitledPage {
 			<Card style={{margin: '20px'}}>
 				<CardTitle title={title} />
 				<CardMedia>
-					<img src={avatar ? avatar.link() : ''}/>
+					<img src={avatar ? avatar.url() : ''}/>
 				</CardMedia>
 				<CardText>
 					{team.description}

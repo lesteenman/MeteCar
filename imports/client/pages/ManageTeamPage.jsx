@@ -31,18 +31,33 @@ class CreateTeamPage extends TitledPage {
 		let name = this.refs.name.value();
 		let description = this.refs.description.value();
 		let avatar = team.avatar;
-		if (this.refs.avatar.getFile()) {
-			avatar = this.refs.avatar.getFile();
-		}
-		let result = team.update(name, description, avatar);
-		if (result === true) {
-			this.setState({
-				snackbar: "Opgeslagen.",
+
+		let onResult = (result) => {
+			if (result === true) {
+				this.setState({
+					snackbar: "Opgeslagen.",
+				});
+			} else {
+				this.setState({
+					error: result,
+				});
+			}
+		};
+
+		if (this.refs.avatar.hasFile()) {
+			this.refs.avatar.upload((error, file) => {
+				if (error) {
+					this.setState({
+						error: error,
+					});
+				} else {
+					let result = team.update(name, description, file._id);
+					onResult(result);
+				}
 			});
 		} else {
-			this.setState({
-				error: result,
-			});
+			let result = team.update(name, description);
+			onResult(result);
 		}
 	}
 

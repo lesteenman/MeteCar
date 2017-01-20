@@ -19,11 +19,12 @@ class AdminTeamsPage extends TitledPage {
 		for (let team of this.props.teams) {
 			let link = '/admin/teams/' + team._id;
 			let avatar = TeamAvatars.findOne({_id: team.avatar});
+			// if (avatar) console.log('Avatar:', avatar.url(), avatar.url({store: 'thumbs'}));
 			teams.push(
 				<Link to={link} key={team._id}>
 					<ListItem
 						primaryText={team.name}
-						rightAvatar={avatar ? <Avatar src={avatar.link()} /> : undefined}
+						rightAvatar={avatar ? <Avatar src={avatar.url({store: 'thumbs'})} /> : undefined}
 					/>
 				</Link>
 			);

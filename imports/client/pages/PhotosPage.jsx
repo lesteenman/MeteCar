@@ -75,7 +75,7 @@ class PhotosPage extends TitledPage {
 						);
 					}
 					photos.push(
-						<a href={image.link()}
+						<a href={image.url}
 							key={submission._id}
 							data-lightbox={"mission-" + mission._id}
 							data-title={team.name}
@@ -87,7 +87,7 @@ class PhotosPage extends TitledPage {
 								actionIcon={adminIcon}
 								onTouchTap={console.log('requesting to view photo', image._id)}
 							>
-								<img src={image.link()} />
+								<img src={image.url} />
 							</GridTile>
 						</a>
 					);

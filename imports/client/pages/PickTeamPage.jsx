@@ -52,7 +52,7 @@ class PickTeamPage extends Component {
 			console.log('Team:', team);
 			let avatar, avatarUrl;
 			if (avatar = TeamAvatars.findOne(team.avatar)) {
-				avatarUrl = avatar.link();
+				avatarUrl = avatar.url;
 			}
 
 			let subtitle = picked ? '' : team.description;

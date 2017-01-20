@@ -29,6 +29,8 @@ force-ssl@1.0.13
 jagi:astronomy
 underscore@1.0.10
 raix:push
-ostrio:files
 ostrio:meteor-root
 czbaker:lightbox2
+cfs:standard-packages
+cfs:filesystem
+cfs:graphicsmagick

@@ -108,7 +108,7 @@ class MissionPage extends TitledPage {
 			let image = SubmissionPhotos.findOne({_id: submission.data});
 			return (
 				<div>
-					<img src={image ? image.link() : image} style={{maxWidth: '100%'}}/>
+					<img src={image ? image.url : image} style={{maxWidth: '100%'}}/>
 					<RaisedButton
 						disabled={!(submission && submission.state == SubmissionState.SENT)}
 						label="revoke submission"
