@@ -19,38 +19,38 @@ TODO
 Next Up
 -------
 
-[x] Move to collectionFS for files
-[x] Test new file upload with avatars
-[x] Test thumb method
-[ ] Cluster map icons (use markerClusterer of google maps - new implementation in the maps lib)
-[ ] Implement new files system for submissions (upload with cb)
+- [x] Move to collectionFS for files
+- [x] Test new file upload with avatars
+- [x] Test thumb method
+- [ ] Cluster map icons (use markerClusterer of google maps - new implementation in the maps lib)
+- [ ] Implement new files system for submissions (upload with cb)
 
-[ ] Use team icons on the map
-	[ ] Possible using collectionFS
-[ ] Completed missions get a green icon on the map
+- [ ] Use team icons on the map
+-- [ ] Possible using collectionFS
+- [ ] Completed missions get a green icon on the map
 
-[ ] Dialog for approving/disapproving missions
-[ ] FIXME: Setting a mission as completed does not stream next mission to the team
-[ ] Switch a photo mission to 'results publicized'
+- [ ] Dialog for approving/disapproving missions
+- [ ] FIXME: Setting a mission as completed does not stream next mission to the team
+- [ ] Switch a photo mission to 'results publicized'
 
-[ ] Modify a team's members (admin and captains)
+- [ ] Modify a team's members (admin and captains)
 
-[ ] Create question mission (puzzle)
-[ ] Create photo mission
-[ ] Create location mission
+- [ ] Create question mission (puzzle)
+- [ ] Create photo mission
+- [ ] Create location mission
 
-[ ] Implement location missions submission
-[ ] Implement puzzle missions submission
-[ ] Publicize a mission's photos to everyone
-[ ] Implement photo rating(?)
-[ ] Scoring
+- [ ] Implement location missions submission
+- [ ] Implement puzzle missions submission
+- [ ] Publicize a mission's photos to everyone
+- [ ] Implement photo rating(?)
+- [ ] Scoring
 
-[ ] Approve new team members (captain and admin both)
-[ ] Show who succeeded when after results are publicized for teams
-[ ] Show a bubble for unapproved photos for Admin
+- [ ] Approve new team members (captain and admin both)
+- [ ] Show who succeeded when after results are publicized for teams
+- [ ] Show a bubble for unapproved photos for Admin
 
-[ ] Fix automatic zoom and focus of map
-[ ] Optionally include current session's current location in map centering
+- [ ] Fix automatic zoom and focus of map
+- [ ] Optionally include current session's current location in map centering
 
 Later
 -----
