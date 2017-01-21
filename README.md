@@ -22,7 +22,7 @@ Next Up
 - [x] Move to collectionFS for files
 - [x] Test new file upload with avatars
 - [x] Test thumb method
-- [ ] Cluster map icons (use markerClusterer of google maps - new implementation in the maps lib)
+- [v] Cluster map icons (use markerClusterer of google maps - new implementation in the maps lib)
 - [ ] Implement new files system for submissions (upload with cb)
 
 - [ ] Use team icons on the map

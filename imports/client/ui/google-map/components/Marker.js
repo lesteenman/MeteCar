@@ -21,6 +21,9 @@ export class Marker extends React.Component {
 	componentDidMount() {
 		this.markerPromise = wrappedPromise();
 		this.renderMarker();
+		if (this.props.clusterer) {
+			this.props.clusterer.addMarker(this.marker);
+		}
 	}
 
 	componentDidUpdate(prevProps) {
@@ -33,6 +36,9 @@ export class Marker extends React.Component {
 	componentWillUnmount() {
 		if (this.marker) {
 			this.marker.setMap(null);
+			if (this.props.clusterer) {
+				this.props.clusterer.removeMarker(this.marker);
+			}
 		}
 	}
 
