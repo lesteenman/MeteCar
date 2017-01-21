@@ -26,6 +26,7 @@ const evtNames = ['ready', 'click', 'dragend', 'recenter'];
 export {wrapper as GoogleApiWrapper} from './GoogleApiComponent';
 export {Marker} from './components/Marker';
 export {InfoWindow} from './components/InfoWindow';
+export {MarkerClusterer} from './components/MarkerClusterer';
 
 export class Map extends React.Component {
 	constructor(props) {

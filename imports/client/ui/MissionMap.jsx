@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { createContainer } from 'meteor/react-meteor-data';
 
-import Map, { Marker, InfoWindow } from '../ui/google-map';
+import Map, { Marker, InfoWindow, MarkerClusterer } from '../ui/google-map';
 import mapStyle from '../ui/google-map/style.json';
 
 import TeamAvatars from '/imports/api/TeamAvatars.jsx';
@@ -92,7 +92,9 @@ export default class MissionMap extends Component {
 				allowPanning={this.props.allowPanning}
 				allowZooming={this.props.allowZooming}
 			>
-				{markers}
+				<MarkerClusterer>
+					{markers}
+				</MarkerClusterer>
 				{info}
 			</Map>
 		);

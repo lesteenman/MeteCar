@@ -38,7 +38,7 @@ export class Marker extends React.Component {
 
 	renderMarker() {
 		let {
-			map, google, position, mapCenter, icon
+			map, clusterer, google, position, mapCenter, icon
 		} = this.props;
 		if (!google) {
 			return null;
@@ -51,6 +51,7 @@ export class Marker extends React.Component {
 
 		const pref = {
 			map: map,
+			clusterer: clusterer,
 			position: position
 		};
 		if (icon) pref.icon = icon;
