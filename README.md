@@ -1,5 +1,8 @@
 MeteCar
 =======
+
+**This project will no longer be developed.**
+
 This is a simple Meteor application that will be used for a yearly event at a local organization. The idea behind the event is that a number of tasks are spread throughout the Netherlands, and you have to drive there asap to complete them.
 
 There are various mission types. Currently, these are location missions (be near a certain location), photo missions (submit a photo of a given task), and 'puzzle' missions, which are simply a question.
